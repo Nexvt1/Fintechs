@@ -142,6 +142,14 @@ def init_db():
         except Exception:
             db.session.rollback()
 
+        # Garante política permissiva para chave do Supabase Mobile APK
+        try:
+            db.session.execute(text('DROP POLICY IF EXISTS "Allow anon access" ON "Usuarios"'))
+            db.session.execute(text('CREATE POLICY "Allow anon access" ON "Usuarios" FOR ALL TO anon, authenticated USING (true) WITH CHECK (true)'))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
         # Garante usuário administrador padrão (admin@fistu.com / admin123)
         try:
             admin_check = db.session.execute(text("SELECT id FROM \"Usuarios\" WHERE tipo = 'admin'")).fetchone()
