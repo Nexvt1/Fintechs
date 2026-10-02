@@ -822,18 +822,78 @@
             color: var(--duo-gold);
         }
 
-        /* ILUSTRAÇÕES DE MARCOS DA TRILHA (BAÚ DE TESOURO) */
-        .chest-treasure {
-            position: absolute;
-            width: 75px;
-            height: 75px;
-            z-index: 5;
-            cursor: pointer;
-            transition: transform 0.2s;
+        /* CARTÃO DE IDENTIFICAÇÃO DA TRILHA DO USUÁRIO */
+        .user-trail-header-card {
+            width: 100%;
+            background: linear-gradient(135deg, #12372A 0%, #1a4d3b 100%);
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 8px 24px rgba(18, 55, 42, 0.25);
+            border: 1px solid rgba(134, 239, 172, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        .chest-treasure:hover {
-            transform: scale(1.08);
+        .user-trail-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-trail-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(134, 239, 172, 0.18);
+            border: 2px solid #86EFAC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #86EFAC;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .user-trail-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #86EFAC;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .user-trail-name {
+            font-size: 1.15rem;
+            font-weight: 900;
+            margin: 0;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .user-trail-sub {
+            font-size: 0.78rem;
+            color: #BFD8C2;
+            margin: 3px 0 0 0;
+            font-weight: 500;
+        }
+
+        .user-trail-account-pill {
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #86EFAC;
+            white-space: nowrap;
         }
 
         /* BOTÃO FLUTUANTE ⬆️ */
@@ -1090,7 +1150,7 @@
     <div class="notification-container" id="fistuNotification" style="position: fixed; top: 20px; right: 20px; z-index: 3000; transform: translateY(-100px); opacity: 0; transition: all 0.4s ease;">
       <div class="succsess-alert" style="display: flex; align-items: center; justify-content: space-between; width: 290px; border-radius: 12px; background: #12372A; border: 1px solid #2F6B4F; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); color: white;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-circle-check" style="color: #86EFAC; font-size: 1.2rem;"></i>
+          <i id="notifIcon" class="fa-solid fa-circle-check" style="color: #86EFAC; font-size: 1.2rem;"></i>
           <div>
             <p id="notifTitle" style="font-size: 12px; font-weight: 800;">Operação Concluída</p>
             <p id="notifDesc" style="font-size: 10px; color: #BFD8C2;">Transação realizada com sucesso.</p>
@@ -1303,6 +1363,23 @@
          ======================================================== -->
     <div class="screen-view" id="screenEducacao">
         <div class="edu-screen-wrapper">
+
+            <!-- CARTÃO DE IDENTIFICAÇÃO DA TRILHA DO USUÁRIO -->
+            <div class="user-trail-header-card">
+                <div class="user-trail-left">
+                    <div class="user-trail-avatar">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <span class="user-trail-badge">TRILHA DO USUÁRIO</span>
+                        <h3 class="user-trail-name">{{ usuario.nome or 'Cliente Fistu' }}</h3>
+                        <p class="user-trail-sub" id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas</p>
+                    </div>
+                </div>
+                <div class="user-trail-meta">
+                    <span class="user-trail-account-pill">Conta #{{ usuario.id }}</span>
+                </div>
+            </div>
 
             <!-- BARRA DE STATUS DO TOPO (IDÊNTICA À IMAGEM 1) -->
             <div class="duo-stats-bar">
@@ -1641,20 +1718,30 @@
             'fa-headphones', 'fa-microphone', 'fa-star', 'fa-book-open', 'fa-crown'
         ];
 
-        // CONTROLE DE ACESSO DO ADMINISTRADOR (LIBERADO PARA TESTES)
+        // CONTROLE DE ACESSO DO USUÁRIO E DADOS VINDOS DO SUPABASE
+        const currentUserId = {{ (usuario.id or 0) | tojson }};
+        const currentUserName = {{ (usuario.nome or 'Cliente') | tojson }};
         const isAdmin = {{ 'true' if (usuario.tipo == 'admin' or session.get('usuario_tipo') == 'admin') else 'false' }};
 
         // ESTADO GLOBAL DO SISTEMA
         let saldoAtual = {{ usuario.saldo or 1500.0 }};
         let investAtual = {{ usuario.investimentos or 3200.0 }};
         let saldoVisivel = true;
-        let selectedLevel = 0;
 
-        // CARREGAMENTO ROBUSTO DO PROGRESSO (GARANTE OS 4 NÍVEIS E 15 STAGES)
-        let savedProgress = null;
+        // CARREGAMENTO DO PROGRESSO ATRIBUÍDO AO USUÁRIO
+        let dbProgress = null;
         try {
-            savedProgress = JSON.parse(localStorage.getItem('fistu_edu_progress'));
+            const rawProgress = {{ (usuario.trilha_progresso or '') | tojson }};
+            if (rawProgress) dbProgress = JSON.parse(rawProgress);
         } catch (e) {}
+
+        const userProgressKey = 'fistu_edu_progress_' + currentUserId;
+        let savedProgress = dbProgress;
+        if (!savedProgress) {
+            try {
+                savedProgress = JSON.parse(localStorage.getItem(userProgressKey));
+            } catch (e) {}
+        }
 
         if (!Array.isArray(savedProgress) || savedProgress.length !== levelCatalog.length) {
             savedProgress = levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })));
@@ -1665,11 +1752,20 @@
             });
         }
 
+        const dbXp = {{ (usuario.trilha_xp if usuario.trilha_xp is not none else None) | tojson }};
+        const dbStreak = {{ (usuario.trilha_streak if usuario.trilha_streak is not none else None) | tojson }};
+        const dbCoins = {{ (usuario.trilha_coins if usuario.trilha_coins is not none else None) | tojson }};
+        const dbHearts = {{ (usuario.trilha_hearts if usuario.trilha_hearts is not none else None) | tojson }};
+        const dbUltimaMissao = {{ (usuario.trilha_ultima_missao or '') | tojson }};
+        const dbNivel = {{ (usuario.trilha_nivel_atual or 0) | tojson }};
+
+        let selectedLevel = dbNivel || 0;
+
         let eduState = {
-            xp: parseInt(localStorage.getItem('fistu_edu_xp')) || 116,
-            streak: parseInt(localStorage.getItem('fistu_edu_streak')) || 1,
-            coins: parseInt(localStorage.getItem('fistu_edu_coins')) || 5847,
-            hearts: parseInt(localStorage.getItem('fistu_edu_hearts')) || 5,
+            xp: (dbXp !== null ? dbXp : parseInt(localStorage.getItem('fistu_edu_xp_' + currentUserId))) || 0,
+            streak: (dbStreak !== null ? dbStreak : parseInt(localStorage.getItem('fistu_edu_streak_' + currentUserId))) || 1,
+            coins: (dbCoins !== null ? dbCoins : parseInt(localStorage.getItem('fistu_edu_coins_' + currentUserId))) || 0,
+            hearts: (dbHearts !== null ? dbHearts : (parseInt(localStorage.getItem('fistu_edu_hearts_' + currentUserId)) || 5)),
             progress: savedProgress
         };
 
@@ -1682,12 +1778,27 @@
         };
 
         function salvarEduState() {
-            localStorage.setItem('fistu_edu_xp', eduState.xp);
-            localStorage.setItem('fistu_edu_streak', eduState.streak);
-            localStorage.setItem('fistu_edu_coins', eduState.coins);
-            localStorage.setItem('fistu_edu_hearts', eduState.hearts);
-            localStorage.setItem('fistu_edu_progress', JSON.stringify(eduState.progress));
+            localStorage.setItem('fistu_edu_xp_' + currentUserId, eduState.xp);
+            localStorage.setItem('fistu_edu_streak_' + currentUserId, eduState.streak);
+            localStorage.setItem('fistu_edu_coins_' + currentUserId, eduState.coins);
+            localStorage.setItem('fistu_edu_hearts_' + currentUserId, eduState.hearts);
+            localStorage.setItem('fistu_edu_progress_' + currentUserId, JSON.stringify(eduState.progress));
             atualizarStatsBar();
+            atualizarUserTrailSub();
+
+            // Salva de forma assíncrona na conta do usuário no Supabase
+            fetch('/api/usuario/trilha/salvar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    progress: eduState.progress,
+                    xp: eduState.xp,
+                    streak: eduState.streak,
+                    coins: eduState.coins,
+                    hearts: eduState.hearts,
+                    nivel: selectedLevel
+                })
+            }).catch(e => console.log('Sincronização com o usuário:', e));
         }
 
         function atualizarStatsBar() {
@@ -1697,9 +1808,18 @@
             if (bannerStreak) bannerStreak.innerText = eduState.streak;
             document.getElementById('eduCoins').innerText = eduState.coins;
             document.getElementById('eduHearts').innerText = eduState.hearts;
+            atualizarUserTrailSub();
         }
 
-        // --- SISTEMA DE LIMITE DIÁRIO (1 MISSÃO POR DIA PARA USUÁRIOS) ---
+        function atualizarUserTrailSub() {
+            const sub = document.getElementById('userTrailSub');
+            if (!sub) return;
+            const currentLvl = levelCatalog[selectedLevel] || levelCatalog[0];
+            const completedCount = eduState.progress[selectedLevel].filter(s => s.completed).length;
+            sub.innerText = `Nível: ${currentLvl.title} • ${completedCount}/15 etapas concluídas (${eduState.xp} XP)`;
+        }
+
+        // --- SISTEMA DE LIMITE DIÁRIO (1 MISSÃO POR DIA PARA CADA USUÁRIO) ---
         function getTodayDateString() {
             const today = new Date();
             const y = today.getFullYear();
@@ -1709,8 +1829,11 @@
         }
 
         function getDailyMissionCount() {
+            if (dbUltimaMissao === getTodayDateString()) {
+                return 1;
+            }
             try {
-                const log = JSON.parse(localStorage.getItem('fistu_daily_mission_log') || '{}');
+                const log = JSON.parse(localStorage.getItem('fistu_daily_mission_' + currentUserId) || '{}');
                 if (log.date === getTodayDateString()) {
                     return log.count || 0;
                 }
@@ -1721,7 +1844,7 @@
         function registerDailyMissionCompleted() {
             const today = getTodayDateString();
             const current = getDailyMissionCount();
-            localStorage.setItem('fistu_daily_mission_log', JSON.stringify({
+            localStorage.setItem('fistu_daily_mission_' + currentUserId, JSON.stringify({
                 date: today,
                 count: current + 1
             }));
@@ -1810,6 +1933,8 @@
             selectedLevel = idx;
             renderLevelTabs();
             renderDuoPath();
+            atualizarUserTrailSub();
+            salvarEduState();
         }
 
         // --- NAVEGAÇÃO ENTRE AS ABAS PRINCIPAIS ---
@@ -1866,21 +1991,6 @@
                 // Aplica deslocamento horizontal para a curva
                 const offsetX = xOffsets[i % xOffsets.length];
 
-                // Baú de Ouro nos marcos 5, 10 e 15 (SEM MASCOTES NA TRILHA)
-                let illustrationHtml = '';
-                if (i === 4 || i === 9 || i === 14) {
-                    illustrationHtml = `
-                        <div class="chest-treasure pos-right" onclick="alert('🎁 Baú de Tesouro! Complete este marco para desbloquear FinCoins bônus.')">
-                            <svg viewBox="0 0 100 100" width="60" height="60">
-                                <rect x="20" y="35" width="60" height="40" rx="6" fill="#B45309"/>
-                                <path d="M15 35 Q50 15 85 35 Z" fill="#F59E0B"/>
-                                <rect x="44" y="38" width="12" height="14" rx="2" fill="#FBBF24"/>
-                                <circle cx="50" cy="44" r="3" fill="#12372A"/>
-                            </svg>
-                        </div>
-                    `;
-                }
-
                 // Estilização do Botão 3D com as cores da trilha ativa
                 let btnClass = 'duo-node-btn';
                 let btnStyle = '';
@@ -1904,7 +2014,6 @@
                 const icon = duoIcons[i % duoIcons.length];
 
                 row.innerHTML = `
-                    ${illustrationHtml}
                     <div style="transform: translateX(${offsetX}px); display: flex; flex-direction: column; align-items: center; position: relative;">
                         ${tooltip}
                         <button class="${btnClass}" style="${btnStyle}" onclick="abrirQuizStage(${stageNum})" id="node-${stageNum}">
@@ -2076,23 +2185,32 @@
                     registerDailyMissionCompleted();
                 }
 
-                // Chama a API do backend para adicionar R$ 5,00 em saldo real
+                // Chama a API do backend para creditar R$ 5,00 em saldo e salvar o progresso no banco de dados do usuário
                 try {
                     const res = await fetch('/api/usuario/educacao/concluir', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             stage: currentQuiz.stageNumber,
-                            level: level.title
+                            level: level.title,
+                            levelIndex: selectedLevel,
+                            progress: eduState.progress,
+                            xp: eduState.xp,
+                            streak: eduState.streak,
+                            coins: eduState.coins,
+                            hearts: eduState.hearts
                         })
                     });
                     const data = await res.json();
                     if (res.ok) {
                         saldoAtual = data.saldo;
                         document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                        if (data.xp !== undefined) eduState.xp = data.xp;
+                        if (data.coins !== undefined) eduState.coins = data.coins;
+                        atualizarStatsBar();
                     }
                 } catch (e) {
-                    console.log('Erro ao creditar bônus:', e);
+                    console.log('Erro ao creditar bônus do usuário:', e);
                 }
 
                 renderLevelTabs();
@@ -2345,15 +2463,24 @@
         function exibirNotificacao(titulo, mensagem, isErro = false) {
             const notif = document.getElementById('fistuNotification');
             const alertBox = notif.querySelector('.succsess-alert');
+            const notifIcon = document.getElementById('notifIcon');
             document.getElementById('notifTitle').innerText = titulo;
             document.getElementById('notifDesc').innerText = mensagem;
 
             if (isErro) {
                 alertBox.style.backgroundColor = '#742A2A';
                 alertBox.style.borderColor = '#E53E3E';
+                if (notifIcon) {
+                    notifIcon.className = 'fa-solid fa-circle-xmark';
+                    notifIcon.style.color = '#FCA5A5';
+                }
             } else {
                 alertBox.style.backgroundColor = '#12372A';
                 alertBox.style.borderColor = '#2F6B4F';
+                if (notifIcon) {
+                    notifIcon.className = 'fa-solid fa-circle-check';
+                    notifIcon.style.color = '#86EFAC';
+                }
             }
 
             notif.style.transform = 'translateY(0)';
@@ -2373,6 +2500,7 @@
             atualizarStatsBar();
             renderLevelTabs();
             atualizarDailyMissionBanner();
+            atualizarUserTrailSub();
             renderDuoPath();
         };
     </script>

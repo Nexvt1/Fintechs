@@ -1655,6 +1655,7 @@
                                         <th>ID</th>
                                         <th>Usuário</th>
                                         <th>Cargo</th>
+                                        <th>Trilha Educacional</th>
                                         <th>Saldo em Conta</th>
                                         <th>Investimentos</th>
                                         <th>Ações de Admin</th>
@@ -1680,12 +1681,28 @@
                                             <span class="status-badge status-completed">👤 Usuário</span>
                                             {% endif %}
                                         </td>
+                                        <td>
+                                            <div style="font-size: 0.8rem;">
+                                                <span style="display: block; font-weight: 800; color: var(--primary-dark);">
+                                                    {% if u.trilha_nivel_atual == 1 %}📘 Intermediário
+                                                    {% elif u.trilha_nivel_atual == 2 %}📊 Analista
+                                                    {% elif u.trilha_nivel_atual == 3 %}🏆 Sênior
+                                                    {% else %}🌱 Iniciante{% endif %}
+                                                </span>
+                                                <small style="color: var(--text-muted); font-size: 0.72rem;">
+                                                    ⭐ {{ u.trilha_xp or 0 }} XP • 💎 {{ u.trilha_coins or 0 }} Coins
+                                                </small>
+                                            </div>
+                                        </td>
                                         <td><strong>R$ {{ "%.2f"|format(u.saldo or 0) }}</strong></td>
                                         <td><strong style="color: var(--primary-green);">R$ {{ "%.2f"|format(u.investimentos or 0) }}</strong></td>
                                         <td>
                                             <div style="display: flex; gap: 6px;">
                                                 <button class="btn-action-small" onclick="abrirModalEdicao({{ u.id }}, '{{ u.nome }}', {{ u.saldo or 0 }}, {{ u.investimentos or 0 }})" title="Editar Saldos">
                                                     <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                                <button class="btn-action-small" style="background: #0284C7;" onclick="inspecionarTrilhaUsuario({{ u.id }})" title="Inspecionar Trilha do Usuário">
+                                                    <i class="fa-solid fa-graduation-cap"></i>
                                                 </button>
                                                 {% if u.tipo == 'admin' %}
                                                 <button class="btn-action-small" style="background: #D97706;" onclick="alterarTipoUsuario({{ u.id }}, 'usuario')" title="Rebaixar a Usuário">
@@ -1958,6 +1975,28 @@
                 <!-- WRAPPER CENTRAL DA TRILHA -->
                 <div class="admin-trail-wrapper">
 
+                    <!-- SELETOR DE ATRIBUIÇÃO DE TRILHA (MASTER ADMIN VS USUÁRIO ESPECÍFICO) -->
+                    <div style="background: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 12px 18px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 38px; height: 38px; border-radius: 10px; background: #EEF2F6; display: flex; align-items: center; justify-content: center; color: var(--primary-green); font-size: 1.1rem;">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <strong style="display: block; font-size: 0.9rem; color: var(--primary-dark);">Visualização de Trilha</strong>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);" id="adminTrailModeDesc">Modo Master Liberado (Testes livres de Administrador)</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 0.8rem; font-weight: 700; color: var(--primary-dark);">Inspecionar Trilha de:</label>
+                            <select id="selectUsuarioTrilhaAdmin" onchange="trocarVisualizacaoUsuario(this.value)" style="padding: 8px 12px; border-radius: 10px; border: 1.5px solid #CBD5E1; font-weight: 700; font-size: 0.85rem; color: var(--primary-dark); background: #F8FAFC; cursor: pointer;">
+                                <option value="master">🛡️ Trilha Master (Admin - 100% Liberada)</option>
+                                {% for u in usuarios %}
+                                <option value="{{ u.id }}">👤 {{ u.nome or u.email }} ({{ u.trilha_xp or 0 }} XP)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
                     <!-- STATS BAR DO DUOLINGO -->
                     <div class="admin-duo-stats-bar">
                         <div class="admin-stat-badge" title="Nível / Pontos" style="color: #3B82F6;">
@@ -2185,13 +2224,77 @@
         ];
 
         let adminSelectedLevel = 0;
-        let adminEduState = {
+        let masterEduState = {
             xp: 950,
             streak: 30,
             coins: 9999,
             hearts: 5,
             progress: levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))
         };
+        let adminEduState = JSON.parse(JSON.stringify(masterEduState));
+        let usuarioSelecionadoId = 'master';
+
+        function atualizarAdminStatsBar() {
+            const xpEl = document.getElementById('adminEduXp');
+            const streakEl = document.getElementById('adminEduStreak');
+            const coinsEl = document.getElementById('adminEduCoins');
+            const heartsEl = document.getElementById('adminEduHearts');
+            if (xpEl) xpEl.innerText = adminEduState.xp;
+            if (streakEl) streakEl.innerText = adminEduState.streak;
+            if (coinsEl) coinsEl.innerText = adminEduState.coins;
+            if (heartsEl) heartsEl.innerText = adminEduState.hearts;
+        }
+
+        async function trocarVisualizacaoUsuario(val) {
+            usuarioSelecionadoId = val;
+            const descEl = document.getElementById('adminTrailModeDesc');
+            if (val === 'master') {
+                adminEduState = JSON.parse(JSON.stringify(masterEduState));
+                if (descEl) descEl.innerText = 'Modo Master Liberado (Testes livres de Administrador)';
+                atualizarAdminStatsBar();
+                renderAdminLevelTabs();
+                renderAdminDuoPath();
+            } else {
+                try {
+                    const res = await fetch('/api/admin/usuario/trilha/' + val);
+                    const data = await res.json();
+                    if (res.ok) {
+                        let parsedProgress = null;
+                        try {
+                            if (data.trilha_progresso) parsedProgress = JSON.parse(data.trilha_progresso);
+                        } catch(e) {}
+
+                        if (!Array.isArray(parsedProgress) || parsedProgress.length !== levelCatalog.length) {
+                            parsedProgress = levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })));
+                        }
+
+                        adminEduState = {
+                            xp: data.trilha_xp || 0,
+                            streak: data.trilha_streak || 1,
+                            coins: data.trilha_coins || 0,
+                            hearts: data.trilha_hearts !== null ? data.trilha_hearts : 5,
+                            progress: parsedProgress
+                        };
+                        adminSelectedLevel = data.trilha_nivel_atual || 0;
+                        if (descEl) descEl.innerText = `Visualizando dados reais de: ${data.nome || data.email} (ID #${data.id})`;
+                        atualizarAdminStatsBar();
+                        renderAdminLevelTabs();
+                        renderAdminDuoPath();
+                    }
+                } catch(e) {
+                    console.log('Erro ao carregar dados do usuário:', e);
+                }
+            }
+        }
+
+        function inspecionarTrilhaUsuario(userId) {
+            mostrarSecao('trilha');
+            const selectEl = document.getElementById('selectUsuarioTrilhaAdmin');
+            if (selectEl) {
+                selectEl.value = userId;
+                trocarVisualizacaoUsuario(userId);
+            }
+        }
 
         let currentAdminQuiz = {
             levelIndex: 0,
@@ -2277,27 +2380,12 @@
 
                 const offsetX = xOffsets[i % xOffsets.length];
 
-                let illustrationHtml = '';
-                if (i === 4 || i === 9 || i === 14) {
-                    illustrationHtml = `
-                        <div class="admin-chest-treasure" onclick="alert('🎁 Baú Master: marco concluído com sucesso!')">
-                            <svg viewBox="0 0 100 100" width="60" height="60">
-                                <rect x="20" y="35" width="60" height="40" rx="6" fill="#B45309"/>
-                                <path d="M15 35 Q50 15 85 35 Z" fill="#F59E0B"/>
-                                <rect x="44" y="38" width="12" height="14" rx="2" fill="#FBBF24"/>
-                                <circle cx="50" cy="44" r="3" fill="#12372A"/>
-                            </svg>
-                        </div>
-                    `;
-                }
-
                 // No painel admin, TODOS os estágios usam a cor do nível e estão 100% liberados
                 const btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark}, 0 12px 18px rgba(0,0,0,0.15);`;
                 const tooltip = isActive ? `<div class="admin-tooltip-bubble" style="color: ${level.dark}; border-color: ${level.primary};">COMEÇAR!</div>` : '';
                 const icon = adminDuoIcons[i % adminDuoIcons.length];
 
                 row.innerHTML = `
-                    ${illustrationHtml}
                     <div style="transform: translateX(${offsetX}px); display: flex; flex-direction: column; align-items: center; position: relative;">
                         ${tooltip}
                         <button class="admin-node-btn" style="${btnStyle}" onclick="abrirAdminQuizStage(${stageNum})" title="Estágio ${stageNum}: ${stageCatalog[i]}">
@@ -2438,7 +2526,8 @@
 
         function resetarProgressoAdmin() {
             if (!confirm('Deseja reiniciar as estatísticas de teste do modo administrador?')) return;
-            adminEduState.progress = levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })));
+            adminEduState = JSON.parse(JSON.stringify(masterEduState));
+            atualizarAdminStatsBar();
             renderAdminDuoPath();
             alert('Progresso de testes reiniciado!');
         }

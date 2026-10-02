@@ -33,6 +33,7 @@ instalar_dependencias()
 
 # --- IMPORTS DO PROJETO ---
 import os
+import json
 import uuid
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
@@ -128,6 +129,13 @@ def init_db():
         try:
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS saldo NUMERIC DEFAULT 1500.00'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS investimentos NUMERIC DEFAULT 3200.00'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_progresso TEXT'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_xp INTEGER DEFAULT 0'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_streak INTEGER DEFAULT 1'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_coins INTEGER DEFAULT 0'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_hearts INTEGER DEFAULT 5'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_nivel_atual INTEGER DEFAULT 0'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_ultima_missao TEXT'))
             db.session.execute(text('UPDATE "Usuarios" SET saldo = 1500.00 WHERE saldo IS NULL'))
             db.session.execute(text('UPDATE "Usuarios" SET investimentos = 3200.00 WHERE investimentos IS NULL'))
             db.session.commit()
@@ -219,13 +227,13 @@ def home():
         return redirect(url_for('login'))
         
     usuario_db = db.session.execute(
-        text('SELECT id, nome, email, tipo, saldo, investimentos FROM "Usuarios" WHERE id = :id'),
+        text('SELECT id, nome, email, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" WHERE id = :id'),
         {'id': session.get('user_id')}
     ).mappings().fetchone()
     
     if not usuario_db:
         usuario_db = db.session.execute(
-            text('SELECT id, nome, email, tipo, saldo, investimentos FROM "Usuarios" WHERE email = :email'),
+            text('SELECT id, nome, email, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" WHERE email = :email'),
             {'email': session.get('usuario_email')}
         ).mappings().fetchone()
         
@@ -251,7 +259,7 @@ def admin_dashboard():
         
     # Busca usuários cadastrados no banco
     usuarios = db.session.execute(
-        text('SELECT id, nome, email, tipo, saldo, investimentos FROM "Usuarios" ORDER BY id ASC')
+        text('SELECT id, nome, email, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" ORDER BY id ASC')
     ).mappings().fetchall()
     
     total_usuarios = len(usuarios)
@@ -534,20 +542,55 @@ def api_usuario_educacao_concluir():
     data = request.get_json(silent=True) or request.form
     stage = data.get('stage', 1)
     level = data.get('level', 'Iniciante')
+    level_index = int(data.get('levelIndex', 0))
+    progress_matrix = data.get('progress')
+    new_xp = data.get('xp')
+    new_streak = data.get('streak')
+    new_coins = data.get('coins')
+    new_hearts = data.get('hearts')
     bonus_reais = 5.00 # Bônus de aprendizado de R$ 5,00
     
     usuario = db.session.execute(
-        text('SELECT id, saldo, investimentos FROM "Usuarios" WHERE id = :id'),
+        text('SELECT id, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_ultima_missao FROM "Usuarios" WHERE id = :id'),
         {'id': user_id}
     ).mappings().fetchone()
     
     if not usuario:
         return jsonify({'erro': 'Usuário não encontrado.'}), 404
         
+    hoje = datetime.now().strftime('%Y-%m-%d')
     novo_saldo = float(usuario['saldo'] or 0) + bonus_reais
+    
+    progresso_str = json.dumps(progress_matrix) if progress_matrix is not None else usuario['trilha_progresso']
+    xp_val = int(new_xp) if new_xp is not None else int(usuario['trilha_xp'] or 0) + 15
+    coins_val = int(new_coins) if new_coins is not None else int(usuario['trilha_coins'] or 0) + 20
+    streak_val = int(new_streak) if new_streak is not None else int(usuario['trilha_streak'] or 1)
+    hearts_val = int(new_hearts) if new_hearts is not None else int(usuario['trilha_hearts'] or 5)
+
     db.session.execute(
-        text('UPDATE "Usuarios" SET saldo = :saldo WHERE id = :id'),
-        {'saldo': novo_saldo, 'id': user_id}
+        text('''
+            UPDATE "Usuarios" 
+            SET saldo = :saldo,
+                trilha_progresso = :progresso,
+                trilha_xp = :xp,
+                trilha_streak = :streak,
+                trilha_coins = :coins,
+                trilha_hearts = :hearts,
+                trilha_nivel_atual = :nivel,
+                trilha_ultima_missao = :hoje
+            WHERE id = :id
+        '''),
+        {
+            'saldo': novo_saldo,
+            'progresso': progresso_str,
+            'xp': xp_val,
+            'streak': streak_val,
+            'coins': coins_val,
+            'hearts': hearts_val,
+            'nivel': level_index,
+            'hoje': hoje,
+            'id': user_id
+        }
     )
     db.session.commit()
     
@@ -555,8 +598,64 @@ def api_usuario_educacao_concluir():
         'sucesso': True,
         'mensagem': f'Parabéns! Stage {stage} ({level}) concluído! Bônus de R$ {bonus_reais:.2f} creditado no seu saldo!',
         'saldo': novo_saldo,
-        'bonus': bonus_reais
+        'bonus': bonus_reais,
+        'xp': xp_val,
+        'coins': coins_val,
+        'streak': streak_val,
+        'hearts': hearts_val
     }), 200
+
+@app.route('/api/usuario/trilha/salvar', methods=['POST'])
+def api_usuario_trilha_salvar():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'erro': 'Usuário não autenticado.'}), 401
+        
+    data = request.get_json(silent=True) or {}
+    progress_matrix = data.get('progress')
+    xp_val = data.get('xp')
+    streak_val = data.get('streak')
+    coins_val = data.get('coins')
+    hearts_val = data.get('hearts')
+    nivel_val = data.get('nivel')
+    
+    progresso_str = json.dumps(progress_matrix) if progress_matrix is not None else None
+    
+    db.session.execute(
+        text('''
+            UPDATE "Usuarios" 
+            SET trilha_progresso = COALESCE(:progresso, trilha_progresso),
+                trilha_xp = COALESCE(:xp, trilha_xp),
+                trilha_streak = COALESCE(:streak, trilha_streak),
+                trilha_coins = COALESCE(:coins, trilha_coins),
+                trilha_hearts = COALESCE(:hearts, trilha_hearts),
+                trilha_nivel_atual = COALESCE(:nivel, trilha_nivel_atual)
+            WHERE id = :id
+        '''),
+        {
+            'progresso': progresso_str,
+            'xp': int(xp_val) if xp_val is not None else None,
+            'streak': int(streak_val) if streak_val is not None else None,
+            'coins': int(coins_val) if coins_val is not None else None,
+            'hearts': int(hearts_val) if hearts_val is not None else None,
+            'nivel': int(nivel_val) if nivel_val is not None else None,
+            'id': user_id
+        }
+    )
+    db.session.commit()
+    return jsonify({'sucesso': True}), 200
+
+@app.route('/api/admin/usuario/trilha/<int:user_target_id>')
+def api_admin_usuario_trilha(user_target_id):
+    if session.get('usuario_tipo') != 'admin':
+        return jsonify({'erro': 'Acesso negado.'}), 403
+    u = db.session.execute(
+        text('SELECT id, nome, email, tipo, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" WHERE id = :id'),
+        {'id': user_target_id}
+    ).mappings().fetchone()
+    if not u:
+        return jsonify({'erro': 'Usuário não encontrado.'}), 404
+    return jsonify(dict(u))
 
 @app.route('/index')
 def index():

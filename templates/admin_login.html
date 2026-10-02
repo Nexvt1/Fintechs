@@ -62,7 +62,7 @@
     <div class="notification-container" id="adminNotification">
       <div class="succsess-alert">
         <div class="alert-content">
-          <div class="alert-icon">
+          <div class="alert-icon" id="adminAlertIcon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
             </svg>
@@ -131,15 +131,28 @@
         function showAdminNotification(title, message, isError = false) {
             const notif = document.getElementById('adminNotification');
             const alertBox = notif.querySelector('.succsess-alert');
+            const iconBox = document.getElementById('adminAlertIcon');
             document.getElementById('adminNotifTitle').innerText = title;
             document.getElementById('adminNotifDesc').innerText = message;
             
             if (isError) {
                 alertBox.style.backgroundColor = '#742A2A';
                 alertBox.style.borderColor = '#E53E3E';
+                if (iconBox) {
+                    iconBox.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FCA5A5" class="w-6 h-6" style="width: 24px; height: 24px;">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>`;
+                }
             } else {
                 alertBox.style.backgroundColor = '#12372A';
                 alertBox.style.borderColor = '#2F6B4F';
+                if (iconBox) {
+                    iconBox.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#86EFAC" class="w-6 h-6" style="width: 24px; height: 24px;">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
+                    </svg>`;
+                }
             }
             
             notif.classList.add('show');
