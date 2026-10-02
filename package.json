@@ -1,0 +1,18 @@
+{
+  "name": "fintech-evolution-apk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Versao Android do aplicativo Fintech Evolution Pro",
+  "scripts": {
+    "copy-web": "powershell -NoProfile -Command \"Copy-Item -LiteralPath 'C:\\Users\\joao.toledo\\OneDrive - SENAC RIO\\Documentos\\Trabalhos\\LET\\app.html' -Destination 'www\\index.html' -Force; Copy-Item -LiteralPath 'www\\index.html' -Destination 'android\\app\\src\\main\\assets\\public\\index.html' -Force\"",
+    "android:open": "npx cap open android",
+    "android:build": "cd android && gradlew.bat assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/core": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/android": "latest",
+    "@capacitor/cli": "latest"
+  }
+}

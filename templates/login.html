@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fistu - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+
+    <div class="notification-container" id="successNotification">
+      <div class="succsess-alert">
+        <div class="alert-content">
+          <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="alert-title">Login efetuado!</p>
+            <p class="alert-desc">Sua sessão foi iniciada com sucesso.</p>
+          </div>
+        </div>
+        <button class="alert-close" onclick="closeNotification()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="retangulo" id="mainContainer">
+        
+        <div class="side side-left">
+            <h1>Entrar</h1>
+            
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <label class="label">
+                    Nome / Email
+                    <input type="text" name="login" id="loginInput" autocomplete="off" required class="input" placeholder="Nome ou Email">
+                </label>
+
+                <label class="label">
+                    Senha
+                    <input type="password" name="senha" id="loginPassword" required class="input" placeholder="Senha">
+                </label>
+
+                <a href="javascript:void(0)" class="forgot-link" onclick="toggleForgotCard(true)">Esqueceu sua senha?</a>
+
+                <button type="submit" class="btn-primary">ENTRAR</button>
+                <a href="{{ url_for('admin_login') }}" class="admin-access-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Acesso Administrativo
+                </a>
+            </form>
+
+            <div class="card-forgot-overlay" id="forgotOverlay">
+                <div class="card-forgot">
+                  <div class="BG">
+                    <svg viewBox="0 0 512 512" class="ionicon" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M256 176a80 80 0 1080 80 80.24 80.24 0 00-80-80zm172.72 80a165.53 165.53 0 01-1.64 22.34l48.69 38.12a11.59 11.59 0 012.63 14.78l-46.06 79.52a11.64 11.64 0 01-14.14 4.93l-57.25-23a176.56 176.56 0 01-38.82 22.67l-8.56 60.78a11.93 11.93 0 01-11.51 9.86h-92.12a12 12 0 01-11.51-9.53l-8.56-60.78A169.3 169.3 0 01151.05 393L93.8 416a11.64 11.64 0 01-14.14-4.92L33.6 331.57a11.59 11.59 0 012.63-14.78l48.69-38.12A174.58 174.58 0 0183.28 256a165.53 165.53 0 011.64-22.34l-48.69-38.12a11.59 11.59 0 01-2.63-14.78l46.06-79.52a11.64 11.64 0 0114.14-4.93l57.25 23a176.56 176.56 0 0138.82-22.67l8.56-60.78A11.93 11.93 0 01209.94 26h92.12a12 12 0 0111.51 9.53l8.56 60.78A169.3 169.3 0 01361 119l57.2-23a11.64 11.64 0 0114.14 4.92l46.06 79.52a11.59 11.59 0 01-2.63 14.78l-48.69 38.12a174.58 174.58 0 011.64 22.66z"></path>
+                    </svg>
+                  </div>
+                  <div class="content">
+                    <p class="heading">Perdeu a senha?</p>
+                    <p class="sub-sub-heading">Insira o seu e-mail para recuperar</p>
+                    <input class="email" placeholder="Seu email" type="email" />
+                    <button type="button" class="card-btn" onclick="toggleForgotCard(false)">Enviar Email</button>
+                    <button type="button" class="btn-cancel" onclick="toggleForgotCard(false)">Cancelar</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side side-right">
+            <h1>Seja bem-vindo!</h1>
+            <p class="sub-text">Insira seus dados pessoais e comece sua jornada conosco</p>
+            <button class="btn-outline">CADASTRAR-SE</button>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="pt-BR"><head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260821-05-d0038b4","C":{"Abril Fatface":"YACgEZbkUVE,0","Alfa Slab One":"YACgEYS9sJU,0","Anton":"YACgEcYqQ-A,0","Archivo":"YAHO2-t-jNE,0","Arial":"YAGyDvJ_4Ts,0","Bebas Neue":"YACgESME5ew,0","Bricolage Grotesque":"YAFyMcdwzpc,0","Canva Sans":"YAFLd8sKbwc,2","Caveat":"YALBs2ploWQ,0","Comic Sans MS":"YAHO2VMiyZo,0","Cormorant Garamond":"YAFdJhX-538,0","Courier New":"YAGzXiGs0_8,0","DM Sans":"YAD1aU3sLnI,0","DM Serif Display":"YAD1aYG82rc,0","Forum":"YACgEcnnqB4,0","Fraunces":"YAEul-FRQw4,0","Georgia":"YAGzXkO0pEM,0","Helvetica Neue":"YAFcf6CtJfI,0","Impact":"YAFcfnjI7Vk,0","Inter":"YAFdJvSyp_k,3","Iowan Old Style":"YAGNIFa8j9o,0","Jacques Francois":"YAHO2a5g66Q,0","JetBrains Mono":"YAFdJksXcAk,0","Libre Baskerville":"YACgEUFdPdA,0","Manrope":"YAHO2b2feC4,0","Merriweather":"YACgEXvHxxs,0","Montserrat":"YADLjI9qxTA,0","Nunito":"YACgEX8C5Gg,0","Oleo Script":"YACgEQQ14jI,0","Phantom Sans":"YAHO2E8Pb88,0","Playfair Display":"YACgEYmuCJE,0","Poppins":"YAFdJjbTu24,1","Press Start 2P":"YAFyGr-8pmQ,0","Quicksand":"YADWjpfPmdk,0","Raleway":"YACgEVg3xZg,0","Segoe UI":"YAHNdRD1Klw,0","Source Sans 3":"YAG4lO1Mj10,0","Spectral":"YAHO2rVUHIM,0","Times New Roman":"YAGzXW3gftg,0","Times":"YAGzXW3gftg,0","Ubuntu":"YACgERDU--Q,0","Work Sans":"YAGXhLOKv44,0","Yellowtail":"YACgEYG4kG4,0","ui-monospace":"YADlN8CFZ8Q,0","ui-sans-serif":"YACkoN-xg4g,0"}}');</script><script src="/_sdk/50d846425a1e5082.telemetry_sdk.js" integrity="sha512-Otbex+ztlVbcEGql0rXGd/3E3ee/hqAntg6DeuUEMG6pIPbXGOSvZbFZVzknAXi1tH/itQ+ijEhOTr2aWj6CXg=="></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fintech Evolution Pro - Versão 8+9 Integrada</title>
+    <style>
+        :root {
+            --bg-color: #F4F6F9;
+            --primary: #4F46E5; 
+            --primary-light: #818CF8;
+            --secondary: #10B981;
+            --text-dark: #1F2937;
+            --card-bg: #FFFFFF;
+            --gray-light: #E5E7EB;
+            --bank-blue: #2563EB;
+            --bank-card-bg: #EFF6FF;
+            
+            --app-font-family: 'Segoe UI', system-ui, sans-serif;
+            --font-size-base: 14px;
+        }
+
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            font-family: var(--app-font-family);
+            transition: background-color 0.3s, border-color 0.3s, transform 0.2s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100dvh; padding: 0;
+            font-size: var(--font-size-base);
+        }
+
+        body.dark-mode {
+            --bg-color: #111827; --card-bg: #273449; --text-dark: #FFFFFF;
+            --gray-light: #4B5563; --bank-card-bg: #334155; color: #FFFFFF;
+        }
+        body.dark-mode .app-container,
+        body.dark-mode .screen,
+        body.dark-mode .modal-content,
+        body.dark-mode .bottom-nav,
+        body.dark-mode .invest-card,
+        body.dark-mode .level-card,
+        body.dark-mode .trail-tab.active { background: var(--card-bg) !important; color: var(--text-dark); }
+        body.dark-mode .app-content * { color: #FFFFFF !important; }
+        body.dark-mode .app-content .trail-hero,
+        body.dark-mode .app-content .invest-card,
+        body.dark-mode .app-content .level-card,
+        body.dark-mode .app-content .trail-tabs,
+        body.dark-mode .app-content .trail-tab.active { background-color: #334155 !important; }
+        body.dark-mode .app-content .trail-hero { background-image: linear-gradient(135deg, #334155, #3F4E63) !important; }
+        body.dark-mode .bank-section-title,
+        body.dark-mode .section-title,
+        body.dark-mode .bank-menu-item span,
+        body.dark-mode .invest-card h4,
+        body.dark-mode .level-card h4,
+        body.dark-mode .modal-content p,
+        body.dark-mode .modal-content h3,
+        body.dark-mode .modal-content h4 { color: var(--text-dark) !important; }
+        body.dark-mode .input-box,
+        body.dark-mode .select-box,
+        body.dark-mode .quiz-option { background: #1E293B !important; color: #FFFFFF !important; border-color: #64748B; }
+        body.dark-mode .input-box::file-selector-button { background: #475569; color: #FFFFFF; border: 0; padding: 6px; }
+        body.dark-mode label { color: #FFFFFF !important; }
+        body.dark-mode .invest-card { background: #FFFFFF !important; }
+        body.dark-mode .invest-card h4,
+        body.dark-mode .invest-card .invest-val { color: #FFFFFF !important; }
+        body.dark-mode .invest-card .tag-low { color: #0369A1 !important; }
+        body.dark-mode .invest-card .tag-med { color: #B45309 !important; }
+        body.dark-mode .invest-card .tag-high { color: #B91C1C !important; }
+        body.dark-mode .roadmap-container::before { background: #64748B !important; }
+        body.dark-mode .roadmap-container .node-circle { background: var(--primary); color: #FFFFFF; border-color: color-mix(in srgb, var(--primary) 55%, white); }
+        body.dark-mode .roadmap-container .node-label { background: #334155; color: #FFFFFF !important; border-color: #64748B; }
+        body.dark-mode .roadmap-step.completed .node-circle { background: #16A34A; border-color: #86EFAC; }
+        body.dark-mode .roadmap-step.active .node-circle { background: var(--primary); border-color: color-mix(in srgb, var(--primary) 55%, white); }
+        body.dark-mode #daily-limit-banner { color: #000000 !important; }
+
+        .app-container {
+            width: 100vw; height: 100dvh;
+            min-height: 100vh;
+            background: var(--card-bg); border-radius: 0;
+            box-shadow: none;
+            overflow: hidden; display: flex; flex-direction: column;
+            position: relative; border: 0;
+        }
+
+        /* SISTEMA DE TELAS */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; background: var(--card-bg);
+            z-index: 1; opacity: 0; pointer-events: none;
+            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+        }
+        .screen.active {
+            opacity: 1; pointer-events: auto; transform: translateX(0); z-index: 2;
+        }
+
+        /* INTERFACE DO BANCO */
+        .bank-header {
+            background-color: var(--bank-blue); color: white;
+            padding: max(30px, env(safe-area-inset-top)) 20px 20px 20px;
+        }
+        .bank-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .bank-top-icons { display: flex; gap: 15px; font-size: 1.2rem; cursor: pointer; }
+        
+        .bank-balance-card {
+            background: var(--bank-card-bg); border-radius: 16px; padding: 16px;
+            color: var(--text-dark); display: flex; justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .balance-box h5 { color: #6B7280; font-size: 0.75rem; font-weight: 500; }
+        .balance-box p { font-size: 1.1rem; font-weight: 700; margin-top: 4px; color: #1E3A8A; }
+
+        .bank-menu-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            padding: 25px 15px; text-align: center;
+        }
+        .bank-menu-item {
+            display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .bank-icon-circle {
+            width: 56px; height: 56px; border-radius: 50%; background: #EFF6FF;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: var(--bank-blue);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1);
+        }
+        .bank-menu-item span { font-size: 0.75rem; font-weight: 600; color: var(--text-dark); }
+        
+        /* Destaque Educação */
+        .bank-menu-item.education-btn .bank-icon-circle {
+            background: #DBEAFE; border: 2px dashed var(--bank-blue);
+            animation: pulseActive 2s infinite;
+        }
+
+        .bank-content { flex: 1; padding: 0 20px; overflow-y: auto; }
+        .bank-section-title { font-size: 1.2rem; font-weight: 800; color: #000; margin-bottom: 15px; }
+        
+        .cash-banner {
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 10px;
+            position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .cash-banner-text { flex: 1; }
+        .cash-banner-text h4 { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); }
+        .cash-banner-text p { font-size: 0.75rem; color: #4B5563; margin-top: 4px; line-height: 1.2; }
+        
+        .chart-mockup { display: flex; align-items: flex-end; gap: 6px; height: 90px; }
+        .chart-bar { width: 14px; border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4px; font-size: 0.6rem; }
+
+        .info-footer-box {
+            background: #7F8C8D; color: #ECEFF1; border-radius: 16px; padding: 15px;
+            font-size: 0.75rem; font-weight: bold; line-height: 1.4; text-align: justify; margin-top: 25px;
+        }
+        .info-footer-box span { color: #38BDF8; cursor: pointer; text-decoration: underline; }
+        .bank-progress-panel { margin-top: 18px; padding: 18px; border-radius: 20px; background: linear-gradient(135deg, #EEF2FF, #ECFDF5); border: 1px solid rgba(79,70,229,0.08); }
+        .bank-progress-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .bank-progress-heading h4 { color: var(--text-dark); font-size: 1rem; }
+        .bank-progress-heading span { color: var(--primary); font-size: 0.72rem; font-weight: 800; }
+        .bank-progress-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .bank-progress-stat { padding: 10px 4px; border-radius: 12px; background: rgba(255,255,255,0.75); text-align: center; }
+        .bank-progress-stat strong { display: block; color: var(--text-dark); font-size: 0.95rem; }
+        .bank-progress-stat small { color: #64748B; font-size: 0.65rem; }
+        .bank-progress-button { width: 100%; margin-top: 12px; padding: 10px; border: 0; border-radius: 11px; background: var(--primary); color: white; font-weight: 800; cursor: pointer; }
+        body.dark-mode .bank-progress-panel { background: linear-gradient(135deg, #334155, #3F4E63); border-color: #64748B; }
+        body.dark-mode .bank-progress-stat { background: rgba(15,23,42,0.4); }
+        body.dark-mode .bank-progress-stat small { color: #CBD5E1; }
+
+        /* INTERFACE DA GAMIFICAÇÃO */
+        .app-header {
+            background-color: var(--primary); color: white;
+            padding: max(20px, env(safe-area-inset-top)) 20px 12px 20px;
+            flex-shrink: 0;
+        }
+        .profile-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-container {
+            width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            border: 2px solid white; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-container span { font-size: 1.2rem; }
+        .avatar-container { cursor: pointer; }
+        .progress-container { background: rgba(255,255,255,0.2); border-radius: 10px; height: 6px; margin-top: 6px; overflow: hidden; }
+        .progress-bar { background: #10B981; height: 100%; width: 0%; transition: width 0.4s ease; }
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px;
+            background: rgba(255, 255, 255, 0.1); padding: 6px; border-radius: 12px; text-align: center;
+        }
+        .stat-box h4 { font-size: calc(var(--font-size-base) * 0.7); text-transform: uppercase; opacity: 0.8; }
+        .stat-box p { font-size: calc(var(--font-size-base) * 0.78); font-weight: bold; white-space: nowrap; }
+
+        .app-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 85px; scrollbar-width: none; }
+        .app-content::-webkit-scrollbar { display: none; }
+        .tab-panel { display: none; opacity: 0; transform: translateY(15px); }
+        .tab-panel.active { display: block; animation: tabIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes tabIn { to { opacity: 1; transform: translateY(0); } }
+        .section-title { font-size: calc(var(--font-size-base) * 1.1); font-weight: bold; margin: 10px 0; color: var(--text-dark); }
+
+        /* Roteiro Trilha */
+        .roadmap-container { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 20px 10px; position: relative; }
+        .roadmap-container::before { content: ''; position: absolute; top: 40px; bottom: 40px; width: 6px; background: #E5E7EB; left: 50%; transform: translateX(-50%); z-index: 1; }
+        .roadmap-step { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .step-left { align-items: flex-start; padding-left: 40px; }
+        .step-center { align-items: center; }
+        .step-right { align-items: flex-end; padding-right: 40px; }
+        .node-circle {
+            width: 60px; height: 60px; border-radius: 50%; background: #E5E7EB; border: 4px solid #F3F4F6; color: #9CA3AF;
+            font-weight: bold; font-size: calc(var(--font-size-base) * 1.1); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        .roadmap-step.completed .node-circle { background: #16A34A; color: white; border-color: #86EFAC; }
+        .roadmap-step.active .node-circle { background: var(--primary); color: white; border-color: var(--primary-light); animation: pulseActive 2s infinite; transform: scale(1.05); }
+        .node-label { font-size: calc(var(--font-size-base) * 0.75); font-weight: bold; color: #6B7280; margin-top: 6px; background: white; padding: 2px 8px; border-radius: 10px; border: 1px solid #E5E7EB; max-width: 140px; text-align: center; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
+        @keyframes pulseActive {
+            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5); }
+            70% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+        }
+
+        /* Investimentos */
+        .invest-grid { display: flex; flex-direction: column; gap: 12px; }
+        .invest-card { background: white; border: 1px solid var(--gray-light); border-radius: 16px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .yield-tag { display: inline-block; font-size: calc(var(--font-size-base) * 0.65); font-weight: bold; padding: 2px 6px; border-radius: 4px; margin: 4px 0 6px 0; }
+        .tag-low { background: #E0F2FE; color: #0369A1; }
+        .tag-med { background: #FEF3C7; color: #B45309; }
+        .tag-high { background: #FEE2E2; color: #B91C1C; }
+        .invest-val { font-size: calc(var(--font-size-base) * 1.2); font-weight: bold; color: var(--text-dark); }
+        .btn-invest { width: 100%; background: var(--primary); color: white; border: none; padding: 8px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: calc(var(--font-size-base) * 0.8); margin-top: 6px; }
+        .track-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 6px; }
+        .track-card { position: relative; }
+        .track-card.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+        .track-card h4 { color: var(--text-dark); }
+        .track-description { color: #6B7280; font-size: calc(var(--font-size-base) * 0.78); line-height: 1.3; margin: 4px 0 2px; }
+        .trail-hero { background: linear-gradient(135deg, #EEF2FF, #ECFDF5); border-radius: 20px; padding: 18px; margin-bottom: 14px; text-align: center; }
+        .trail-hero-icon { font-size: 2.8rem; margin-bottom: 4px; }
+        .trail-hero h2 { color: var(--text-dark); font-size: 1.25rem; margin-bottom: 5px; }
+        .trail-hero p { color: #6B7280; font-size: 0.8rem; line-height: 1.35; }
+        .trail-entry { background: var(--primary); color: white; border: 0; border-radius: 14px; padding: 12px 18px; width: 100%; margin-top: 14px; font-weight: 800; cursor: pointer; }
+        .trail-view { display: none; }
+        .trail-view.visible { display: block; animation: tabIn 0.35s ease forwards; }
+        .trail-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #F3F4F6; border-radius: 14px; padding: 4px; margin-bottom: 12px; }
+        .trail-tab { border: 0; background: transparent; color: #6B7280; border-radius: 10px; padding: 10px 6px; font-size: 0.76rem; font-weight: 800; cursor: pointer; }
+        .trail-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 7px rgba(0,0,0,0.08); }
+        .trail-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 4px 4px; }
+        .trail-heading h3 { font-size: 0.95rem; color: var(--text-dark); }
+        .trail-heading span { color: #6B7280; font-size: 0.7rem; font-weight: 700; }
+        .difficulty-note { color: #6B7280; font-size: 0.72rem; line-height: 1.3; margin: 0 4px 10px; }
+        .level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .level-card { border: 1px solid var(--gray-light); border-radius: 14px; padding: 12px; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .level-card.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+        .level-card.locked { opacity: 0.55; }
+        .level-card h4 { color: var(--text-dark); font-size: 0.88rem; margin-bottom: 4px; }
+        .level-card p { color: #6B7280; font-size: 0.68rem; line-height: 1.25; min-height: 30px; }
+        .level-card button { width: 100%; border: 0; border-radius: 9px; background: var(--primary); color: white; padding: 7px 4px; margin-top: 8px; font-size: 0.68rem; font-weight: 800; cursor: pointer; }
+        .level-card button:disabled { background: #D1D5DB; color: #6B7280; cursor: not-allowed; }
+
+        /* Modais */
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { background: white; border-radius: 24px; padding: 20px; width: 100%; max-height: 90%; overflow-y: auto; }
+        .photo-modal { background: rgba(0, 0, 0, 0.78); }
+        .photo-modal-content { position: relative; display: flex; align-items: center; justify-content: center; width: min(86vw, 360px); height: min(86vw, 360px); padding: 12px; background: transparent; }
+        .photo-modal-content img { width: 100%; height: 100%; object-fit: cover; border: 4px solid white; border-radius: 50%; }
+        .photo-close { position: absolute; top: -8px; right: -8px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: white; color: #111827; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+        .messages-modal { align-items: flex-start; padding: 28px 15px; }
+        .messages-content { width: 100%; max-width: 420px; padding: 0; overflow: hidden; background: var(--card-bg); }
+        .messages-header { background: var(--primary); color: white; padding: 20px; }
+        .messages-header-row { display: flex; align-items: center; justify-content: space-between; }
+        .messages-header h3 { font-size: 1.2rem; }
+        .messages-header p { margin-top: 4px; font-size: 0.78rem; opacity: 0.85; }
+        .messages-close { background: transparent; color: white; border: 0; font-size: 1.8rem; line-height: 1; cursor: pointer; }
+        .message-list { padding: 12px; }
+        .message-item { display: flex; gap: 12px; padding: 14px 4px; border-bottom: 1px solid var(--gray-light); }
+        .message-item:last-child { border-bottom: 0; }
+        .message-icon { width: 38px; height: 38px; flex: 0 0 38px; border-radius: 12px; display: grid; place-items: center; background: #D1FAE5; font-size: 1.1rem; }
+        .message-item h4 { color: var(--text-dark); font-size: 0.88rem; margin-bottom: 3px; }
+        .message-item p { color: #6B7280; font-size: 0.75rem; line-height: 1.3; }
+        body.dark-mode .messages-content { background: #273449; }
+        body.dark-mode .message-item h4,
+        body.dark-mode .message-item p { color: #FFFFFF !important; }
+        .quiz-option { background: #F9FAFB; padding: 10px; border-radius: 12px; margin-bottom: 6px; cursor: pointer; border: 1px solid var(--gray-light); font-size: calc(var(--font-size-base) * 0.85); color: var(--text-dark); }
+        .quiz-option:hover { background: #F3F4F6; border-color: var(--primary); }
+        .quiz-progress-dots { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 12px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #E5E7EB; }
+        .dot.active { background: var(--primary); }
+        .dot.correct { background: var(--secondary); }
+        .dot.wrong { background: #EF4444; }
+
+        /* Menu Inferior Gamificação */
+        .bottom-nav { position: absolute; bottom: 0; width: 100%; height: 65px; background: white; border-top: 1px solid var(--gray-light); display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; text-align: center; z-index: 10; }
+        .bottom-nav { left: 4%; width: 92%; height: 62px; bottom: 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 5px; background: rgba(15,23,42,0.9) !important; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.28); backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); }
+        .nav-item { position: relative; color: #CBD5E1; font-size: calc(var(--font-size-base) * 0.68); cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 10px; overflow: visible; }
+        .nav-item > span { font-size: 1.15rem; line-height: 1; }
+        .nav-item.active { color: white; background: transparent; box-shadow: none; transform: none; min-height: 58px; border: 0; }
+        .nav-item.active::before { content: ''; position: absolute; inset: -1px 4px; border: 2px solid var(--primary); border-radius: 10px; box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 65%, transparent), inset 0 0 10px color-mix(in srgb, var(--primary) 22%, transparent); pointer-events: none; }
+        .nav-item.active::after { content: ''; position: absolute; left: 50%; bottom: -5px; width: 30px; height: 3px; border-radius: 3px; background: var(--primary); transform: translateX(-50%); box-shadow: 0 0 9px var(--primary); }
+        body.dark-mode .bottom-nav { background: rgba(15,23,42,0.9) !important; border-color: rgba(255,255,255,0.2); }
+        body.dark-mode .nav-item { color: #CBD5E1 !important; }
+        body.dark-mode .nav-item.active { color: #FFFFFF !important; }
+        
+        .input-box, .select-box { width: 100%; padding: 8px; border-radius: 10px; border: 1px solid var(--gray-light); margin-top: 4px; outline: none; background: white; font-size: calc(var(--font-size-base) * 0.85); }
+        .color-palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
+        .color-palette .color-opt { height: 32px; border-radius: 8px; cursor: pointer; }
+        .font-size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px; }
+        .font-size-option { border: 1px solid var(--gray-light); border-radius: 10px; padding: 9px 4px; background: var(--card-bg); color: var(--text-dark); font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+        .font-size-option.active { background: var(--primary); color: white; border-color: var(--primary); }
+        body.dark-mode .font-size-option { background: #334155; color: #FFFFFF; border-color: #64748B; }
+        body.dark-mode .font-size-option.active { background: var(--primary); color: #FFFFFF; }
+
+        .bank-header,
+        .app-header,
+        .btn-invest,
+        .trail-entry,
+        .level-card button,
+        .trail-tab.active {
+            background-color: var(--primary) !important;
+        }
+        .bank-icon-circle {
+            color: var(--primary) !important;
+        }
+        .bank-menu-item > span,
+        .bottom-nav canva-inline-text {
+            color: #000 !important;
+        }
+        .nav-item.active {
+            background-color: var(--primary) !important;
+            border-radius: 8px;
+            margin: 4px 8px;
+            padding: 5px 2px;
+            color: #fff !important;
+        }
+        .nav-item.active canva-inline-text,
+        .trail-tab.active { color: #fff !important; }
+        .bottom-nav .nav-item.active {
+            border-radius: 10px;
+            margin: 0;
+            padding: 0;
+            min-height: 58px;
+            transform: none;
+            border: 0;
+        }
+        .bottom-nav .nav-item.active > canva-inline-text,
+        .bottom-nav .nav-item.active > span { color: #fff !important; }
+        .bottom-nav .nav-item.active { background-color: transparent !important; }
+        .education-book-icon { width: 30px; height: 30px; display: block; }
+        .education-btn .bank-icon-circle {
+            border-color: var(--primary) !important;
+        }
+    </style>
+<script src="/_sdk/a27879be4562f807.resizing_sdk.js" integrity="sha512-trcxRwz+QLrzK0Dqg95xqVRryR7WtWui2YopXyzOIr3WMde3j/xCRgT63/b/EAg7klDsAOuHzoRgoryhwm8QFw=="></script><script src="/_sdk/b3bf9e8ac58e6ad6.data_sdk.js" integrity="sha512-otc1u9NYq9Ms5Jt//7vmhrrqR5CLPr8Jdgs6741gqniClfLMcfmC+jK/cKuQdhLv6G0esJ/FzaMS9tv0T/vj/Q=="></script></head>
+<body data-html-import-id="html-import-0" data-template-id="__page-root" style="background: rgb(244, 246, 249);">
+
+    <div class="app-container canva-container" data-html-import-id="html-import-1" data-template-id="div-0" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+        
+        <!-- TELA A: INTERFACE DO BANCO -->
+        <div class="screen active canva-container" id="screen-bank" data-html-import-id="html-import-2" data-template-id="div-1" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+            <header class="bank-header canva-header" data-html-import-id="html-import-3" data-template-id="header-2" style="background: rgb(37, 99, 235); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                <div class="bank-top-row" data-html-import-id="html-import-4">
+                    <h2 style="font-size: 22px; font-weight: 700; color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-5" data-template-id="h2-3" class="canva-text"><canva-inline-text data-template-id="canva-inline-text-4" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 22px;">Olá, </canva-inline-text><span id="bank-user-name" data-html-import-id="html-import-6" data-template-id="span-5" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">Investidor</span></h2>
+                    <div class="bank-top-icons" data-html-import-id="html-import-7">
+                        <span id="btn-toggle-visibility" onclick="toggleBalanceVisibility()" data-html-import-id="html-import-8" data-template-id="span-6" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">👁️</span>
+                        <span onclick="openMessages()" role="button" aria-label="Abrir mensagens" data-html-import-id="html-import-9" data-template-id="span-7" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">💬</span>
+                        <span data-html-import-id="html-import-10" data-template-id="span-8" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">🚪</span>
+                    </div>
+                </div>
+                
+                <div class="bank-balance-card canva-container" data-html-import-id="html-import-11" data-template-id="div-9" style="background: rgb(239, 246, 255); color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;;">
+                    <div class="balance-box" data-html-import-id="html-import-12">
+                        <h5 data-html-import-id="html-import-13" data-template-id="h5-10" class="canva-text" style="color: rgb(107, 114, 128); font-family: &quot;Segoe UI&quot;; font-weight: 500; font-size: 12px;">Saldo</h5>
+                        <p id="txt-bank-balance" data-html-import-id="html-import-14" data-template-id="p-11" class="canva-text" style="color: rgb(30, 58, 138); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 18px;">R$ 1.500,00</p>
+                    </div>
+                    <div class="balance-box" style="text-align: right;" data-html-import-id="html-import-15">
+                        <h5 data-html-import-id="html-import-16" data-template-id="h5-12" class="canva-text" style="color: rgb(107, 114, 128); font-family: &quot;Segoe UI&quot;; font-weight: 500; font-size: 12px;">Agendado até 31/Mai</h5>
+                        <p id="txt-bank-scheduled" data-html-import-id="html-import-17" data-template-id="p-13" class="canva-text" style="color: rgb(30, 58, 138); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 18px;">R$ 150,00</p>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="bank-menu-grid" data-html-import-id="html-import-18">
+                <div class="bank-menu-item" data-html-import-id="html-import-19">
+                    <div class="bank-icon-circle canva-container" data-html-import-id="html-import-20" data-template-id="div-14" style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;; font-size: 21px;">📄</div>
+                    <span data-html-import-id="html-import-21" data-template-id="span-15" class="canva-text" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 600; font-size: 12px;">Extrato</span>
+                </div>
+                <div class="bank-menu-item" data-html-import-id="html-import-22">
+                    <div class="bank-icon-circle canva-container" data-html-import-id="html-import-23" data-template-id="div-16" style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;; font-size: 21px;">❖</div>
+                    <span data-html-import-id="html-import-24" data-template-id="span-17" class="canva-text" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 600; font-size: 12px;">Pix</span>
+                </div>
+                <!-- Botão Educação que dispara o App Gamificado -->
+                <div class="bank-menu-item education-btn" onclick="openGamificationApp()" data-html-import-id="html-import-25">
+                    <div class="bank-icon-circle canva-container" data-html-import-id="html-import-26" data-template-id="div-18" style="background: rgb(219, 234, 254); color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;; font-size: 21px;"><svg class="education-book-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 12h20c8 0 14 6 14 14v29c-4-6-9-9-16-9H8V12Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M56 12H36c-8 0-14 6-14 14v29c4-6 9-9 16-9h18V12Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M14 25h13M14 34h13M37 25h13M37 34h13" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></div>
+                    <span data-html-import-id="html-import-27" data-template-id="span-19" class="canva-text" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 600; font-size: 12px;">EDUCAÇÃO</span>
+                </div>
+            </nav>
+
+            <main class="bank-content" data-html-import-id="html-import-28">
+                <h3 class="bank-section-title canva-text" data-html-import-id="html-import-29" data-template-id="h3-20" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-weight: 800; font-size: 19px;">Meu Cash</h3>
+                
+                <div class="cash-banner" data-html-import-id="html-import-30">
+                    <div class="cash-banner-text" data-html-import-id="html-import-31">
+                        <h4 data-html-import-id="html-import-32" data-template-id="h4-21" class="canva-text" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 800; font-size: 18px;">Seus gastos
+sob controle!</h4>
+                        <p data-html-import-id="html-import-34" data-template-id="p-22" class="canva-text" style="color: rgb(75, 85, 99); font-family: &quot;Segoe UI&quot;; font-size: 12px;">Um jeito fácil de organizar sua vida financeira.</p>
+                    </div>
+                    <div class="chart-mockup" data-html-import-id="html-import-35">
+                        <div class="chart-bar canva-container" style="height: 85px; background: rgb(0, 242, 254); color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-size: 10px;" data-html-import-id="html-import-36" data-template-id="div-23">🚗</div>
+                        <div class="chart-bar canva-container" style="height: 70px; background: rgb(17, 24, 39); color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-size: 10px;" data-html-import-id="html-import-37" data-template-id="div-24">🎓</div>
+                        <div class="chart-bar canva-container" style="height: 55px; background: rgb(155, 93, 229); color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-size: 10px;" data-html-import-id="html-import-38" data-template-id="div-25">🍴</div>
+                        <div class="chart-bar canva-container" style="height: 40px; background: rgb(0, 245, 212); color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-size: 10px;" data-html-import-id="html-import-39" data-template-id="div-26">➕</div>
+                        <div class="chart-bar canva-container" style="height: 25px; background: rgb(0, 187, 249); color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;; font-size: 10px;" data-html-import-id="html-import-40" data-template-id="div-27">📞</div>
+                    </div>
+                </div>
+
+                <div class="info-footer-box canva-container" data-html-import-id="html-import-41" data-template-id="div-28" style="background: rgb(127, 140, 141); color: rgb(236, 239, 241); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 12px;"><canva-inline-text data-template-id="canva-inline-text-29" class="canva-text" style="color: rgb(236, 239, 241); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 12px;">CONFIRA SEU SALDO E </canva-inline-text><span onclick="alert('Sem novas notificações')" data-html-import-id="html-import-42" data-template-id="span-30" class="canva-text" style="color: rgb(56, 189, 248); font-family: &quot;Segoe UI&quot;;">NOTIFICAÇÕES</span><canva-inline-text data-template-id="canva-inline-text-31" class="canva-text" style="color: rgb(236, 239, 241); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 12px;"> COM FREQUÊNCIA PARA MANTER O CONTROLE DO SEU DINHEIRO.</canva-inline-text></div>
+                <section class="bank-progress-panel">
+                    <div class="bank-progress-heading"><h4>Seu acompanhamento</h4><span>EPP</span></div>
+                    <div class="bank-progress-stats">
+                        <div class="bank-progress-stat"><strong id="bank-progress-percent">0%</strong><small>Trilha concluída</small></div>
+                        <div class="bank-progress-stat"><strong id="bank-coins-total">0</strong><small>FinCoins</small></div>
+                        <div class="bank-progress-stat"><strong id="bank-invested-total">R$ 0,00</strong><small>Investidos</small></div>
+                    </div>
+                    <button class="bank-progress-button" onclick="openGamificationApp()">Continuar educação financeira</button>
+                </section>
+            </main>
+        </div>
+
+        <!-- TELA B: INTERFACE DA GAMIFICAÇÃO -->
+        <div class="screen canva-container" id="screen-gamification" data-html-import-id="html-import-43" data-template-id="div-32" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+            <header class="app-header canva-header" id="main-header" data-html-import-id="html-import-44" data-template-id="header-33" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                <div class="profile-section" data-html-import-id="html-import-45">
+                    <div class="profile-info" data-html-import-id="html-import-46">
+                        <div class="avatar-container canva-container" id="avatar-render" onclick="openPhotoModal()" data-html-import-id="html-import-47" data-template-id="div-34" style="background: rgba(255, 255, 255, 0.2); font-family: &quot;Segoe UI&quot;;"><span data-html-import-id="html-import-48" data-template-id="span-35" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 19px;">📈</span></div>
+                        <div data-html-import-id="html-import-49">
+                            <h3 id="lbl-username" style="font-size: 15px; color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-50" data-template-id="h3-36" class="canva-text">Investidor Trilha</h3>
+                            <p id="lbl-rank" style="font-size: 11px; opacity: 0.85; color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-51" data-template-id="p-37" class="canva-text">Nível 1/4</p>
+                        </div>
+                    </div>
+                    <div style="text-align: right;" data-html-import-id="html-import-52">
+                        <span style="font-weight: 800; font-size: 16px; color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;" id="lbl-progress-percent" data-html-import-id="html-import-53" data-template-id="span-38" class="canva-text">0%</span>
+                        <p style="font-size: 9px; text-transform: uppercase; opacity: 0.8; color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-54" data-template-id="p-39" class="canva-text">PROGRESSO</p>
+                    </div>
+                </div>
+                <div class="progress-container canva-container" data-html-import-id="html-import-55" data-template-id="div-40" style="background: rgba(255, 255, 255, 0.2); font-family: &quot;Segoe UI&quot;;">
+                    <div class="progress-bar canva-container" id="main-progress-bar" data-html-import-id="html-import-56" data-template-id="div-41" style="background: rgb(16, 185, 129); font-family: &quot;Segoe UI&quot;;"></div>
+                </div>
+
+                <div class="stats-grid canva-container" data-html-import-id="html-import-57" data-template-id="div-42" style="background: rgba(255, 255, 255, 0.1); font-family: &quot;Segoe UI&quot;;">
+                    <div class="stat-box" data-html-import-id="html-import-58"><h4 data-html-import-id="html-import-59" data-template-id="h4-43" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 10px;">FINCOINS</h4><p id="stat-coins" data-html-import-id="html-import-60" data-template-id="p-44" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">0</p></div>
+                    <div class="stat-box" data-html-import-id="html-import-61"><h4 data-html-import-id="html-import-62" data-template-id="h4-45" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 10px;">PATRIMÔNIO</h4><p id="stat-patrimony" data-html-import-id="html-import-63" data-template-id="p-46" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">R$ 0,00</p></div>
+                    <div class="stat-box" data-html-import-id="html-import-64"><h4 data-html-import-id="html-import-65" data-template-id="h4-47" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 10px;">CONCLUÍDOS</h4><p id="stat-done" data-html-import-id="html-import-66" data-template-id="p-48" class="canva-text" style="color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">0/60</p></div>
+                </div>
+            </header>
+
+            <!-- ABA 1: TRILHA -->
+            <main class="app-content tab-panel active" id="tab-aprender" data-html-import-id="html-import-67">
+                <div id="trail-home">
+                    <div class="trail-hero">
+                        <div class="trail-hero-icon">🗺️</div>
+                        <h2>Mapa da Evolução Financeira</h2>
+                        <p>Escolha seu ritmo, avance pelos desafios e construa decisões financeiras mais inteligentes.</p>
+                        <button class="trail-entry" onclick="showTrailOptions()">Ver trilha</button>
+                    </div>
+                </div>
+                <div id="trail-view" class="trail-view">
+                    <div class="level-grid" id="level-selector" aria-label="Níveis da trilha"></div>
+                    <div class="trail-heading"><h3 id="trail-title">Trilha financeira</h3><span id="trail-progress-label">15 stages</span></div>
+                    <p class="difficulty-note">Conclua cada stage com 5 perguntas para desbloquear o próximo. Você pode fazer apenas 1 stage por dia.</p>
+                    <div id="daily-limit-banner" style="display: none; background: rgb(254, 243, 199); color: rgb(180, 83, 9); padding: 8px; border-radius: 12px; text-align: center; font-size: 13px; font-weight: 700; margin: 8px 0 10px; font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-69" data-template-id="div-50" class="canva-container">⚠️ Você já concluiu 1 stage hoje. Volte amanhã para continuar.</div>
+                    <div class="roadmap-container" id="roadmap-wrapper" data-html-import-id="html-import-70"></div>
+                </div>
+            </main>
+
+            <!-- ABA 2: INVESTIMENTOS (EXPANDIDOS COM VERSÃO 8+9) -->
+            <main class="app-content tab-panel" id="tab-investir" data-html-import-id="html-import-71">
+                <div class="section-title canva-container" data-html-import-id="html-import-72" data-template-id="div-51" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 15px;">Painel Multimercado</div>
+                <div class="invest-grid" data-html-import-id="html-import-73">
+                    <div class="invest-card canva-container" data-html-import-id="html-import-74" data-template-id="div-52" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-75" data-template-id="h4-53" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Super Caixinha CDI 🏦</h4>
+                        <span class="yield-tag tag-low canva-text" data-html-import-id="html-import-76" data-template-id="span-54" style="background: rgb(224, 242, 254); color: rgb(3, 105, 161); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Baixo Risco | Liquidez Diária</span>
+                        <div class="invest-val canva-container" id="inv-cdi" data-html-import-id="html-import-77" data-template-id="div-55" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('cdi')" data-html-import-id="html-import-78" data-template-id="button-56" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                    <div class="invest-card canva-container" data-html-import-id="html-import-79" data-template-id="div-57" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-80" data-template-id="h4-58" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Tesouro IPCA+ 🏛️</h4>
+                        <span class="yield-tag tag-med canva-text" data-html-import-id="html-import-81" data-template-id="span-59" style="background: rgb(254, 243, 199); color: rgb(180, 83, 9); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Médio Risco | Inflação</span>
+                        <div class="invest-val canva-container" id="inv-ipca" data-html-import-id="html-import-82" data-template-id="div-60" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('ipca')" data-html-import-id="html-import-83" data-template-id="button-61" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                    <div class="invest-card canva-container" data-html-import-id="html-import-84" data-template-id="div-62" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-85" data-template-id="h4-63" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Letras Agrícolas (LCA) 🌾</h4>
+                        <span class="yield-tag tag-low canva-text" data-html-import-id="html-import-86" data-template-id="span-64" style="background: rgb(224, 242, 254); color: rgb(3, 105, 161); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Baixo Risco | Isento de IR</span>
+                        <div class="invest-val canva-container" id="inv-lca" data-html-import-id="html-import-87" data-template-id="div-65" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('lca')" data-html-import-id="html-import-88" data-template-id="button-66" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                    <div class="invest-card canva-container" data-html-import-id="html-import-89" data-template-id="div-67" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-90" data-template-id="h4-68" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Fundos Imobiliários (FIIs) 🏢</h4>
+                        <span class="yield-tag tag-med canva-text" data-html-import-id="html-import-91" data-template-id="span-69" style="background: rgb(254, 243, 199); color: rgb(180, 83, 9); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Renda Variável | Dividendos</span>
+                        <div class="invest-val canva-container" id="inv-fii" data-html-import-id="html-import-92" data-template-id="div-70" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('fii')" data-html-import-id="html-import-93" data-template-id="button-71" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                    <div class="invest-card canva-container" data-html-import-id="html-import-94" data-template-id="div-72" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-95" data-template-id="h4-73" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Ações Ibovespa 📈</h4>
+                        <span class="yield-tag tag-high canva-text" data-html-import-id="html-import-96" data-template-id="span-74" style="background: rgb(254, 226, 226); color: rgb(185, 28, 28); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Alto Risco | Mercado à Vista</span>
+                        <div class="invest-val canva-container" id="inv-ibov" data-html-import-id="html-import-97" data-template-id="div-75" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('ibov')" data-html-import-id="html-import-98" data-template-id="button-76" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                    <div class="invest-card canva-container" data-html-import-id="html-import-99" data-template-id="div-77" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                        <h4 data-html-import-id="html-import-100" data-template-id="h4-78" class="canva-text" style="color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Criptoativos &amp; Web3 🌐</h4>
+                        <span class="yield-tag tag-high canva-text" data-html-import-id="html-import-101" data-template-id="span-79" style="background: rgb(254, 226, 226); color: rgb(185, 28, 28); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 9px;">Risco Extremo | Cripto</span>
+                        <div class="invest-val canva-container" id="inv-cripto" data-html-import-id="html-import-102" data-template-id="div-80" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 17px;">R$ 0,00</div>
+                        <button class="btn-invest canva-button" onclick="allocateFunds('cripto')" data-html-import-id="html-import-103" data-template-id="button-81" style="background: rgb(79, 70, 229); color: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 11px;">Investir 30 Moedas</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- ABA 3: PERFIL (EXPANDIDO COM VERSÃO 8+9) -->
+            <main class="app-content tab-panel" id="tab-perfil" data-html-import-id="html-import-104">
+                <div class="section-title canva-container" data-html-import-id="html-import-105" data-template-id="div-82" style="color: rgb(31, 41, 55); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 15px;">Customização &amp; Acessibilidade</div>
+                <div style="margin-bottom: 12px;" data-html-import-id="html-import-106">
+                    <label style="font-size: 12px; font-weight: 700; color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-107" data-template-id="label-83" class="canva-text">Nome do Perfil</label>
+                    <input type="text" id="txt-edit-name" class="input-box canva-input" oninput="changeProfileName()" data-html-import-id="html-import-108" data-template-id="input-84" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 12px;">
+                </div>
+                <div style="margin-bottom: 12px;" data-html-import-id="html-import-109">
+                    <label style="font-size: 12px; font-weight: 700; color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-110" data-template-id="label-85" class="canva-text">Tamanho da Fonte</label>
+                    <div id="font-size-options" class="font-size-options" role="group" aria-label="Tamanho da fonte">
+                        <button type="button" class="font-size-option" data-size="12px" onclick="changeFontSize('12px')">Pequena</button>
+                        <button type="button" class="font-size-option" data-size="17px" onclick="changeFontSize('17px')">Média</button>
+                        <button type="button" class="font-size-option" data-size="20px" onclick="changeFontSize('20px')">Grande</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;" data-html-import-id="html-import-118">
+                    <label style="font-size: 12px; font-weight: 700; color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-119" data-template-id="label-92" class="canva-text">Foto de Perfil</label>
+                    <input type="file" id="file-avatar" class="input-box canva-input" accept="image/*" onchange="uploadPhoto(event)" data-html-import-id="html-import-120" data-template-id="input-93" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;; font-size: 12px;">
+                </div>
+                <div style="margin-bottom: 12px;" data-html-import-id="html-import-121">
+                    <label style="font-size: 12px; font-weight: 700; color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;" data-html-import-id="html-import-122" data-template-id="label-94" class="canva-text">Cor do Tema</label>
+                    <div class="color-palette" data-html-import-id="html-import-123">
+                        <div class="color-opt canva-container" style="background: rgb(79, 70, 229); font-family: &quot;Segoe UI&quot;;" onclick="applyTheme('#4F46E5')" data-html-import-id="html-import-124" data-template-id="div-95"></div>
+                        <div class="color-opt canva-container" style="background: rgb(5, 150, 105); font-family: &quot;Segoe UI&quot;;" onclick="applyTheme('#059669')" data-html-import-id="html-import-125" data-template-id="div-96"></div>
+                        <div class="color-opt canva-container" style="background: rgb(220, 38, 38); font-family: &quot;Segoe UI&quot;;" onclick="applyTheme('#DC2626')" data-html-import-id="html-import-126" data-template-id="div-97"></div>
+                        <div class="color-opt canva-container" style="background: rgb(217, 119, 6); font-family: &quot;Segoe UI&quot;;" onclick="applyTheme('#D97706')" data-html-import-id="html-import-127" data-template-id="div-98"></div>
+                        <div class="color-opt canva-container" style="background: rgb(124, 58, 237); font-family: &quot;Segoe UI&quot;;" onclick="applyTheme('#7C3AED')" data-html-import-id="html-import-128" data-template-id="div-99"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 700; color: rgb(0, 0, 0); font-family: &quot;Segoe UI&quot;;">Modo de aparência</label>
+                    <button id="btn-theme-mode" class="btn-invest" type="button" onclick="toggleThemeMode()">Modo escuro</button>
+                </div>
+            </main>
+
+            <!-- Menu Inferior Gamificação -->
+            <nav class="bottom-nav canva-menu" data-html-import-id="html-import-129" data-template-id="nav-100" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;">
+                <div class="nav-item active canva-container" onclick="navigate('aprender', this)" data-html-import-id="html-import-130" data-template-id="div-101" style="color: rgb(79, 70, 229); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;"><span data-html-import-id="html-import-131" data-template-id="span-102" class="canva-text" style="color: rgb(79, 70, 229); font-family: &quot;Segoe UI&quot;;">🗺️</span><canva-inline-text data-template-id="canva-inline-text-103" class="canva-text" style="color: rgb(79, 70, 229); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;">Trilha</canva-inline-text></div>
+                <div class="nav-item canva-container" onclick="navigate('investir', this)" data-html-import-id="html-import-132" data-template-id="div-104" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;"><span data-html-import-id="html-import-133" data-template-id="span-105" class="canva-text" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;;">💰</span><canva-inline-text data-template-id="canva-inline-text-106" class="canva-text" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;">Investir</canva-inline-text></div>
+                <div class="nav-item canva-container" onclick="navigate('perfil', this)" data-html-import-id="html-import-134" data-template-id="div-107" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;"><span data-html-import-id="html-import-135" data-template-id="span-108" class="canva-text" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;;">⚙️</span><canva-inline-text data-template-id="canva-inline-text-109" class="canva-text" style="color: rgb(156, 163, 175); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;">Perfil</canva-inline-text></div>
+                <div class="nav-item canva-container" onclick="closeGamificationApp()" style="color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;" data-html-import-id="html-import-136" data-template-id="div-110"><span data-html-import-id="html-import-137" data-template-id="span-111" class="canva-text" style="color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;;">🏛️</span><canva-inline-text data-template-id="canva-inline-text-112" class="canva-text" style="color: rgb(37, 99, 235); font-family: &quot;Segoe UI&quot;; font-weight: 700; font-size: 10px;">Voltar Banco</canva-inline-text></div>
+            </nav>
+        </div>
+
+        <!-- Modal de Quiz -->
+        <div class="modal canva-container" id="modal-quiz" data-html-import-id="html-import-138" data-template-id="div-113" style="background: rgba(0, 0, 0, 0.5); font-family: &quot;Segoe UI&quot;;">
+            <div class="modal-content canva-container" id="modal-content-area" data-html-import-id="html-import-139" data-template-id="div-114" style="background: rgb(255, 255, 255); font-family: &quot;Segoe UI&quot;;"></div>
+        </div>
+        <div class="modal photo-modal" id="modal-photo" role="dialog" aria-label="Foto de perfil ampliada" onclick="closePhotoModal(event)">
+            <div class="photo-modal-content">
+                <img id="expanded-avatar" alt="Foto de perfil">
+                <button class="photo-close" type="button" aria-label="Fechar foto" onclick="closePhotoModal()">&times;</button>
+            </div>
+        </div>
+        <div class="modal messages-modal" id="modal-messages" role="dialog" aria-label="Mensagens" onclick="closeMessages(event)">
+            <div class="modal-content messages-content" onclick="event.stopPropagation()">
+                <header class="messages-header">
+                    <div class="messages-header-row">
+                        <div><h3>Central EPP</h3><p>Educação, planejamento e progresso</p></div>
+                        <button class="messages-close" type="button" aria-label="Fechar mensagens" onclick="closeMessages()">&times;</button>
+                    </div>
+                </header>
+                <div class="message-list">
+                    <article class="message-item"><div class="message-icon">📚</div><div><h4>Continue sua trilha</h4><p>Um novo desafio financeiro está esperando por você.</p></div></article>
+                    <article class="message-item"><div class="message-icon">💰</div><div><h4>Organize seu dinheiro</h4><p>Revise seu saldo e mantenha seus objetivos em dia.</p></div></article>
+                    <article class="message-item"><div class="message-icon">📈</div><div><h4>Invista com consciência</h4><p>Conheça seu perfil antes de escolher um investimento.</p></div></article>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script data-html-import-id="html-import-140">
+        // Banco de Dados das Perguntas
+        const questionsDatabase = [
+            { id: 1, title: "Reserva de Emergência", pool: [
+                {q: "Quantos meses de custo fixo deve ter a reserva do assalariado?", options: [{text:"3 a 6 meses", correct:true}, {text:"1 mês", correct:false}]},
+                {q: "Qual a melhor característica para a reserva?", options: [{text:"Alta liquidez e segurança", correct:true}, {text:"Alta volatilidade", correct:false}]},
+                {q: "Onde NÃO se deve colocar a reserva?", options: [{text:"Ações e Criptoativos", correct:true}, {text:"Tesouro Selic", correct:false}]},
+                {q: "A reserva serve primariamente para:", options: [{text:"Cobrir imprevistos e emergências", correct:true}, {text:"Comprar bens de luxo", correct:false}]},
+                {q: "Poupança tradicional perde para qual ativo de mesma segurança?", options: [{text:"Tesouro Selic / CDB 100%", correct:true}, {text:"Dólar físico", correct:false}]}
+            ]},
+            { id: 2, title: "Taxa Selic Básica", pool: [
+                {q: "Quem define a meta da taxa Selic no Brasil?", options: [{text:"COPOM", correct:true}, {text:"Bolsa de Valores", correct:false}]},
+                {q: "Quando a Selic aumenta, o crédito fica:", options: [{text:"Mais caro", correct:true}, {text:"Mais barato", correct:false}]},
+                {q: "Selic alta é usada para controlar:", options: [{text:"A inflação", correct:true}, {text:"O desemprego apenas", correct:false}]},
+                {q: "Se a Selic cai, investimentos em poupança tendem a:", options: [{text:"Render menos", correct:true}, {text:"Render mais", correct:false}]},
+                {q: "A Taxa Selic é administrada por quem?", options: [{text:"Banco Central", correct:true}, {text:"CVM", correct:false}]}
+            ]},
+            { id: 3, title: "Inflação e IPCA", pool: [
+                {q: "O que o IPCA mede oficialmente?", options: [{text:"A inflação ao consumidor", correct:true}, {text:"O lucro das grandes empresas", correct:false}]},
+                {q: "O que acontece com seu dinheiro na inflação alta?", options: [{text:"Perde poder de compra", correct:true}, {text:"Valoriza frente ao ouro", correct:false}]},
+                {q: "Qual instituição calcula o IPCA mensalmente?", options: [{text:"IBGE", correct:true}, {text:"Banco do Brasil", correct:false}]},
+                {q: "Investimento com rendimento real é aquele que rende:", options: [{text:"Acima da inflação", correct:true}, {text:"Exatamente igual à inflação", correct:false}]},
+                {q: "Qual indexador está atrelado ao poder de compra?", options: [{text:"IPCA", correct:true}, {text:"Selic fixa", correct:false}]}
+            ]}
+        ];
+
+        const makeQuestion = (q, correct, wrongA, wrongB) => ({
+            q,
+            options: [{ text: correct, correct: true }, { text: wrongA, correct: false }, { text: wrongB, correct: false }]
+        });
+
+        const difficultyQuestionPools = [
+            [
+                makeQuestion("Para que serve uma reserva de emergência?", "Cobrir imprevistos", "Comprar itens de luxo", "Apostar em ações"),
+                makeQuestion("O que é uma receita no orçamento?", "Dinheiro que entra", "Uma dívida", "Uma taxa bancária"),
+                makeQuestion("Qual atitude ajuda a controlar os gastos?", "Anotar despesas", "Ignorar o extrato", "Gastar todo o limite"),
+                makeQuestion("O que significa economizar?", "Guardar parte do dinheiro", "Pegar mais empréstimos", "Aumentar todas as compras"),
+                makeQuestion("Qual é um exemplo de necessidade básica?", "Alimentação", "Um item de luxo", "Uma compra por impulso"),
+                makeQuestion("O que é inflação?", "Aumento geral de preços", "Queda de todos os preços", "Apenas aumento salarial"),
+                makeQuestion("Qual instituição define a meta da Selic?", "COPOM", "IBGE", "B3"),
+                makeQuestion("O que é investir?", "Aplicar dinheiro buscando retorno", "Esconder dinheiro sem objetivo", "Usar crédito sem limite"),
+                makeQuestion("Liquidez é a facilidade de:", "Resgatar um investimento", "Aumentar o risco", "Evitar qualquer imposto"),
+                makeQuestion("Diversificação significa:", "Distribuir recursos entre ativos", "Concentrar tudo em um ativo", "Investir sem pesquisar"),
+                makeQuestion("O que é uma dívida?", "Um compromisso financeiro a pagar", "Uma renda garantida", "Um investimento sem risco"),
+                makeQuestion("O cartão de crédito deve ser usado como:", "Meio de pagamento planejado", "Dinheiro extra infinito", "Renda mensal"),
+                makeQuestion("O IPCA é usado para medir:", "A inflação ao consumidor", "O saldo da poupança", "O lucro de uma empresa"),
+                makeQuestion("Qual é uma característica desejável da reserva?", "Segurança e acesso rápido", "Alta volatilidade", "Prazo muito longo"),
+                makeQuestion("Antes de investir, é importante conhecer:", "Objetivo e prazo", "Apenas a propaganda", "Somente o nome do banco")
+            ],
+            [
+                makeQuestion("Um investimento rende 10% e a inflação foi 4%. O ganho real é aproximadamente:", "5,8%", "14%", "6% exatos em qualquer cálculo"),
+                makeQuestion("Ao comparar dois CDBs, você deve observar primeiro:", "Taxa líquida, prazo e emissor", "Só a maior taxa bruta", "A cor do aplicativo"),
+                makeQuestion("Uma dívida de juros altos pode ser priorizada porque:", "Seu custo pode superar o retorno de investir", "Toda dívida aumenta patrimônio", "Ela sempre rende para o devedor"),
+                makeQuestion("A taxa anual equivalente a 1% ao mês é aproximadamente:", "12,68% ao ano", "12% exatamente", "1,12% ao ano"),
+                makeQuestion("O risco de crédito está ligado à possibilidade de:", "O emissor não pagar", "A inflação cair", "O aporte aumentar sozinho"),
+                makeQuestion("Um ativo com carência longa exige que o investidor avalie:", "Se pode ficar sem o dinheiro", "Apenas o rendimento passado", "Somente o número de cotistas"),
+                makeQuestion("Um retorno nominal de 8% com inflação de 9% indica:", "Perda real aproximada", "Ganho real de 17%", "Proteção total do poder de compra"),
+                makeQuestion("Um orçamento deficitário ocorre quando:", "Despesas superam receitas", "Receitas superam despesas", "Não há nenhuma despesa"),
+                makeQuestion("A diversificação ajuda mais a reduzir:", "Risco específico", "Todo risco sistêmico", "Qualquer imposto"),
+                makeQuestion("O retorno líquido considera:", "Impostos e taxas", "Apenas a taxa anunciada", "Somente o valor depositado"),
+                makeQuestion("Uma meta SMART deve ser:", "Específica e com prazo", " vaga e sem prazo", "Baseada apenas em desejo"),
+                makeQuestion("A reserva de emergência deve evitar ativos:", "Voláteis e pouco líquidos", "Seguros e líquidos", "Com resgate simples"),
+                makeQuestion("Comprar parcelado sem juros ainda exige avaliar:", "Se a parcela cabe no orçamento", "Se o preço nunca muda", "Se o limite é renda"),
+                makeQuestion("O custo de oportunidade é:", "O benefício perdido ao escolher uma alternativa", "Uma tarifa obrigatória", "O rendimento garantido"),
+                makeQuestion("Um investimento prefixado informa:", "A taxa contratada, sujeito às condições do título", "O lucro real garantido", "Que nunca terá oscilação antes do vencimento")
+            ],
+            [
+                makeQuestion("A taxa real exata de 12% nominal com 5% de inflação é:", "(1,12 / 1,05) - 1", "12% - 5% sempre", "1,12 + 1,05"),
+                makeQuestion("Quando os juros de mercado sobem, um prefixado antigo tende a:", "Perder preço no mercado secundário", "Subir automaticamente", "Ficar sem qualquer preço"),
+                makeQuestion("O risco sistemático é aquele que:", "Afeta o mercado e não some só com diversificação", "É exclusivo de uma empresa", "É eliminado por uma reserva"),
+                makeQuestion("A duration ajuda a estimar a sensibilidade de um título a:", "Variações nas taxas de juros", "Mudanças no salário", "Apenas taxas de câmbio"),
+                makeQuestion("Comparar rentabilidades sem considerar prazos pode ocultar:", "Diferenças de liquidez e risco", "A existência do aporte", "O nome do investidor"),
+                makeQuestion("Uma correlação baixa entre ativos pode contribuir para:", "Reduzir a volatilidade da carteira", "Eliminar toda perda", "Garantir o maior retorno"),
+                makeQuestion("Se o retorno esperado é igual, um investidor com obrigação próxima deve preferir:", "Maior liquidez e menor risco", "Maior prazo e maior volatilidade", "O ativo mais concentrado"),
+                makeQuestion("O efeito de impostos sobre um investimento deve ser analisado:", "Na data e regra do resgate", "Somente antes do aporte", "Nunca, pois taxas são irrelevantes"),
+                makeQuestion("Uma projeção com cenários otimista, base e pessimista serve para:", "Testar a resiliência do plano", "Garantir o cenário otimista", "Substituir qualquer acompanhamento"),
+                makeQuestion("Alavancagem financeira pode:", "Ampliar ganhos e perdas", "Eliminar o risco", "Fixar o retorno"),
+                makeQuestion("O valor presente de um fluxo futuro depende principalmente de:", "Taxa de desconto e prazo", "Apenas do nome do ativo", "Somente da inflação passada"),
+                makeQuestion("Um fundo com resgate D+30 é inadequado para:", "Uma necessidade imediata", "Uma meta de longo prazo", "Uma parcela planejada"),
+                makeQuestion("O risco de reinvestimento aparece quando:", "Fluxos futuros podem ser aplicados a taxas menores", "O ativo não tem vencimento", "A inflação é sempre zero"),
+                makeQuestion("Um retorno superior ao CDI pode não compensar se:", "O risco e a liquidez forem incompatíveis com o objetivo", "O aporte for feito cedo", "O prazo for conhecido"),
+                makeQuestion("A alocação de ativos deve ser revista quando:", "Objetivos, prazo ou tolerância a risco mudam", "O mercado oscila em um único dia", "Um ativo fica famoso")
+            ],
+            [
+                makeQuestion("Uma decisão de alocação institucional deve começar por:", "Passivo, restrições e horizonte do investidor", "A maior alta do mês", "Uma opinião sem dados"),
+                makeQuestion("O prêmio de risco representa:", "Retorno adicional exigido por aceitar mais risco", "Uma taxa sem risco", "Uma garantia de lucro"),
+                makeQuestion("O índice de Sharpe relaciona o retorno excedente ao:", "Risco total medido pela volatilidade", "Imposto de renda", "Prazo de carência"),
+                makeQuestion("Um VaR histórico estima:", "Uma perda potencial em horizonte e confiança definidos", "A perda máxima garantida", "O retorno certo do próximo ano"),
+                makeQuestion("Uma estratégia imunizada busca principalmente:", "Reduzir a sensibilidade do passivo às taxas", "Maximizar qualquer risco", "Eliminar a inflação mundial"),
+                makeQuestion("O risco de liquidez pode aparecer quando:", "A venda exige desconto relevante para ocorrer", "O ativo tem cotação diária", "O emissor paga em dia"),
+                makeQuestion("Em uma análise de fluxo de caixa descontado, o valor terminal é sensível a:", "Crescimento perpétuo e taxa de desconto", "Apenas ao saldo bancário atual", "Somente ao imposto passado"),
+                makeQuestion("Uma correlação que muda em crises exige:", "Testes de estresse e cenários de cauda", "Ignorar a diversificação", "Usar apenas a média histórica"),
+                makeQuestion("Risco de modelo ocorre quando:", "Premissas ou estrutura do modelo estão inadequadas", "Há apenas um ativo", "A taxa é conhecida"),
+                makeQuestion("Uma política de investimentos deve definir:", "Limites, objetivos, benchmark e governança", "Somente o ativo favorito", "Apenas a rentabilidade desejada"),
+                makeQuestion("O custo de hedge deve ser avaliado junto com:", "A exposição protegida e o benefício marginal", "Apenas a cotação passada", "O número de operações"),
+                makeQuestion("Um cenário de estresse reverso procura:", "Descobrir quais eventos quebrariam o plano", "Confirmar o cenário base", "Eliminar a necessidade de reservas"),
+                makeQuestion("A convexidade complementa a duration ao estimar:", "A não linearidade da relação preço e juros", "O imposto sobre dividendos", "O risco de crédito sozinho"),
+                makeQuestion("Uma meta de retorno sem limite de perda é:", "Incompleta e potencialmente incompatível com o risco", "Uma política suficiente", "Uma garantia contratual"),
+                makeQuestion("A melhor decisão sênior é aquela que:", "Equilibra retorno, risco, liquidez, custos e objetivo", "Busca apenas o maior retorno", "Ignora cenários adversos")
+            ]
+        ];
+
+        const stageCatalog = [
+            "Orçamento e escolhas", "Receitas e despesas", "Reserva de emergência", "Primeiros investimentos",
+            "Juros e inflação", "Risco e diversificação", "Crédito consciente", "Retorno líquido",
+            "Cenários financeiros", "Alocação de ativos", "Liquidez e mercado", "Decisões estratégicas",
+            "Gestão de riscos", "Planejamento avançado", "Visão sênior"
+        ];
+        const levelCatalog = [
+            { title: "Iniciante", icon: "🌱", description: "Conceitos fundamentais" },
+            { title: "Intermediário", icon: "📘", description: "Aplicações do dia a dia" },
+            { title: "Analista", icon: "📊", description: "Análise de cenários" },
+            { title: "Sênior", icon: "🏆", description: "Decisões estratégicas" }
+        ];
+        const levelQuestionPools = levelCatalog.map((level, levelIndex) => stageCatalog.map((stage, stageIndex) => {
+            const questionPool = difficultyQuestionPools[levelIndex];
+            const startIndex = (stageIndex % 3) * 5;
+            return questionPool.slice(startIndex, startIndex + 5);
+        }));
+
+        let appState = {
+            coins: parseInt(localStorage.getItem('tr_coins')) || 0,
+            invested: JSON.parse(localStorage.getItem('tr_invested')) || { cdi: 0, ipca: 0, lca: 0, fii: 0, ibov: 0, cripto: 0 },
+            levelProgress: JSON.parse(localStorage.getItem('tr_level_progress')) || levelCatalog.map(() => stageCatalog.map(() => ({ completed: [], failed: {} }))),
+            username: localStorage.getItem('tr_user') || "Investidor",
+            avatar: localStorage.getItem('tr_avatar') || null,
+            themeColor: localStorage.getItem('tr_theme') || "#4F46E5",
+            themeMode: localStorage.getItem('tr_theme_mode') || "light",
+            fontSize: localStorage.getItem('tr_font_size') || "14px",
+            dailyLog: JSON.parse(localStorage.getItem('tr_stage_daily_log')) || { date: "", count: 0 },
+            balanceVisible: localStorage.getItem('tr_balance_vis') !== 'false'
+        };
+
+        let currentQuizState = { level: 0, levelIndex: 0, currentQuestionIndex: 0, correctCount: 0, questions: [] };
+        let selectedLevel = 0;
+
+        function openGamificationApp() {
+            document.getElementById('screen-bank').classList.remove('active');
+            document.getElementById('screen-gamification').classList.add('active');
+            renderRoadmap();
+        }
+
+        function closeGamificationApp() {
+            document.getElementById('screen-gamification').classList.remove('active');
+            document.getElementById('screen-bank').classList.add('active');
+        }
+
+        function toggleBalanceVisibility() {
+            appState.balanceVisible = !appState.balanceVisible;
+            localStorage.setItem('tr_balance_vis', appState.balanceVisible);
+            updateUI();
+        }
+
+        function saveState() {
+            localStorage.setItem('tr_coins', appState.coins);
+            localStorage.setItem('tr_invested', JSON.stringify(appState.invested));
+            localStorage.setItem('tr_level_progress', JSON.stringify(appState.levelProgress));
+            localStorage.setItem('tr_user', appState.username);
+            localStorage.setItem('tr_avatar', appState.avatar || '');
+            localStorage.setItem('tr_theme', appState.themeColor);
+            localStorage.setItem('tr_theme_mode', appState.themeMode);
+            localStorage.setItem('tr_font_size', appState.fontSize);
+            localStorage.setItem('tr_stage_daily_log', JSON.stringify(appState.dailyLog));
+        }
+
+        function checkDailyLimit() {
+            const todayStr = new Date().toDateString();
+            if (appState.dailyLog.date !== todayStr) {
+                appState.dailyLog.date = todayStr; appState.dailyLog.count = 0; saveState();
+            }
+            const banner = document.getElementById('daily-limit-banner');
+            let isBlocked = appState.dailyLog.count >= 1;
+            banner.style.display = isBlocked ? 'block' : 'none';
+            return isBlocked;
+        }
+
+        function showTrailOptions() {
+            document.getElementById('trail-home').style.display = 'none';
+            document.getElementById('trail-view').classList.add('visible');
+            renderLevelSelector();
+            renderRoadmap();
+        }
+
+        function renderLevelSelector() {
+            const selector = document.getElementById('level-selector');
+            selector.innerHTML = '';
+            levelCatalog.forEach((level, index) => {
+                const previousComplete = index === 0 || appState.levelProgress[index - 1].every(stage => stage.completed.length === 5);
+                const levelComplete = appState.levelProgress[index].every(stage => stage.completed.length === 5);
+                const card = document.createElement('div');
+                card.className = `level-card ${index === selectedLevel ? 'selected' : ''} ${previousComplete ? '' : 'locked'}`;
+                card.innerHTML = `
+                    <h4>${level.icon} ${level.title}</h4>
+                    <p>${level.description}<br>${levelComplete ? '15/15 stages concluídos' : previousComplete ? 'Disponível para começar' : 'Conclua o nível anterior'}</p>
+                    <button onclick="selectLevel(${index})" ${previousComplete ? '' : 'disabled'}>${levelComplete ? 'Revisar progresso' : 'Abrir nível'}</button>
+                `;
+                selector.appendChild(card);
+            });
+        }
+
+        function selectLevel(levelIndex) {
+            const previousComplete = levelIndex === 0 || appState.levelProgress[levelIndex - 1].every(stage => stage.completed.length === 5);
+            if (!previousComplete) return alert('Bloqueado! Conclua todos os stages do nível anterior.');
+            selectedLevel = levelIndex;
+            renderLevelSelector();
+            renderRoadmap();
+        }
+
+        function renderRoadmap() {
+            checkDailyLimit();
+            const wrapper = document.getElementById('roadmap-wrapper');
+            wrapper.innerHTML = '';
+            const taskCount = stageCatalog.length;
+            const progress = appState.levelProgress[selectedLevel];
+            const level = levelCatalog[selectedLevel];
+            document.getElementById('trail-title').innerText = `Nível ${level.title}`;
+            document.getElementById('trail-progress-label').innerText = `${progress.filter(stage => stage.completed.length === 5).length}/15 stages`;
+            for (let i = 1; i <= taskCount; i++) {
+                const step = document.createElement('div');
+                let pos = i % 4 === 1 ? 'step-left' : (i % 4 === 3 ? 'step-right' : 'step-center');
+                step.className = `roadmap-step ${pos}`;
+
+                if (progress[i - 1].completed.length === 5) step.classList.add('completed');
+                if (i === progress.findIndex(item => item.completed.length < 5) + 1) step.classList.add('active');
+
+                let title = `Stage ${i}: ${stageCatalog[i - 1]}`;
+                if (Object.keys(progress[i - 1].failed).length > 0) title = `🔄 Repetir: ${title}`;
+
+                step.innerHTML = `
+                    <div class="node-circle" onclick="startLevelQuiz(${i})">${i}</div>
+                    <div class="node-label">${title}</div>
+                `;
+                wrapper.appendChild(step);
+            }
+        }
+
+        function startLevelQuiz(level) {
+            const stageProgress = appState.levelProgress[selectedLevel][level - 1];
+            const previousStage = appState.levelProgress[selectedLevel][level - 2];
+            if (level > 1 && previousStage.completed.length < 5) return alert("Bloqueado! Conclua o stage anterior.");
+            if (stageProgress.completed.length === 5) return alert("Stage já finalizado!");
+            if (checkDailyLimit()) return alert("Você já concluiu 1 stage hoje. Volte amanhã!");
+
+            currentQuizState.level = level;
+            currentQuizState.levelIndex = selectedLevel;
+            currentQuizState.currentQuestionIndex = 0;
+            currentQuizState.correctCount = 0;
+
+            let shuffledPool = [...levelQuestionPools[selectedLevel][level - 1]].sort(() => Math.random() - 0.5);
+            currentQuizState.questions = shuffledPool.slice(0, 5);
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            const state = currentQuizState;
+            if (state.currentQuestionIndex >= 5) return evaluateQuizResult();
+
+            const qData = state.questions[state.currentQuestionIndex];
+            let shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+            
+            let optionsHtml = '';
+            shuffledOptions.forEach(opt => {
+                optionsHtml += `<div class="quiz-option" onclick="answerQuestion(${opt.correct}, this)">${opt.text}</div>`;
+            });
+
+            let dotsHtml = '';
+            for(let i=0; i<5; i++) {
+                let cls = i === state.currentQuestionIndex ? 'active' : (i < state.currentQuestionIndex ? 'correct' : '');
+                dotsHtml += `<div class="dot ${cls}"></div>`;
+            }
+
+            document.getElementById('modal-content-area').innerHTML = `
+                <div class="quiz-progress-dots">${dotsHtml}</div>
+                <h4 style="color:var(--primary); margin-bottom:8px;">${levelCatalog[state.levelIndex].title} - Stage ${state.level} - Questão ${state.currentQuestionIndex + 1}/5</h4>
+                <p style="font-weight:600; font-size:0.9rem; margin-bottom:12px; color:var(--text-dark);">${qData.q}</p>
+                <div id="options-box">${optionsHtml}</div>
+            `;
+            document.getElementById('modal-quiz').style.display = 'flex';
+        }
+
+        function answerQuestion(isCorrect, element) {
+            document.getElementById('options-box').style.pointerEvents = 'none';
+            element.style.background = isCorrect ? "#D1FAE5" : "#FEE2E2";
+            element.style.borderColor = isCorrect ? "#10B981" : "#EF4444";
+            if (isCorrect) currentQuizState.correctCount++;
+
+            setTimeout(() => {
+                currentQuizState.currentQuestionIndex++;
+                showNextQuestion();
+            }, 900);
+        }
+
+        function evaluateQuizResult() {
+            const area = document.getElementById('modal-content-area');
+            const hits = currentQuizState.correctCount;
+            if (hits >= 3) {
+                area.innerHTML = `
+                    <h3 style="color:var(--secondary); text-align:center; margin-bottom:10px;">🎉 Excelente Progresso!</h3>
+                    <p style="text-align:center; font-size:0.9rem; margin-bottom:15px;">Você acertou <strong>${hits}/5</strong> e garantiu <strong>20 FinCoins</strong>!</p>
+                    <button onclick="finishLevel(true)" style="width:100%; background:var(--secondary); color:white; padding:10px; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Resgatar Recompensa</button>
+                `;
+            } else {
+                area.innerHTML = `
+                    <h3 style="color:#EF4444; text-align:center; margin-bottom:10px;">Estude Mais um Pouco 📚</h3>
+                    <button onclick="finishLevel(false)" style="width:100%; background:#EF4444; color:white; padding:10px; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Reiniciar Nível</button>
+                `;
+            }
+        }
+
+        function finishLevel(success) {
+            const lvl = currentQuizState.level;
+            document.getElementById('modal-quiz').style.display = 'none';
+            const stageProgress = appState.levelProgress[currentQuizState.levelIndex][lvl - 1];
+            if (success) {
+                if (stageProgress.completed.length !== 5) {
+                    stageProgress.completed = Array.from({ length: 5 }, (_, index) => index + 1);
+                    stageProgress.failed = {};
+                    appState.coins += 20; appState.dailyLog.count += 1;
+                }
+            } else { stageProgress.failed = { attempted: true }; }
+            saveState(); updateUI(); renderLevelSelector(); renderRoadmap();
+        }
+
+        function allocateFunds(type) {
+            if (appState.coins >= 30) {
+                appState.coins -= 30; appState.invested[type] += 0.25; saveState(); updateUI();
+            } else { alert("Saldo insuficiente em moedas!"); }
+        }
+
+        function changeFontSize(size) { appState.fontSize = size; saveState(); updateUI(); }
+        function applyTheme(color) { appState.themeColor = color; saveState(); updateUI(); }
+        function toggleThemeMode() {
+            appState.themeMode = appState.themeMode === 'dark' ? 'light' : 'dark';
+            saveState(); updateUI();
+        }
+
+        function openPhotoModal() {
+            if (!appState.avatar || !document.getElementById('screen-gamification').classList.contains('active')) return;
+            document.getElementById('expanded-avatar').src = appState.avatar;
+            document.getElementById('modal-photo').style.display = 'flex';
+        }
+
+        function closePhotoModal(event) {
+            if (!event || event.target === document.getElementById('modal-photo') || event.target.closest('.photo-close')) {
+                document.getElementById('modal-photo').style.display = 'none';
+            }
+        }
+
+        function openMessages() {
+            document.getElementById('modal-messages').style.display = 'flex';
+        }
+
+        function closeMessages(event) {
+            if (!event || event.target === document.getElementById('modal-messages')) {
+                document.getElementById('modal-messages').style.display = 'none';
+            }
+        }
+        
+        function changeProfileName() { 
+            appState.username = document.getElementById('txt-edit-name').value || "Investidor"; 
+            saveState(); 
+            updateUI(); 
+        }
+
+        function uploadPhoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    appState.avatar = evt.target.result;
+                    saveState();
+                    updateUI();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateUI() {
+            let walletInCash = appState.coins * 0.0005;
+            document.getElementById('stat-coins').innerText = `${appState.coins} (R$ ${walletInCash.toFixed(2)})`;
+            
+            document.getElementById('inv-cdi').innerText = `R$ ${appState.invested.cdi.toFixed(2)}`;
+            document.getElementById('inv-ipca').innerText = `R$ ${appState.invested.ipca.toFixed(2)}`;
+            document.getElementById('inv-lca').innerText = `R$ ${appState.invested.lca.toFixed(2)}`;
+            document.getElementById('inv-fii').innerText = `R$ ${appState.invested.fii.toFixed(2)}`;
+            document.getElementById('inv-ibov').innerText = `R$ ${(appState.invested.ibov || 0).toFixed(2)}`;
+            document.getElementById('inv-cripto').innerText = `R$ ${(appState.invested.cripto || 0).toFixed(2)}`;
+
+            let totalInvested = Object.values(appState.invested).reduce((a,b)=>a+b, 0);
+            let totalPatrimony = totalInvested + walletInCash;
+            document.getElementById('stat-patrimony').innerText = `R$ ${totalPatrimony.toFixed(2).replace('.',',')}`;
+
+            let done = appState.levelProgress.flat().filter(stage => stage.completed.length === 5).length;
+            document.getElementById('stat-done').innerText = `${done}/60`;
+            document.getElementById('bank-progress-percent').innerText = `${Math.round((done / 60) * 100)}%`;
+            document.getElementById('bank-coins-total').innerText = appState.coins;
+            document.getElementById('bank-invested-total').innerText = `R$ ${totalInvested.toFixed(2).replace('.', ',')}`;
+
+            let pct = Math.round((done / 60) * 100);
+            document.getElementById('lbl-progress-percent').innerText = `${pct}%`;
+            document.getElementById('main-progress-bar').style.width = `${pct}%`;
+            document.getElementById('lbl-rank').innerText = `Nível ${Math.min(selectedLevel + 1, 4)}/4`;
+
+            document.getElementById('lbl-username').innerText = appState.username;
+            document.getElementById('bank-user-name').innerText = appState.username;
+            document.getElementById('txt-edit-name').value = appState.username;
+
+            if (appState.avatar) {
+                document.getElementById('avatar-render').innerHTML = `<img src="${appState.avatar}">`;
+            }
+
+            document.documentElement.style.setProperty('--font-size-base', appState.fontSize);
+            document.documentElement.style.setProperty('--primary', appState.themeColor);
+            document.body.classList.toggle('dark-mode', appState.themeMode === 'dark');
+            
+            document.querySelectorAll('.font-size-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.size === appState.fontSize);
+            });
+            document.getElementById('main-header').style.backgroundColor = appState.themeColor;
+            document.getElementById('btn-theme-mode').innerText = appState.themeMode === 'dark' ? 'Modo claro' : 'Modo escuro';
+
+            if (appState.balanceVisible) {
+                document.getElementById('txt-bank-balance').innerText = "R$ 1.500,00";
+                document.getElementById('txt-bank-scheduled').innerText = "R$ 150,00";
+                document.getElementById('btn-toggle-visibility').innerText = "👁️";
+            } else {
+                document.getElementById('txt-bank-balance').innerText = "R$ ***";
+                document.getElementById('txt-bank-scheduled').innerText = "R$ ***";
+                document.getElementById('btn-toggle-visibility').innerText = "🙈";
+            }
+        }
+
+        function navigate(tab, el) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            el.classList.add('active');
+        }
+
+        window.onload = () => { updateUI(); };
+    </script>
+
+<script src="/_sdk/f344579cd2b2cf70.editing_sdk.js" integrity="sha512-bzdgmfJ/pl/acJqgk+LGvYwJbF03Y2d6f4oZHD96WjqTnvQUZBGVAQkTDRz+fyIMjVc+AXkpwFXqDYLeHDMLSw=="></script></body></html>

@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fistu - Conta Digital & Educação Financeira</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #12372A;
+            --bg-card: #F3FAF4;
+            --primary-dark: #12372A;
+            --primary-green: #2F6B4F;
+            --mint-light: #EFF8F3;
+            --mint-bright: #86EFAC;
+            --emerald: #10B981;
+            --duo-green: #58CC02;
+            --duo-green-dark: #46A302;
+            --duo-gold: #FFC800;
+            --duo-gold-dark: #E5A500;
+            --duo-blue: #1CB0F6;
+            --text-dark: #12372A;
+            --text-muted: #556B5A;
+            --text-light: #F3FAF4;
+            --text-mint: #BFD8C2;
+            --border-subtle: rgba(191, 216, 194, 0.2);
+            --radius-xl: 20px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER COM NAVEGAÇÃO ENTRE TELAS --- */
+        .fistu-header {
+            width: 100%;
+            height: 72px;
+            background: #12372A;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .brand-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #F3FAF4;
+            color: #12372A;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .brand-text h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #FFFFFF;
+        }
+
+        .brand-text p {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-mint);
+            margin-top: 3px;
+        }
+
+        /* TABS NO TOPO: CONTA VS EDUCAÇÃO */
+        .nav-tabs-pill {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 5px;
+            border-radius: 30px;
+            border: 1px solid rgba(191, 216, 194, 0.2);
+            gap: 4px;
+        }
+
+        .nav-tab-btn {
+            padding: 8px 18px;
+            border-radius: 25px;
+            border: none;
+            background: transparent;
+            color: var(--text-mint);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab-btn.active {
+            background: #F3FAF4;
+            color: #12372A;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-admin-pill {
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: #86EFAC;
+            color: #12372A;
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-logout {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(243, 250, 244, 0.35);
+            background: transparent;
+            color: #F3FAF4;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        /* --- TELAS DINÂMICAS: TELA 1 (CONTA) E TELA 2 (EDUCAÇÃO) --- */
+        .screen-view {
+            display: none;
+            width: 100%;
+            flex: 1;
+        }
+
+        .screen-view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========================================================
+           TELA 1: CONTA DIGITAL & INVESTIMENTOS (SCREENSHOT FIEL)
+           ======================================================== */
+        .bank-container {
+            width: 100%;
+            padding: 24px 35px 40px 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .greeting-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .greeting-text h1 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: #FFFFFF;
+        }
+
+        .greeting-text p {
+            color: var(--text-mint);
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        .badge-supabase {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(134, 239, 172, 0.12);
+            border: 1px solid rgba(134, 239, 172, 0.35);
+            color: #86EFAC;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        /* GRID DOS 2 CARDS DESTAQUE (SALDO & INVESTIDO) */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .bank-card {
+            background: #F3FAF4;
+            color: #12372A;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            position: relative;
+        }
+
+        .bank-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-label-green { color: #2F6B4F; }
+        .card-label-invest { color: #15803D; }
+
+        .btn-eye {
+            background: transparent;
+            border: none;
+            color: #2F6B4F;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .badge-rate {
+            color: #15803D;
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #12372A;
+            margin: 4px 0 6px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .card-subtext {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 22px;
+        }
+
+        .card-buttons-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-filled-dark {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: #12372A;
+            color: #F3FAF4;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-filled-dark:hover {
+            background: #2F6B4F;
+            transform: translateY(-2px);
+        }
+
+        .btn-filled-emerald {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: #15803D;
+            color: #F3FAF4;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-filled-emerald:hover {
+            background: #166534;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-dark {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid #12372A;
+            background: transparent;
+            color: #12372A;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-dark:hover {
+            background: rgba(18, 55, 42, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* OPÇÕES DE INVESTIMENTO */
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .section-title-row h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-row span {
+            font-size: 0.78rem;
+            color: var(--text-mint);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .product-item-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(191, 216, 194, 0.18);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .product-item-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #86EFAC;
+            transform: translateY(-3px);
+        }
+
+        .product-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #F3FAF4;
+            color: #12372A;
+            display: grid;
+            place-items: center;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+        }
+
+        .product-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 2px;
+        }
+
+        .product-percentage {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #86EFAC;
+            margin-bottom: 6px;
+        }
+
+        .product-info-text {
+            font-size: 0.75rem;
+            color: var(--text-mint);
+            line-height: 1.35;
+        }
+
+        .btn-apply-mint {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: #86EFAC;
+            color: #12372A;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-apply-mint:hover {
+            background: #FFFFFF;
+            transform: scale(1.02);
+        }
+
+        /* BANNER DE INCENTIVO À EDUCAÇÃO */
+        .edu-callout-banner {
+            background: linear-gradient(135deg, rgba(88, 204, 2, 0.15), rgba(47, 107, 79, 0.25));
+            border: 1px solid rgba(88, 204, 2, 0.35);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .edu-callout-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .edu-callout-icon {
+            font-size: 2.2rem;
+        }
+
+        .edu-callout-left h4 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 2px;
+        }
+
+        .edu-callout-left p {
+            font-size: 0.8rem;
+            color: var(--text-mint);
+        }
+
+        .btn-open-edu {
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: var(--duo-green);
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--duo-green-dark);
+            transition: all 0.15s;
+        }
+
+        .btn-open-edu:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 var(--duo-green-dark);
+        }
+
+        /* ========================================================
+           TELA 2: TRILHA DE EDUCAÇÃO (DUOLINGO STYLE - IMAGEM 1)
+           ======================================================== */
+        .edu-screen-wrapper {
+            width: 100%;
+            background: #FFFFFF;
+            color: #12372A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 72px);
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        /* BARRA SUPERIOR DE ESTATÍSTICAS (DUOLINGO STYLE) */
+        .duo-stats-bar {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: #FFFFFF;
+            position: sticky;
+            top: 72px;
+            z-index: 400;
+            border-bottom: 2px solid #F0F0F0;
+        }
+
+        .stat-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #4B4B4B;
+        }
+
+        .stat-badge i, .stat-badge span.icon {
+            font-size: 1.25rem;
+        }
+
+        .stat-flag { color: #3B82F6; }
+        .stat-streak { color: #FF9600; }
+        .stat-gems { color: #1CB0F6; }
+        .stat-hearts { color: #FF4B4B; }
+
+        /* SELETOR DE NÍVEIS (INICIANTE A SÊNIOR) */
+        .level-tabs-bar {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            gap: 6px;
+            padding: 12px 20px 4px 20px;
+            background: #FFFFFF;
+        }
+
+        .level-pill {
+            flex: 1;
+            padding: 9px 4px;
+            text-align: center;
+            border-radius: 12px;
+            border: 2px solid #E5E5E5;
+            background: #F7F7F7;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #777777;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .level-pill.active {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+
+        .level-pill.locked {
+            opacity: 0.6;
+            background: #F1F1F1;
+            color: #999999;
+            border-color: #DCDCDC;
+            cursor: not-allowed;
+        }
+
+        /* BANNER DO MODO ADMIN (TESTE TOTAL) */
+        .admin-test-banner {
+            width: 90%;
+            max-width: 480px;
+            margin: 12px auto 4px auto;
+            background: #FEF3C7;
+            border: 1.5px solid #F59E0B;
+            border-radius: 14px;
+            padding: 10px 16px;
+            font-size: 0.82rem;
+            color: #92400E;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+        }
+
+        /* BANNER DE LIMITE DIÁRIO (1 MISSÃO POR DIA) */
+        .daily-mission-banner {
+            width: 90%;
+            max-width: 480px;
+            margin: 10px auto 4px auto;
+            background: #F8FAFC;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 10px 16px;
+            font-size: 0.82rem;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+
+        .daily-mission-banner.completed {
+            background: #F0FDF4;
+            border-color: #86EFAC;
+            color: #166534;
+        }
+
+        .daily-mission-banner .mission-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 10px;
+            background: #E2E8F0;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .daily-mission-banner.completed .mission-tag {
+            background: #DCFCE7;
+            color: #15803D;
+        }
+
+        /* BANNER VERDE DA SEÇÃO / UNIDADE (EXATAMENTE COMO NA IMAGEM 1) */
+        .duo-section-banner {
+            width: 90%;
+            max-width: 480px;
+            background: var(--duo-green);
+            border-radius: 18px;
+            padding: 18px 22px;
+            margin: 16px auto;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 6px 0 var(--duo-green-dark);
+        }
+
+        .banner-info h5 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            opacity: 0.9;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .banner-info h3 {
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-guidebook {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #FFFFFF;
+            display: grid;
+            place-items: center;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-guidebook:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* A TRILHA EM ZIG-ZAG (ROADMAP SINUOSO COMO NO DUOLINGO) */
+        .duo-path-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0 80px 0;
+            position: relative;
+        }
+
+        .duo-step-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        /* 3D BOTÕES REDONDOS DO DUOLINGO */
+        .duo-node-btn {
+            width: 76px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--duo-green);
+            box-shadow: 0 8px 0 var(--duo-green-dark), 0 12px 18px rgba(0,0,0,0.15);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #FFFFFF;
+            font-size: 1.7rem;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .duo-node-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 var(--duo-green-dark), 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* PULSO DO STAGE ATIVO */
+        .duo-node-btn.active-node {
+            animation: duoPulse 1.8s infinite;
+        }
+
+        @keyframes duoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+
+        /* BALÃO COMEÇAR NO TOPO DO NÓ ATIVO */
+        .duo-tooltip-bubble {
+            position: absolute;
+            top: -38px;
+            background: #FFFFFF;
+            border: 2px solid #E5E5E5;
+            color: var(--duo-green-dark);
+            font-size: 0.72rem;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            animation: bounceTooltip 1.2s infinite alternate;
+        }
+
+        .duo-tooltip-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0 6px;
+            border-style: solid;
+            border-color: #FFFFFF transparent transparent transparent;
+        }
+
+        @keyframes bounceTooltip {
+            from { transform: translateY(0); }
+            to { transform: translateY(-4px); }
+        }
+
+        .duo-node-btn.completed {
+            background: var(--duo-green);
+            box-shadow: 0 8px 0 var(--duo-green-dark);
+        }
+
+        .duo-node-btn.locked {
+            background: #E5E5E5;
+            box-shadow: 0 8px 0 #CECECE;
+            color: #AFAFAF;
+            cursor: not-allowed;
+        }
+
+        .stars-row {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+            font-size: 0.75rem;
+            color: #D1D5DB;
+        }
+
+        .stars-row.achieved {
+            color: var(--duo-gold);
+        }
+
+        /* ILUSTRAÇÕES DE MARCOS DA TRILHA (BAÚ DE TESOURO) */
+        .chest-treasure {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            z-index: 5;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chest-treasure:hover {
+            transform: scale(1.08);
+        }
+
+        /* BOTÃO FLUTUANTE ⬆️ */
+        .btn-fab-up {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #FFFFFF;
+            border: 2px solid #E5E5E5;
+            color: #1CB0F6;
+            font-size: 1.25rem;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .btn-fab-up:hover {
+            background: #F8FAFC;
+            transform: translateY(-3px);
+        }
+
+        /* --- MODAIS DE BANCO & QUIZ --- */
+        .modal-duo-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-duo-overlay.active {
+            display: flex;
+        }
+
+        .duo-quiz-box {
+            background: #FFFFFF;
+            color: #12372A;
+            width: 92%;
+            max-width: 460px;
+            border-radius: 24px;
+            padding: 26px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quiz-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quiz-hearts-left {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #FF4B4B;
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        .quiz-progress-dots-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .quiz-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #E5E5E5;
+            transition: background 0.3s;
+        }
+
+        .quiz-dot.active { background: var(--duo-blue); transform: scale(1.15); }
+        .quiz-dot.correct { background: var(--duo-green); }
+        .quiz-dot.wrong { background: #FF4B4B; }
+
+        .quiz-question-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #12372A;
+            line-height: 1.35;
+        }
+
+        .quiz-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-opt-btn {
+            background: #FFFFFF;
+            border: 2px solid #E5E5E5;
+            border-bottom: 4px solid #CECECE;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #4B4B4B;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.1s ease;
+        }
+
+        .quiz-opt-btn:hover {
+            background: #F7F7F7;
+        }
+
+        .quiz-opt-btn:active {
+            transform: translateY(2px);
+            border-bottom: 2px solid #CECECE;
+        }
+
+        .quiz-opt-btn.correct-opt {
+            background: #D7FFB8 !important;
+            border-color: #58CC02 !important;
+            color: #388400 !important;
+        }
+
+        .quiz-opt-btn.wrong-opt {
+            background: #FFDFE0 !important;
+            border-color: #FF4B4B !important;
+            color: #EA2B2B !important;
+        }
+
+        /* MODAL BANCÁRIO (INVESTIR / RESGATE / PIX) */
+        .bank-modal-box {
+            background: #F3FAF4;
+            color: #12372A;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 24px;
+            padding: 26px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+        }
+
+        .bank-modal-box h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bank-modal-box p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .modal-input-field {
+            margin-bottom: 14px;
+        }
+
+        .modal-input-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #2F6B4F;
+        }
+
+        .modal-input-field input, .modal-input-field select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #BFD8C2;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: #12372A;
+            outline: none;
+            background: #FFFFFF;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .btn-modal-cancel {
+            background: transparent;
+            border: 1px solid #BFD8C2;
+            color: #2F6B4F;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        .btn-modal-confirm {
+            background: #12372A;
+            color: #F3FAF4;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        .btn-modal-confirm:hover {
+            background: #2F6B4F;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 900px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .fistu-header {
+                padding: 0 16px;
+            }
+            .bank-container {
+                padding: 18px 16px 30px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .brand-text p {
+                display: none;
+            }
+            .nav-tab-btn span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NOTIFICAÇÃO TOAST FLUTUANTE -->
+    <div class="notification-container" id="fistuNotification" style="position: fixed; top: 20px; right: 20px; z-index: 3000; transform: translateY(-100px); opacity: 0; transition: all 0.4s ease;">
+      <div class="succsess-alert" style="display: flex; align-items: center; justify-content: space-between; width: 290px; border-radius: 12px; background: #12372A; border: 1px solid #2F6B4F; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); color: white;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-circle-check" style="color: #86EFAC; font-size: 1.2rem;"></i>
+          <div>
+            <p id="notifTitle" style="font-size: 12px; font-weight: 800;">Operação Concluída</p>
+            <p id="notifDesc" style="font-size: 10px; color: #BFD8C2;">Transação realizada com sucesso.</p>
+          </div>
+        </div>
+        <button onclick="fecharNotificacao()" style="background: transparent; border: none; color: #BFD8C2; cursor: pointer; font-size: 1rem;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- HEADER GLOBAL -->
+    <header class="fistu-header">
+        <div class="header-brand" onclick="mudarAba('conta')">
+            <div class="brand-badge">F</div>
+            <div class="brand-text">
+                <h2>Fistu</h2>
+                <p>CONTA DIGITAL & INVESTIMENTOS</p>
+            </div>
+        </div>
+
+        <!-- TABS DE NAVEGAÇÃO ENTRE AS DUAS TELAS -->
+        <div class="nav-tabs-pill">
+            <button class="nav-tab-btn active" id="btnTabConta" onclick="mudarAba('conta')">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Conta & Investimentos</span>
+            </button>
+            <button class="nav-tab-btn" id="btnTabEdu" onclick="mudarAba('educacao')">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Trilha de Educação</span>
+            </button>
+        </div>
+
+        <div class="header-actions">
+            {% if usuario.tipo == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-admin-pill">
+                <i class="fa-solid fa-shield-halved"></i> Painel Admin
+            </a>
+            {% endif %}
+
+            <a href="{{ url_for('logout') }}" class="btn-logout" title="Encerrar sessão">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+            </a>
+        </div>
+    </header>
+
+    <!-- ========================================================
+         TELA 1: CONTA DIGITAL & INVESTIMENTOS (EXATA DO SCREENSHOT)
+         ======================================================== -->
+    <div class="screen-view active" id="screenConta">
+        <main class="bank-container">
+            
+            <!-- SAUDAÇÃO IDENTICA AO SCREENSHOT -->
+            <div class="greeting-bar">
+                <div class="greeting-text">
+                    <h1>Olá, {{ usuario.nome or 'Cliente' }}! 👋</h1>
+                    <p>{{ usuario.email }} • Conta Corrente Digital</p>
+                </div>
+                <div class="badge-supabase">
+                    <i class="fa-solid fa-shield-halved"></i> Conexão Segura Supabase
+                </div>
+            </div>
+
+            <!-- GRID DOS 2 CARDS DESTAQUE (SALDO EM CONTA & TOTAL INVESTIDO) -->
+            <section class="overview-grid">
+                
+                <!-- CARD SALDO EM CONTA -->
+                <div class="bank-card">
+                    <div>
+                        <div class="bank-card-top">
+                            <span class="card-label card-label-green">
+                                <i class="fa-solid fa-wallet"></i> SALDO EM CONTA
+                            </span>
+                            <button class="btn-eye" onclick="alternarVisibilidadeSaldo()" title="Ocultar/Exibir Saldo">
+                                <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+
+                        <div class="card-amount" id="displaySaldo">
+                            R$ {{ "%.2f"|format(usuario.saldo or 1500.0) }}
+                        </div>
+
+                        <p class="card-subtext">Disponível para Pix, compras e aplicações</p>
+                    </div>
+
+                    <div class="card-buttons-row">
+                        <button class="btn-filled-dark" onclick="abrirModalPix()">
+                            <i class="fa-brands fa-pix"></i> Área Pix
+                        </button>
+                        <button class="btn-outline-dark" onclick="abrirModalDeposito()">
+                            <i class="fa-solid fa-plus"></i> Depositar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CARD TOTAL INVESTIDO -->
+                <div class="bank-card">
+                    <div>
+                        <div class="bank-card-top">
+                            <span class="card-label card-label-invest">
+                                <i class="fa-solid fa-chart-line"></i> TOTAL INVESTIDO
+                            </span>
+                            <span class="badge-rate">
+                                <i class="fa-solid fa-arrow-trend-up"></i> +13,4% a.a. CDI
+                            </span>
+                        </div>
+
+                        <div class="card-amount" id="displayInvestimentos">
+                            R$ {{ "%.2f"|format(usuario.investimentos or 3200.0) }}
+                        </div>
+
+                        <p class="card-subtext">Rendimento este mês: <strong>+R$ 41,20 (+1,29%)</strong></p>
+                    </div>
+
+                    <div class="card-buttons-row">
+                        <button class="btn-filled-emerald" onclick="abrirModalInvestir()">
+                            <i class="fa-solid fa-chart-pie"></i> Novo Aporte
+                        </button>
+                        <button class="btn-outline-dark" onclick="abrirModalResgate()">
+                            Resgatar
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- BANNER DE ENTRADA PARA A EDUCAÇÃO / DUOLINGO -->
+            <section class="edu-callout-banner">
+                <div class="edu-callout-left">
+                    <span class="edu-callout-icon">🦉</span>
+                    <div>
+                        <h4>Aprenda e Ganhe Dinheiro Real na Conta</h4>
+                        <p>Complete as fases da trilha no estilo Duolingo, responda aos quizzes e resgate FinCoins em saldo!</p>
+                    </div>
+                </div>
+                <button class="btn-open-edu" onclick="mudarAba('educacao')">
+                    <i class="fa-solid fa-play"></i> Continuar Trilha (Ofensiva 🔥 <span id="bannerStreak">1</span>)
+                </button>
+            </section>
+
+            <!-- SEÇÃO: OPÇÕES DE INVESTIMENTO (4 CARDS COMO NO SCREENSHOT) -->
+            <section>
+                <div class="section-title-row">
+                    <h3><i class="fa-solid fa-vault"></i> Opções de Investimento</h3>
+                    <span>Renda Fixa & Reserva</span>
+                </div>
+
+                <div class="products-grid" style="margin-top: 14px;">
+                    
+                    <!-- PRODUTO 1: SUPER CAIXINHA CDI -->
+                    <div class="product-item-card">
+                        <div>
+                            <div class="product-icon-box"><i class="fa-solid fa-box-archive"></i></div>
+                            <div class="product-name">Super Caixinha CDI</div>
+                            <div class="product-percentage">100% CDI</div>
+                            <p class="product-info-text">Liquidez imediata e rendimento diário. O porto seguro para sua reserva de emergência.</p>
+                        </div>
+                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Super Caixinha CDI')">
+                            Investir na Caixinha
+                        </button>
+                    </div>
+
+                    <!-- PRODUTO 2: TESOURO IPCA+ 2029 -->
+                    <div class="product-item-card">
+                        <div>
+                            <div class="product-icon-box"><i class="fa-solid fa-landmark"></i></div>
+                            <div class="product-name">Tesouro IPCA+ 2029</div>
+                            <div class="product-percentage">IPCA + 6,2% a.a.</div>
+                            <p class="product-info-text">Proteção total contra a inflação e garantia soberana do Tesouro Nacional.</p>
+                        </div>
+                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Tesouro IPCA+ 2029')">
+                            Investir em IPCA+
+                        </button>
+                    </div>
+
+                    <!-- PRODUTO 3: CDB TURBO FISTU -->
+                    <div class="product-item-card">
+                        <div>
+                            <div class="product-icon-box"><i class="fa-solid fa-coins"></i></div>
+                            <div class="product-name">CDB Turbo Fistu</div>
+                            <div class="product-percentage">115% do CDI</div>
+                            <p class="product-info-text">Rendimento turbinado com prazo fixo de 12 meses e garantia do FGC até R$ 250 mil.</p>
+                        </div>
+                        <button class="btn-apply-mint" onclick="abrirModalInvestir('CDB Turbo Fistu')">
+                            Investir no CDB
+                        </button>
+                    </div>
+
+                    <!-- PRODUTO 4: FUNDO IMOBILIÁRIO FII -->
+                    <div class="product-item-card">
+                        <div>
+                            <div class="product-icon-box"><i class="fa-solid fa-building"></i></div>
+                            <div class="product-name">Fundo Imobiliário FII</div>
+                            <div class="product-percentage">Dividendos Mensais</div>
+                            <p class="product-info-text">Renda passiva isenta de Imposto de Renda com galpões e lajes corporativas triple A.</p>
+                        </div>
+                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Fundo Imobiliário FII')">
+                            Investir no FII
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ========================================================
+         TELA 2: TRILHA DE EDUCAÇÃO (DUOLINGO STYLE - IMAGEM 1)
+         ======================================================== -->
+    <div class="screen-view" id="screenEducacao">
+        <div class="edu-screen-wrapper">
+
+            <!-- BARRA DE STATUS DO TOPO (IDÊNTICA À IMAGEM 1) -->
+            <div class="duo-stats-bar">
+                <div class="stat-badge stat-flag" title="Nível / Pontos">
+                    <span style="font-size: 1.3rem;">🇧🇷</span>
+                    <span id="eduXp">116</span>
+                </div>
+                <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
+                    <span>🔥</span>
+                    <span id="eduStreak">1</span>
+                </div>
+                <div class="stat-badge stat-gems" title="FinCoins acumuladas">
+                    <span>💎</span>
+                    <span id="eduCoins">5847</span>
+                </div>
+                <div class="stat-badge stat-hearts" title="Vidas disponíveis">
+                    <span>❤️</span>
+                    <span id="eduHearts">5</span>
+                </div>
+            </div>
+
+            <!-- SELETOR DOS 4 NÍVEIS DO CURSO (INICIANTE, INTERMEDIÁRIO, ANALISTA, SÊNIOR) -->
+            <div class="level-tabs-bar" id="levelTabsContainer">
+                <div class="level-pill active" onclick="selecionarNivel(0)">🌱 Iniciante</div>
+                <div class="level-pill locked" onclick="selecionarNivel(1)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Interm.</div>
+                <div class="level-pill locked" onclick="selecionarNivel(2)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Analista</div>
+                <div class="level-pill locked" onclick="selecionarNivel(3)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Sênior</div>
+            </div>
+
+            <!-- BANNER DE TESTES LIVRES PARA O ADMINISTRADOR -->
+            {% if usuario.tipo == 'admin' or session.get('usuario_tipo') == 'admin' %}
+            <div class="admin-test-banner">
+                <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem; color: #D97706;"></i>
+                <div>
+                    <strong>Modo Administrador Ativo:</strong> Todas as 4 trilhas e 15 estágios estão 100% liberados para teste livre, sem limite diário!
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- BANNER DE LIMITE DIÁRIO (1 MISSÃO POR DIA) -->
+            <div class="daily-mission-banner" id="dailyMissionBanner">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-calendar-check" id="dailyMissionIcon" style="color: #64748B; font-size: 1rem;"></i>
+                    <span id="dailyMissionText">Missão diária: <strong>0/1</strong> concluída hoje.</span>
+                </div>
+                <span class="mission-tag" id="dailyMissionTag">Disponível</span>
+            </div>
+
+            <!-- BANNER DA SEÇÃO E UNIDADE (COM CORES DINÂMICAS DA TRILHA) -->
+            <div class="duo-section-banner" id="duoSectionBanner">
+                <div class="banner-info">
+                    <h5 id="bannerSectionTitle">SEÇÃO 1, UNIDADE 1</h5>
+                    <h3 id="bannerUnitTitle">Fundamentos Financeiros</h3>
+                </div>
+                <div class="btn-guidebook" onclick="abrirGuiaUnidade()" title="Guia da Unidade">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+            </div>
+
+            <!-- A TRILHA EM ZIG-ZAG COM BOTÕES 3D REDONDOS -->
+            <div class="duo-path-container" id="duoPathWrapper">
+                <!-- NÓS SERÃO RENDERIZADOS DINAMICAMENTE EM ZIG-ZAG VIA JAVASCRIPT -->
+            </div>
+
+            <!-- BOTÃO FLUTUANTE ⬆️ PARA VOLTAR AO NÓ ATIVO -->
+            <button class="btn-fab-up" onclick="scrollParaAtivo()" title="Voltar ao estágio atual">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- ========================================================
+         MODAL DE QUIZ DO DUOLINGO (5 PERGUNTAS INTERATIVAS)
+         ======================================================== -->
+    <div class="modal-duo-overlay" id="modalQuiz">
+        <div class="duo-quiz-box" id="quizBoxContent">
+            <!-- CONTEÚDO DO QUIZ RENDERIZADO VIA JAVASCRIPT -->
+        </div>
+    </div>
+
+    <!-- MODAL GUIA DA UNIDADE -->
+    <div class="modal-duo-overlay" id="modalGuia">
+        <div class="duo-quiz-box" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="color: var(--duo-green-dark);"><i class="fa-solid fa-book"></i> Guia da Unidade</h3>
+                <button onclick="fecharModais()" style="background: transparent; border: none; font-size: 1.2rem; cursor: pointer;">✕</button>
+            </div>
+            <div style="font-size: 0.88rem; line-height: 1.5; color: #4B4B4B;">
+                <p><strong>🎯 Objetivo:</strong> Construir sua reserva de emergência e tomar decisões financeiras conscientes.</p>
+                <br>
+                <p><strong>💡 Regra de Ouro:</strong> Primeiro poupe, depois gaste. Mantenha de 3 a 6 meses do seu custo de vida alocado em ativos com 100% do CDI e liquidez imediata.</p>
+                <br>
+                <p><strong>💎 Recompensa:</strong> Ao concluir cada stage, você recebe <strong>20 FinCoins</strong> e um crédito de <strong>R$ 5,00</strong> no saldo do seu banco Fistu!</p>
+            </div>
+            <button onclick="fecharModais()" style="width: 100%; padding: 12px; border-radius: 14px; background: var(--duo-green); color: white; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 var(--duo-green-dark);">
+                Entendi, vamos praticar!
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAIS DE OPERAÇÃO BANCÁRIA -->
+    <!-- MODAL INVESTIR -->
+    <div class="modal-duo-overlay" id="modalInvestir">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-chart-line" style="color: #2F6B4F;"></i> Fazer Aporte em Investimento</h3>
+            <p>O valor será debitado do seu Saldo em Conta e adicionado ao seu Patrimônio Investido.</p>
+
+            <div class="modal-input-field">
+                <label>Selecione a Aplicação</label>
+                <select id="investProdutoSelect">
+                    <option value="Super Caixinha CDI">Super Caixinha CDI (100% CDI - Liquidez Diária)</option>
+                    <option value="Tesouro IPCA+ 2029">Tesouro IPCA+ 2029 (IPCA + 6,2%)</option>
+                    <option value="CDB Turbo Fistu">CDB Turbo Fistu (115% do CDI)</option>
+                    <option value="Fundo Imobiliário FII">Fundo Imobiliário FII (Dividendos)</option>
+                </select>
+            </div>
+
+            <div class="modal-input-field">
+                <label>Valor da Aplicação (R$)</label>
+                <input type="number" step="0.01" id="investValorInput" placeholder="Ex: 100.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarInvestimento()">Confirmar Aporte</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RESGATE -->
+    <div class="modal-duo-overlay" id="modalResgate">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-arrow-down-left-and-up-right-to-center" style="color: #2F6B4F;"></i> Resgatar Investimento</h3>
+            <p>O valor será transferido dos seus Investimentos de volta para o seu Saldo Disponível.</p>
+
+            <div class="modal-input-field">
+                <label>Valor a Resgatar (R$)</label>
+                <input type="number" step="0.01" id="resgateValorInput" placeholder="Ex: 50.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarResgate()">Confirmar Resgate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DEPÓSITO -->
+    <div class="modal-duo-overlay" id="modalDeposito">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-plus-circle" style="color: #2F6B4F;"></i> Adicionar Saldo na Conta</h3>
+            <p>Simule a entrada de fundos por Pix ou TED direto para a sua conta corrente Fistu.</p>
+
+            <div class="modal-input-field">
+                <label>Valor do Depósito (R$)</label>
+                <input type="number" step="0.01" id="depositoValorInput" placeholder="Ex: 200.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarDeposito()">Confirmar Depósito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PIX -->
+    <div class="modal-duo-overlay" id="modalPix">
+        <div class="bank-modal-box">
+            <h3><i class="fa-brands fa-pix" style="color: #2F6B4F;"></i> Enviar Transferência Pix</h3>
+            <p>O valor será liquidado em instantes debitando do seu saldo em conta.</p>
+
+            <div class="modal-input-field">
+                <label>Chave Pix Destinatária</label>
+                <input type="text" id="pixChaveInput" placeholder="contato@exemplo.com">
+            </div>
+
+            <div class="modal-input-field">
+                <label>Valor do Pix (R$)</label>
+                <input type="number" step="0.01" id="pixValorInput" placeholder="Ex: 50.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarPix()">Transferir Agora</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         SCRIPTS: QUIZ, TRILHA DUOLINGO E TRANSAÇÕES BANCÁRIAS
+         ======================================================== -->
+    <script>
+        // --- POOL COMPLETO DE QUESTÕES (DO WWW/INDEX.HTML) ---
+        const makeQuestion = (q, correct, wrongA, wrongB) => ({
+            q,
+            options: [{ text: correct, correct: true }, { text: wrongA, correct: false }, { text: wrongB, correct: false }]
+        });
+
+        const difficultyQuestionPools = [
+            // NÍVEL 0: INICIANTE
+            [
+                makeQuestion("Para que serve uma reserva de emergência?", "Cobrir imprevistos", "Comprar itens de luxo", "Apostar em ações"),
+                makeQuestion("O que é uma receita no orçamento?", "Dinheiro que entra", "Uma dívida", "Uma taxa bancária"),
+                makeQuestion("Qual atitude ajuda a controlar os gastos?", "Anotar despesas", "Ignorar o extrato", "Gastar todo o limite"),
+                makeQuestion("O que significa economizar?", "Guardar parte do dinheiro", "Pegar mais empréstimos", "Aumentar todas as compras"),
+                makeQuestion("Qual é um exemplo de necessidade básica?", "Alimentação", "Um item de luxo", "Uma compra por impulso"),
+                makeQuestion("O que é inflação?", "Aumento geral de preços", "Queda de todos os preços", "Apenas aumento salarial"),
+                makeQuestion("Qual instituição define a meta da Selic?", "COPOM", "IBGE", "B3"),
+                makeQuestion("O que é investir?", "Aplicar dinheiro buscando retorno", "Esconder dinheiro sem objetivo", "Usar crédito sem limite"),
+                makeQuestion("Liquidez é a facilidade de:", "Resgatar um investimento", "Aumentar o risco", "Evitar qualquer imposto"),
+                makeQuestion("Diversificação significa:", "Distribuir recursos entre ativos", "Concentrar tudo em um ativo", "Investir sem pesquisar"),
+                makeQuestion("O que é uma dívida?", "Um compromisso financeiro a pagar", "Uma renda garantida", "Um investimento sem risco"),
+                makeQuestion("O cartão de crédito deve ser usado como:", "Meio de pagamento planejado", "Dinheiro extra infinito", "Renda mensal"),
+                makeQuestion("O IPCA é usado para medir:", "A inflação ao consumidor", "O saldo da poupança", "O lucro de uma empresa"),
+                makeQuestion("Qual é uma característica desejável da reserva?", "Segurança e acesso rápido", "Alta volatilidade", "Prazo muito longo"),
+                makeQuestion("Antes de investir, é importante conhecer:", "Objetivo e prazo", "Apenas a propaganda", "Somente o nome do banco")
+            ],
+            // NÍVEL 1: INTERMEDIÁRIO
+            [
+                makeQuestion("Um investimento rende 10% e a inflação foi 4%. O ganho real é aproximadamente:", "5,8%", "14%", "6% exatos em qualquer cálculo"),
+                makeQuestion("Ao comparar dois CDBs, você deve observar primeiro:", "Taxa líquida, prazo e emissor", "Só a maior taxa bruta", "A cor do aplicativo"),
+                makeQuestion("Uma dívida de juros altos pode ser priorizada porque:", "Seu custo pode superar o retorno de investir", "Toda dívida aumenta patrimônio", "Ela sempre rende para o devedor"),
+                makeQuestion("A taxa anual equivalente a 1% ao mês é aproximadamente:", "12,68% ao ano", "12% exatamente", "1,12% ao ano"),
+                makeQuestion("O risco de crédito está ligado à possibilidade de:", "O emissor não pagar", "A inflação cair", "O aporte aumentar sozinho"),
+                makeQuestion("Um ativo com carência longa exige que o investidor avalie:", "Se pode ficar sem o dinheiro", "Apenas o rendimento passado", "Somente o número de cotistas"),
+                makeQuestion("Um retorno nominal de 8% com inflação de 9% indica:", "Perda real aproximada", "Ganho real de 17%", "Proteção total do poder de compra"),
+                makeQuestion("Um orçamento deficitário ocorre quando:", "Despesas superam receitas", "Receitas superam despesas", "Não há nenhuma despesa"),
+                makeQuestion("A diversificação ajuda mais a reduzir:", "Risco específico", "Todo risco sistêmico", "Qualquer imposto"),
+                makeQuestion("O retorno líquido considera:", "Impostos e taxas", "Apenas a taxa anunciada", "Somente o valor depositado"),
+                makeQuestion("Uma meta SMART deve ser:", "Específica e com prazo", "Vaga e sem prazo", "Baseada apenas em desejo"),
+                makeQuestion("A reserva de emergência deve evitar ativos:", "Voláteis e pouco líquidos", "Seguros e líquidos", "Com resgate simples"),
+                makeQuestion("Comprar parcelado sem juros ainda exige avaliar:", "Se a parcela cabe no orçamento", "Se o preço nunca muda", "Se o limite é renda"),
+                makeQuestion("O custo de oportunidade é:", "O benefício perdido ao escolher uma alternativa", "Uma tarifa obrigatória", "O rendimento garantido"),
+                makeQuestion("Um investimento prefixado informa:", "A taxa contratada, sujeito às condições do título", "O lucro real garantido", "Que nunca terá oscilação antes do vencimento")
+            ],
+            // NÍVEL 2: ANALISTA
+            [
+                makeQuestion("A taxa real exata de 12% nominal com 5% de inflação é:", "(1,12 / 1,05) - 1", "12% - 5% sempre", "1,12 + 1,05"),
+                makeQuestion("Quando os juros de mercado sobem, um prefixado antigo tende a:", "Perder preço no mercado secundário", "Subir automaticamente", "Ficar sem qualquer preço"),
+                makeQuestion("O risco sistemático é aquele que:", "Afeta o mercado e não some só com diversificação", "É exclusivo de uma empresa", "É eliminado por uma reserva"),
+                makeQuestion("A duration ajuda a estimar a sensibilidade de um título a:", "Variações nas taxas de juros", "Mudanças no salário", "Apenas taxas de câmbio"),
+                makeQuestion("Comparar rentabilidades sem considerar prazos pode ocultar:", "Diferenças de liquidez e risco", "A existência do aporte", "O nome do investidor"),
+                makeQuestion("Uma correlação baixa entre ativos pode contribuir para:", "Reduzir a volatilidade da carteira", "Eliminar toda perda", "Garantir o maior retorno"),
+                makeQuestion("Se o retorno esperado é igual, um investidor com obrigação próxima deve preferir:", "Maior liquidez e menor risco", "Maior prazo e maior volatilidade", "O ativo mais concentrado"),
+                makeQuestion("O efeito de impostos sobre um investimento deve ser analisado:", "Na data e regra do resgate", "Somente antes do aporte", "Nunca, pois taxas são irrelevantes"),
+                makeQuestion("Uma projeção com cenários otimista, base e pessimista serve para:", "Testar a resiliência do plano", "Garantir o cenário otimista", "Substituir qualquer acompanhamento"),
+                makeQuestion("Alavancagem financeira pode:", "Ampliar ganhos e perdas", "Eliminar o risco", "Fixar o retorno"),
+                makeQuestion("O valor presente de um fluxo futuro depende principalmente de:", "Taxa de desconto e prazo", "Apenas do nome do ativo", "Somente da inflação passada"),
+                makeQuestion("Um fundo com resgate D+30 é inadequado para:", "Uma necessidade imediata", "Uma meta de longo prazo", "Uma parcela planejada"),
+                makeQuestion("O risco de reinvestimento aparece quando:", "Fluxos futuros podem ser aplicados a taxas menores", "O ativo não tem vencimento", "A inflação é sempre zero"),
+                makeQuestion("Um retorno superior ao CDI pode não compensar se:", "O risco e a liquidez forem incompatíveis com o objetivo", "O aporte for feito cedo", "O prazo for conhecido"),
+                makeQuestion("A alocação de ativos deve ser revista quando:", "Objetivos, prazo ou tolerância a risco mudam", "O mercado oscila em um único dia", "Um ativo fica famoso")
+            ],
+            // NÍVEL 3: SÊNIOR
+            [
+                makeQuestion("Uma decisão de alocação institucional deve começar por:", "Passivo, restrições e horizonte do investidor", "A maior alta do mês", "Uma opinião sem dados"),
+                makeQuestion("O prêmio de risco representa:", "Retorno adicional exigido por aceitar mais risco", "Uma taxa sem risco", "Uma garantia de lucro"),
+                makeQuestion("O índice de Sharpe relaciona o retorno excedente ao:", "Risco total medido pela volatilidade", "Imposto de renda", "Prazo de carência"),
+                makeQuestion("Um VaR histórico estima:", "Uma perda potencial em horizonte e confiança definidos", "A perda máxima garantida", "O retorno certo do próximo ano"),
+                makeQuestion("Uma estratégia imunizada busca principalmente:", "Reduzir a sensibilidade do passivo às taxas", "Maximizar qualquer risco", "Eliminar a inflação mundial"),
+                makeQuestion("O risco de liquidez pode aparecer quando:", "A venda exige desconto relevante para ocorrer", "O ativo tem cotação diária", "O emissor paga em dia"),
+                makeQuestion("Em uma análise de fluxo de caixa descontado, o valor terminal é sensível a:", "Crescimento perpétuo e taxa de desconto", "Apenas ao saldo bancário atual", "Somente ao imposto passado"),
+                makeQuestion("Uma correlação que muda em crises exige:", "Testes de estresse e cenários de cauda", "Ignorar a diversificação", "Usar apenas a média histórica"),
+                makeQuestion("Risco de modelo ocorre quando:", "Premissas ou estrutura do modelo estão inadequadas", "Há apenas um ativo", "A taxa é conhecida"),
+                makeQuestion("Uma política de investimentos deve definir:", "Limites, objetivos, benchmark e governança", "Somente o ativo favorito", "Apenas a rentabilidade desejada"),
+                makeQuestion("O custo de hedge deve ser avaliado junto com:", "A exposição protegida e o benefício marginal", "Apenas a cotação passada", "O número de operações"),
+                makeQuestion("Um cenário de estresse reverso procura:", "Descobrir quais eventos quebrariam o plano", "Confirmar o cenário base", "Eliminar a necessidade de reservas"),
+                makeQuestion("A convexidade complementa a duration ao estimar:", "A não linearidade da relação preço e juros", "O imposto sobre dividendos", "O risco de crédito sozinho"),
+                makeQuestion("Uma meta de retorno sem limite de perda é:", "Incompleta e potencialmente incompatível com o risco", "Uma política suficiente", "Uma garantia contratual"),
+                makeQuestion("A melhor decisão sênior é aquela que:", "Equilibra retorno, risco, liquidez, custos e objetivo", "Busca apenas o maior retorno", "Ignora cenários adversos")
+            ]
+        ];
+
+        const stageCatalog = [
+            "Orçamento e escolhas", "Receitas e despesas", "Reserva de emergência", "Primeiros investimentos",
+            "Juros e inflação", "Risco e diversificação", "Crédito consciente", "Retorno líquido",
+            "Cenários financeiros", "Alocação de ativos", "Liquidez e mercado", "Decisões estratégicas",
+            "Gestão de riscos", "Planejamento avançado", "Visão sênior"
+        ];
+
+        const levelCatalog = [
+            { 
+                title: "Iniciante", 
+                shortTitle: "Iniciante",
+                section: "SEÇÃO 1", 
+                icon: "🌱", 
+                description: "Conceitos fundamentais de finanças",
+                primary: "#58CC02",
+                dark: "#46A302",
+                light: "#E8F8DC"
+            },
+            { 
+                title: "Intermediário", 
+                shortTitle: "Interm.",
+                section: "SEÇÃO 2", 
+                icon: "📘", 
+                description: "Aplicações e cálculos do dia a dia",
+                primary: "#1CB0F6",
+                dark: "#1899D6",
+                light: "#DDF4FF"
+            },
+            { 
+                title: "Analista", 
+                shortTitle: "Analista",
+                section: "SEÇÃO 3", 
+                icon: "📊", 
+                description: "Análise de cenários e diversificação",
+                primary: "#A855F7",
+                dark: "#7E22CE",
+                light: "#F3E8FF"
+            },
+            { 
+                title: "Sênior", 
+                shortTitle: "Sênior",
+                section: "SEÇÃO 4", 
+                icon: "🏆", 
+                description: "Decisões estratégicas de portfólio",
+                primary: "#FF9600",
+                dark: "#E58500",
+                light: "#FFF0D4"
+            }
+        ];
+
+        // POOL POR NÍVEL (15 STAGES COM 5 QUESTÕES CADA)
+        const levelQuestionPools = levelCatalog.map((level, levelIndex) => stageCatalog.map((stage, stageIndex) => {
+            const questionPool = difficultyQuestionPools[levelIndex];
+            const startIndex = (stageIndex % 3) * 5;
+            return questionPool.slice(startIndex, startIndex + 5);
+        }));
+
+        // ÍCONES TEMÁTICOS DO DUOLINGO (HEADPHONES, STAR, VIDEO, BOOK, MICROPHONE)
+        const duoIcons = [
+            'fa-headphones', 'fa-star', 'fa-video', 'fa-book-open', 'fa-headphones', 
+            'fa-microphone', 'fa-star', 'fa-video', 'fa-book', 'fa-trophy',
+            'fa-headphones', 'fa-microphone', 'fa-star', 'fa-book-open', 'fa-crown'
+        ];
+
+        // CONTROLE DE ACESSO DO ADMINISTRADOR (LIBERADO PARA TESTES)
+        const isAdmin = {{ 'true' if (usuario.tipo == 'admin' or session.get('usuario_tipo') == 'admin') else 'false' }};
+
+        // ESTADO GLOBAL DO SISTEMA
+        let saldoAtual = {{ usuario.saldo or 1500.0 }};
+        let investAtual = {{ usuario.investimentos or 3200.0 }};
+        let saldoVisivel = true;
+        let selectedLevel = 0;
+
+        // CARREGAMENTO ROBUSTO DO PROGRESSO (GARANTE OS 4 NÍVEIS E 15 STAGES)
+        let savedProgress = null;
+        try {
+            savedProgress = JSON.parse(localStorage.getItem('fistu_edu_progress'));
+        } catch (e) {}
+
+        if (!Array.isArray(savedProgress) || savedProgress.length !== levelCatalog.length) {
+            savedProgress = levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })));
+        } else {
+            savedProgress = levelCatalog.map((_, lIdx) => {
+                const existing = savedProgress[lIdx] || [];
+                return stageCatalog.map((_, sIdx) => existing[sIdx] || { completed: false });
+            });
+        }
+
+        let eduState = {
+            xp: parseInt(localStorage.getItem('fistu_edu_xp')) || 116,
+            streak: parseInt(localStorage.getItem('fistu_edu_streak')) || 1,
+            coins: parseInt(localStorage.getItem('fistu_edu_coins')) || 5847,
+            hearts: parseInt(localStorage.getItem('fistu_edu_hearts')) || 5,
+            progress: savedProgress
+        };
+
+        let currentQuiz = {
+            levelIndex: 0,
+            stageNumber: 1,
+            questionIndex: 0,
+            correctCount: 0,
+            questions: []
+        };
+
+        function salvarEduState() {
+            localStorage.setItem('fistu_edu_xp', eduState.xp);
+            localStorage.setItem('fistu_edu_streak', eduState.streak);
+            localStorage.setItem('fistu_edu_coins', eduState.coins);
+            localStorage.setItem('fistu_edu_hearts', eduState.hearts);
+            localStorage.setItem('fistu_edu_progress', JSON.stringify(eduState.progress));
+            atualizarStatsBar();
+        }
+
+        function atualizarStatsBar() {
+            document.getElementById('eduXp').innerText = eduState.xp;
+            document.getElementById('eduStreak').innerText = eduState.streak;
+            const bannerStreak = document.getElementById('bannerStreak');
+            if (bannerStreak) bannerStreak.innerText = eduState.streak;
+            document.getElementById('eduCoins').innerText = eduState.coins;
+            document.getElementById('eduHearts').innerText = eduState.hearts;
+        }
+
+        // --- SISTEMA DE LIMITE DIÁRIO (1 MISSÃO POR DIA PARA USUÁRIOS) ---
+        function getTodayDateString() {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const d = String(today.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getDailyMissionCount() {
+            try {
+                const log = JSON.parse(localStorage.getItem('fistu_daily_mission_log') || '{}');
+                if (log.date === getTodayDateString()) {
+                    return log.count || 0;
+                }
+            } catch (e) {}
+            return 0;
+        }
+
+        function registerDailyMissionCompleted() {
+            const today = getTodayDateString();
+            const current = getDailyMissionCount();
+            localStorage.setItem('fistu_daily_mission_log', JSON.stringify({
+                date: today,
+                count: current + 1
+            }));
+            atualizarDailyMissionBanner();
+        }
+
+        function hasReachedDailyLimit() {
+            if (isAdmin) return false; // Admin não tem limite diário!
+            return getDailyMissionCount() >= 1;
+        }
+
+        function atualizarDailyMissionBanner() {
+            const banner = document.getElementById('dailyMissionBanner');
+            const textEl = document.getElementById('dailyMissionText');
+            const tagEl = document.getElementById('dailyMissionTag');
+            const iconEl = document.getElementById('dailyMissionIcon');
+            if (!banner) return;
+
+            if (isAdmin) {
+                banner.style.display = 'none';
+                return;
+            }
+
+            banner.style.display = 'flex';
+            const count = getDailyMissionCount();
+            if (count >= 1) {
+                banner.classList.add('completed');
+                iconEl.className = 'fa-solid fa-circle-check';
+                iconEl.style.color = '#16A34A';
+                textEl.innerHTML = 'Missão de hoje concluída! (<strong>1/1</strong>). Volte amanhã para novos estágios.';
+                tagEl.innerText = 'Concluído';
+            } else {
+                banner.classList.remove('completed');
+                iconEl.className = 'fa-solid fa-calendar-check';
+                iconEl.style.color = '#64748B';
+                textEl.innerHTML = 'Missão diária: <strong>0/1</strong> concluída hoje. Complete 1 estágio para avançar.';
+                tagEl.innerText = 'Disponível';
+            }
+        }
+
+        // --- SISTEMA DE BLOQUEIO DE NÍVEIS (INTERMEDIÁRIO, ANALISTA, SÊNIOR) ---
+        function isLevelUnlocked(idx) {
+            if (isAdmin) return true; // Admin testa tudo liberado!
+            if (idx === 0) return true; // Nível Iniciante sempre liberado
+
+            // Verifica se todos os 15 estágios do nível anterior foram concluídos
+            const prevStages = eduState.progress[idx - 1];
+            if (!prevStages || prevStages.length === 0) return false;
+            return prevStages.every(s => s && s.completed);
+        }
+
+        function renderLevelTabs() {
+            const container = document.getElementById('levelTabsContainer');
+            if (!container) return;
+
+            container.innerHTML = levelCatalog.map((level, idx) => {
+                const unlocked = isLevelUnlocked(idx);
+                const isActive = idx === selectedLevel;
+
+                let extraClass = '';
+                let style = '';
+                let label = `${level.icon} ${level.shortTitle}`;
+
+                if (!unlocked) {
+                    extraClass = 'locked';
+                    label = `<i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>${level.shortTitle}`;
+                } else if (isActive) {
+                    extraClass = 'active';
+                    style = `border-color: ${level.primary}; background: ${level.light}; color: ${level.dark};`;
+                }
+
+                return `<div class="level-pill ${extraClass}" style="${style}" onclick="selecionarNivel(${idx})">${label}</div>`;
+            }).join('');
+        }
+
+        function selecionarNivel(idx) {
+            if (!isLevelUnlocked(idx)) {
+                const prev = levelCatalog[idx - 1];
+                exibirNotificacao(
+                    'Trilha Bloqueada 🔒', 
+                    `Conclua todos os 15 estágios da trilha "${prev.title}" para desbloquear "${levelCatalog[idx].title}".`, 
+                    true
+                );
+                return;
+            }
+            selectedLevel = idx;
+            renderLevelTabs();
+            renderDuoPath();
+        }
+
+        // --- NAVEGAÇÃO ENTRE AS ABAS PRINCIPAIS ---
+        function mudarAba(aba) {
+            document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+
+            if (aba === 'conta') {
+                document.getElementById('screenConta').classList.add('active');
+                document.getElementById('btnTabConta').classList.add('active');
+            } else {
+                document.getElementById('screenEducacao').classList.add('active');
+                document.getElementById('btnTabEdu').classList.add('active');
+                renderLevelTabs();
+                atualizarDailyMissionBanner();
+                renderDuoPath();
+            }
+        }
+
+        // --- RENDERIZAÇÃO DA TRILHA DUOLINGO (COM CORES POR NÍVEL E SEM MASCOTE) ---
+        function renderDuoPath() {
+            const wrapper = document.getElementById('duoPathWrapper');
+            if (!wrapper) return;
+            wrapper.innerHTML = '';
+
+            const level = levelCatalog[selectedLevel];
+            document.getElementById('bannerSectionTitle').innerText = `${level.section}, UNIDADE 1`;
+            document.getElementById('bannerUnitTitle').innerText = `${stageCatalog[0]}`;
+
+            // Aplica as cores vibrantes específicas da trilha selecionada ao Banner
+            const banner = document.getElementById('duoSectionBanner');
+            if (banner) {
+                banner.style.backgroundColor = level.primary;
+                banner.style.boxShadow = `0 6px 0 ${level.dark}`;
+            }
+
+            const stages = eduState.progress[selectedLevel];
+            let activeFound = false;
+
+            // X offsets para criar o sinuoso zig-zag exato do Duolingo
+            const xOffsets = [0, 45, 90, 45, 0, -45, -90, -45, 0, 45, 90, 45, 0, -45, 0];
+
+            for (let i = 0; i < stageCatalog.length; i++) {
+                const stageNum = i + 1;
+                const isCompleted = stages[i].completed;
+                // Se for admin, nenhum estágio fica bloqueado!
+                const isLocked = isAdmin ? false : (i > 0 && !stages[i - 1].completed);
+                const isActive = !isCompleted && !isLocked && !activeFound;
+                if (isActive) activeFound = true;
+
+                const row = document.createElement('div');
+                row.className = 'duo-step-row';
+
+                // Aplica deslocamento horizontal para a curva
+                const offsetX = xOffsets[i % xOffsets.length];
+
+                // Baú de Ouro nos marcos 5, 10 e 15 (SEM MASCOTES NA TRILHA)
+                let illustrationHtml = '';
+                if (i === 4 || i === 9 || i === 14) {
+                    illustrationHtml = `
+                        <div class="chest-treasure pos-right" onclick="alert('🎁 Baú de Tesouro! Complete este marco para desbloquear FinCoins bônus.')">
+                            <svg viewBox="0 0 100 100" width="60" height="60">
+                                <rect x="20" y="35" width="60" height="40" rx="6" fill="#B45309"/>
+                                <path d="M15 35 Q50 15 85 35 Z" fill="#F59E0B"/>
+                                <rect x="44" y="38" width="12" height="14" rx="2" fill="#FBBF24"/>
+                                <circle cx="50" cy="44" r="3" fill="#12372A"/>
+                            </svg>
+                        </div>
+                    `;
+                }
+
+                // Estilização do Botão 3D com as cores da trilha ativa
+                let btnClass = 'duo-node-btn';
+                let btnStyle = '';
+                let tooltip = '';
+
+                if (isCompleted) {
+                    btnClass += ' completed';
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark};`;
+                } else if (isActive) {
+                    btnClass += ' active-node';
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark}, 0 12px 18px rgba(0,0,0,0.15);`;
+                    tooltip = `<div class="duo-tooltip-bubble" style="color: ${level.dark}; border-color: ${level.primary};">COMEÇAR!</div>`;
+                } else if (isAdmin) {
+                    // Modo admin: todos os nós liberados com as cores da trilha
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark}; opacity: 0.95;`;
+                } else {
+                    btnClass += ' locked';
+                    btnStyle = `background: #E5E5E5; box-shadow: 0 8px 0 #CECECE; color: #AFAFAF;`;
+                }
+
+                const icon = duoIcons[i % duoIcons.length];
+
+                row.innerHTML = `
+                    ${illustrationHtml}
+                    <div style="transform: translateX(${offsetX}px); display: flex; flex-direction: column; align-items: center; position: relative;">
+                        ${tooltip}
+                        <button class="${btnClass}" style="${btnStyle}" onclick="abrirQuizStage(${stageNum})" id="node-${stageNum}">
+                            <i class="fa-solid ${isLocked ? 'fa-lock' : icon}"></i>
+                        </button>
+                        <div class="stars-row ${isCompleted ? 'achieved' : ''}">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                `;
+
+                wrapper.appendChild(row);
+            }
+        }
+
+        function scrollParaAtivo() {
+            const activeNode = document.querySelector('.duo-node-btn.active-node');
+            if (activeNode) {
+                activeNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function abrirGuiaUnidade() {
+            document.getElementById('modalGuia').classList.add('active');
+        }
+
+        // --- SISTEMA DE QUIZ INTERATIVO (DUOLINGO STYLE) ---
+        function abrirQuizStage(stageNum) {
+            const stageIndex = stageNum - 1;
+            const stages = eduState.progress[selectedLevel];
+            const isStageCompleted = stages[stageIndex].completed;
+
+            if (!isAdmin) {
+                // Checa se o nível está desbloqueado
+                if (!isLevelUnlocked(selectedLevel)) {
+                    exibirNotificacao('Trilha Bloqueada 🔒', 'Você ainda não desbloqueou esta trilha!', true);
+                    return;
+                }
+
+                // Checa se os estágios anteriores foram completados
+                if (stageIndex > 0 && !stages[stageIndex - 1].completed) {
+                    exibirNotificacao('Estágio Bloqueado 🔒', 'Complete os estágios anteriores para avançar na trilha!', true);
+                    return;
+                }
+
+                // LIMITE DIÁRIO: 1 missão nova por dia para usuários normais
+                if (!isStageCompleted && hasReachedDailyLimit()) {
+                    exibirNotificacao(
+                        'Limite Diário Atingido ⏳', 
+                        'Você já completou sua missão diária de hoje (1/1). Volte amanhã para continuar sua jornada e desbloquear novos estágios!', 
+                        true
+                    );
+                    return;
+                }
+            }
+
+            if (eduState.hearts <= 0) {
+                exibirNotificacao('Sem Vidas ❤️', 'Suas vidas acabaram! Espere um momento para recuperar.', true);
+                return;
+            }
+
+            currentQuiz.levelIndex = selectedLevel;
+            currentQuiz.stageNumber = stageNum;
+            currentQuiz.questionIndex = 0;
+            currentQuiz.correctCount = 0;
+
+            const pool = levelQuestionPools[selectedLevel][stageIndex];
+            currentQuiz.questions = [...pool].sort(() => Math.random() - 0.5);
+
+            renderQuizQuestion();
+            document.getElementById('modalQuiz').classList.add('active');
+        }
+
+        function renderQuizQuestion() {
+            const quizBox = document.getElementById('quizBoxContent');
+            const qIndex = currentQuiz.questionIndex;
+            const level = levelCatalog[selectedLevel];
+
+            if (qIndex >= 5) {
+                renderQuizFinal();
+                return;
+            }
+
+            const qData = currentQuiz.questions[qIndex];
+            const shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+
+            // Bolinhas de progresso
+            let dotsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                let dotClass = 'quiz-dot';
+                if (i === qIndex) dotClass += ' active';
+                else if (i < qIndex) dotClass += ' correct';
+                dotsHtml += `<div class="${dotClass}"></div>`;
+            }
+
+            let optionsHtml = '';
+            shuffledOptions.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button class="quiz-opt-btn" onclick="selecionarOpcao(${opt.correct}, this)">
+                        ${opt.text}
+                    </button>
+                `;
+            });
+
+            quizBox.innerHTML = `
+                <div class="quiz-top-bar">
+                    <button onclick="fecharModais()" style="background: transparent; border: none; font-size: 1.1rem; color: #777; cursor: pointer;">✕</button>
+                    <div class="quiz-progress-dots-row">${dotsHtml}</div>
+                    <div class="quiz-hearts-left">
+                        <i class="fa-solid fa-heart"></i> ${eduState.hearts}
+                    </div>
+                </div>
+
+                <div style="font-size: 0.75rem; font-weight: 800; color: ${level.dark}; text-transform: uppercase;">
+                    ${level.title} • Stage ${currentQuiz.stageNumber}/15
+                </div>
+
+                <h3 class="quiz-question-title">${qData.q}</h3>
+
+                <div class="quiz-options-list" id="quizOptionsList">
+                    ${optionsHtml}
+                </div>
+            `;
+        }
+
+        function selecionarOpcao(isCorrect, btn) {
+            const list = document.getElementById('quizOptionsList');
+            list.style.pointerEvents = 'none';
+
+            if (isCorrect) {
+                btn.classList.add('correct-opt');
+                currentQuiz.correctCount++;
+                eduState.xp += 10;
+            } else {
+                btn.classList.add('wrong-opt');
+                eduState.hearts = Math.max(0, eduState.hearts - 1);
+            }
+
+            salvarEduState();
+
+            setTimeout(() => {
+                currentQuiz.questionIndex++;
+                renderQuizQuestion();
+            }, 800);
+        }
+
+        async function renderQuizFinal() {
+            const quizBox = document.getElementById('quizBoxContent');
+            const hits = currentQuiz.correctCount;
+            const passou = hits >= 3;
+            const level = levelCatalog[selectedLevel];
+
+            if (passou) {
+                // Marca o stage como concluído
+                const stageIndex = currentQuiz.stageNumber - 1;
+                const wasAlreadyCompleted = eduState.progress[selectedLevel][stageIndex].completed;
+
+                eduState.progress[selectedLevel][stageIndex].completed = true;
+                eduState.coins += 20;
+                eduState.streak += 1;
+                salvarEduState();
+
+                // Se era uma missão nova e não for admin, contabiliza no limite diário
+                if (!wasAlreadyCompleted && !isAdmin) {
+                    registerDailyMissionCompleted();
+                }
+
+                // Chama a API do backend para adicionar R$ 5,00 em saldo real
+                try {
+                    const res = await fetch('/api/usuario/educacao/concluir', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            stage: currentQuiz.stageNumber,
+                            level: level.title
+                        })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        saldoAtual = data.saldo;
+                        document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                    }
+                } catch (e) {
+                    console.log('Erro ao creditar bônus:', e);
+                }
+
+                renderLevelTabs();
+                renderDuoPath();
+                atualizarDailyMissionBanner();
+
+                quizBox.innerHTML = `
+                    <div style="text-align: center; padding: 10px 0;">
+                        <span style="font-size: 3.5rem;">🎉</span>
+                        <h2 style="color: ${level.dark}; font-size: 1.5rem; font-weight: 900; margin: 10px 0;">Mandou Muito Bem!</h2>
+                        <p style="font-size: 0.95rem; color: #4B4B4B; margin-bottom: 16px;">
+                            Você acertou <strong>${hits}/5 questões</strong> no Stage ${currentQuiz.stageNumber}!
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 20px;">
+                            <div style="background: ${level.light}; color: ${level.dark}; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
+                                💎 +20 FinCoins
+                            </div>
+                            <div style="background: #DEF7EC; color: #03543F; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
+                                💵 +R$ 5,00 Saldo
+                            </div>
+                        </div>
+                        ${!isAdmin ? `
+                        <div style="background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 12px; padding: 8px 12px; font-size: 0.8rem; color: #64748B; margin-bottom: 16px;">
+                            📅 Missão diária de hoje registrada! Volte amanhã para continuar sua evolução.
+                        </div>
+                        ` : `
+                        <div style="background: #FEF3C7; border: 1px dashed #F59E0B; border-radius: 12px; padding: 8px 12px; font-size: 0.8rem; color: #92400E; margin-bottom: 16px;">
+                            🛡️ Modo Admin: todas as trilhas e estágios estão 100% liberados para teste!
+                        </div>
+                        `}
+                        <button onclick="fecharQuiz()" style="width: 100%; padding: 14px; border-radius: 16px; background: ${level.primary}; color: white; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 ${level.dark};">
+                            Continuar Jornada
+                        </button>
+                    </div>
+                `;
+            } else {
+                quizBox.innerHTML = `
+                    <div style="text-align: center; padding: 10px 0;">
+                        <span style="font-size: 3.5rem;">📚</span>
+                        <h2 style="color: #FF4B4B; font-size: 1.4rem; font-weight: 900; margin: 10px 0;">Pratique Mais um Pouco</h2>
+                        <p style="font-size: 0.9rem; color: #4B4B4B; margin-bottom: 18px;">
+                            Você acertou <strong>${hits}/5 questões</strong>. Precisa de pelo menos 3 acertos para concluir o stage.
+                        </p>
+                        <button onclick="abrirQuizStage(${currentQuiz.stageNumber})" style="width: 100%; padding: 14px; border-radius: 16px; background: #FF4B4B; color: white; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 #D93838;">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function fecharQuiz() {
+            fecharModais();
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarDailyMissionBanner();
+            exibirNotificacao('Stage Concluído!', 'Recompensa creditada na sua conta Fistu.');
+        }
+
+        // --- SISTEMA BANCÁRIO (SALDO, INVESTIMENTOS, PIX, DEPÓSITO) ---
+        function formatarMoeda(val) {
+            return 'R$ ' + parseFloat(val).toFixed(2);
+        }
+
+        function alternarVisibilidadeSaldo() {
+            saldoVisivel = !saldoVisivel;
+            const elSaldo = document.getElementById('displaySaldo');
+            const elInvest = document.getElementById('displayInvestimentos');
+            const icon = document.getElementById('eyeIcon');
+
+            if (saldoVisivel) {
+                elSaldo.innerText = formatarMoeda(saldoAtual);
+                elInvest.innerText = formatarMoeda(investAtual);
+                icon.className = 'fa-solid fa-eye';
+            } else {
+                elSaldo.innerText = 'R$ ••••••';
+                elInvest.innerText = 'R$ ••••••';
+                icon.className = 'fa-solid fa-eye-slash';
+            }
+        }
+
+        function fecharModais() {
+            document.querySelectorAll('.modal-duo-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        function abrirModalInvestir(produtoNome = null) {
+            if (produtoNome) {
+                const select = document.getElementById('investProdutoSelect');
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.includes(produtoNome)) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            document.getElementById('investValorInput').value = '';
+            document.getElementById('modalInvestir').classList.add('active');
+        }
+
+        function abrirModalResgate() {
+            document.getElementById('resgateValorInput').value = '';
+            document.getElementById('modalResgate').classList.add('active');
+        }
+
+        function abrirModalDeposito() {
+            document.getElementById('depositoValorInput').value = '';
+            document.getElementById('modalDeposito').classList.add('active');
+        }
+
+        function abrirModalPix() {
+            document.getElementById('pixChaveInput').value = '';
+            document.getElementById('pixValorInput').value = '';
+            document.getElementById('modalPix').classList.add('active');
+        }
+
+        async function confirmarInvestimento() {
+            const valor = parseFloat(document.getElementById('investValorInput').value);
+            const produto = document.getElementById('investProdutoSelect').value;
+
+            if (!valor || valor <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para aplicar.', true);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuario/investir', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ valor: valor, produto: produto })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    saldoAtual = data.saldo;
+                    investAtual = data.investimentos;
+                    if (saldoVisivel) {
+                        document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                        document.getElementById('displayInvestimentos').innerText = formatarMoeda(investAtual);
+                    }
+                    fecharModais();
+                    exibirNotificacao('Aporte Realizado!', data.mensagem);
+                } else {
+                    exibirNotificacao('Erro no Aporte', data.erro, true);
+                }
+            } catch (e) {
+                exibirNotificacao('Falha', 'Erro na conexão com o servidor.', true);
+            }
+        }
+
+        async function confirmarResgate() {
+            const valor = parseFloat(document.getElementById('resgateValorInput').value);
+
+            if (!valor || valor <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para resgate.', true);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuario/resgatar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ valor: valor })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    saldoAtual = data.saldo;
+                    investAtual = data.investimentos;
+                    if (saldoVisivel) {
+                        document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                        document.getElementById('displayInvestimentos').innerText = formatarMoeda(investAtual);
+                    }
+                    fecharModais();
+                    exibirNotificacao('Resgate Realizado!', data.mensagem);
+                } else {
+                    exibirNotificacao('Erro no Resgate', data.erro, true);
+                }
+            } catch (e) {
+                exibirNotificacao('Falha', 'Erro na conexão com o servidor.', true);
+            }
+        }
+
+        async function confirmarDeposito() {
+            const valor = parseFloat(document.getElementById('depositoValorInput').value);
+
+            if (!valor || valor <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para depósito.', true);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuario/deposito', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ valor: valor })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    saldoAtual = data.saldo;
+                    if (saldoVisivel) {
+                        document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                    }
+                    fecharModais();
+                    exibirNotificacao('Depósito Concluído!', data.mensagem);
+                } else {
+                    exibirNotificacao('Erro no Depósito', data.erro, true);
+                }
+            } catch (e) {
+                exibirNotificacao('Falha', 'Erro na conexão com o servidor.', true);
+            }
+        }
+
+        async function confirmarPix() {
+            const chave = document.getElementById('pixChaveInput').value.trim();
+            const valor = parseFloat(document.getElementById('pixValorInput').value);
+
+            if (!chave) {
+                exibirNotificacao('Atenção', 'Informe a chave Pix destinatária.', true);
+                return;
+            }
+            if (!valor || valor <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para transferir.', true);
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuario/pix', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chave: chave, valor: valor })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    saldoAtual = data.saldo;
+                    if (saldoVisivel) {
+                        document.getElementById('displaySaldo').innerText = formatarMoeda(saldoAtual);
+                    }
+                    fecharModais();
+                    exibirNotificacao('Pix Enviado!', data.mensagem);
+                } else {
+                    exibirNotificacao('Falha no Pix', data.erro, true);
+                }
+            } catch (e) {
+                exibirNotificacao('Falha', 'Erro na conexão com o servidor.', true);
+            }
+        }
+
+        function exibirNotificacao(titulo, mensagem, isErro = false) {
+            const notif = document.getElementById('fistuNotification');
+            const alertBox = notif.querySelector('.succsess-alert');
+            document.getElementById('notifTitle').innerText = titulo;
+            document.getElementById('notifDesc').innerText = mensagem;
+
+            if (isErro) {
+                alertBox.style.backgroundColor = '#742A2A';
+                alertBox.style.borderColor = '#E53E3E';
+            } else {
+                alertBox.style.backgroundColor = '#12372A';
+                alertBox.style.borderColor = '#2F6B4F';
+            }
+
+            notif.style.transform = 'translateY(0)';
+            notif.style.opacity = '1';
+            setTimeout(() => fecharNotificacao(), 4000);
+        }
+
+        function fecharNotificacao() {
+            const notif = document.getElementById('fistuNotification');
+            if (notif) {
+                notif.style.transform = 'translateY(-100px)';
+                notif.style.opacity = '0';
+            }
+        }
+
+        window.onload = () => {
+            atualizarStatsBar();
+            renderLevelTabs();
+            atualizarDailyMissionBanner();
+            renderDuoPath();
+        };
+    </script>
+</body>
+</html>

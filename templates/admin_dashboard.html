@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fistu - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #F4FAF6;
+            --sidebar-bg: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --primary-dark: #12372A;
+            --primary-green: #2F6B4F;
+            --mint-light: #E8F5E9;
+            --mint-vibrant: #10B981;
+            --mint-subtle: #86EFAC;
+            --accent-soft: #D1FAE5;
+            --text-dark: #12372A;
+            --text-muted: #64748B;
+            --border-light: #E2E8F0;
+            --shadow-sm: 0 2px 6px rgba(18, 55, 42, 0.04);
+            --shadow-md: 0 8px 24px rgba(18, 55, 42, 0.08);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px 24px 10px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 20px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-dark);
+            color: #FFFFFF;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 1.1rem;
+            font-weight: 900;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--primary-dark);
+        }
+
+        .brand-badge {
+            background: var(--mint-light);
+            color: var(--primary-green);
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item i {
+            font-size: 1.05rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: var(--mint-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-item.active {
+            background: #E8F5E9;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        .nav-item.active i {
+            color: var(--primary-green);
+        }
+
+        .sidebar-footer-card {
+            background: linear-gradient(135deg, #12372A, #244E3B);
+            color: #FFFFFF;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .sidebar-footer-card i {
+            font-size: 1.5rem;
+            color: var(--mint-subtle);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .sidebar-footer-card h5 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-footer-card p {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            line-height: 1.3;
+        }
+
+        /* --- MAIN WRAPPER --- */
+        .main-wrapper {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- TOPBAR --- */
+        .topbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .search-box {
+            position: relative;
+            width: 280px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px 8px 36px;
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            background: #F8FAFC;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-green);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(47, 107, 79, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 0.85rem;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: var(--mint-light);
+            color: var(--primary-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--mint-vibrant);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border-light);
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--mint-light);
+            color: var(--primary-dark);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: 2px solid var(--primary-green);
+        }
+
+        .admin-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .admin-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .admin-role {
+            font-size: 0.7rem;
+            color: var(--primary-green);
+            font-weight: 800;
+        }
+
+        /* --- DASHBOARD CONTENT --- */
+        .content {
+            padding: 24px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 3 METRIC TILES */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-info h6 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .metric-info h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .metric-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .badge-positive { background: var(--mint-light); color: var(--primary-green); }
+        .badge-neutral { background: #F1F5F9; color: #475569; }
+
+        .metric-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.3rem;
+            background: var(--mint-light);
+            color: var(--primary-green);
+        }
+
+        /* --- MAIN 3-COLUMN SECTIONS (MATCHING MOCKUP) --- */
+        .dashboard-main-grid {
+            display: grid;
+            grid-template-columns: 310px 1fr 300px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* COLUMN 1: CARDS, LIMIT, SAVINGS */
+        .col-left {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* BLACK / DARK GREEN CARD */
+        .master-card {
+            background: linear-gradient(135deg, #12372A, #1e4a36);
+            border-radius: 20px;
+            padding: 22px;
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(18, 55, 42, 0.25);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-chip {
+            width: 34px;
+            height: 26px;
+            background: #D4AF37;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .card-waves {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .card-holder {
+            font-size: 0.82rem;
+            opacity: 0.85;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .card-balance-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .card-balance-val {
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 700;
+        }
+
+        /* QUICK ACTIONS */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #FFFFFF;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-dark);
+            font-size: 0.72rem;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--mint-light);
+            color: var(--primary-green);
+            display: grid;
+            place-items: center;
+            font-size: 0.95rem;
+        }
+
+        /* DAILY LIMIT */
+        .widget-box {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .widget-header h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .widget-header span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .progress-bar-wrap {
+            height: 8px;
+            background: #F1F5F9;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--mint-vibrant);
+            border-radius: 10px;
+        }
+
+        /* SAVINGS PLANS */
+        .savings-item {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .savings-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .savings-info span:first-child {
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .savings-info span:last-child {
+            color: var(--text-muted);
+        }
+
+        /* COLUMN 2: CASHFLOW CHART & RECENT TRANSACTIONS */
+        .col-center {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* CASHFLOW BOX */
+        .cashflow-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .cashflow-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .cashflow-balance h5 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .cashflow-balance h2 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .cashflow-legend {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot-dark { width: 10px; height: 10px; border-radius: 3px; background: #12372A; }
+        .legend-dot-light { width: 10px; height: 10px; border-radius: 3px; background: #86EFAC; }
+
+        /* CASHFLOW BAR CHART VISUAL */
+        .bars-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 180px;
+            padding-top: 15px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bar-group:hover {
+            transform: scale(1.05);
+        }
+
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 140px;
+        }
+
+        .bar-dark {
+            width: 10px;
+            background: #12372A;
+            border-radius: 3px 3px 0 0;
+            transition: height 0.3s;
+        }
+
+        .bar-light {
+            width: 10px;
+            background: #86EFAC;
+            border-radius: 3px 3px 0 0;
+            transition: height 0.3s;
+        }
+
+        .bar-label {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* RECENT TRANSACTIONS TABLE */
+        .table-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #F1F5F9;
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .merchant-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .merchant-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--mint-light);
+            color: var(--primary-green);
+            display: grid;
+            place-items: center;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status-completed { background: #DEF7EC; color: #03543F; }
+        .status-pending { background: #FEF08A; color: #854D0E; }
+
+        /* USER MANAGEMENT DB SECTION */
+        .user-mgmt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .btn-action-small {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action-small:hover {
+            background: var(--primary-dark);
+        }
+
+        /* COLUMN 3: STATISTIC DONUT & RECENT ACTIVITY */
+        .col-right {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .donut-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+
+        .donut-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 15px auto;
+        }
+
+        .donut-wrapper svg {
+            transform: rotate(-90deg);
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            line-height: 1.1;
+        }
+
+        .donut-center-text span {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .donut-center-text h4 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .donut-legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .donut-legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+        }
+
+        .donut-legend-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .donut-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .donut-legend-val {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* RECENT ACTIVITY TIMELINE */
+        .activity-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timeline-section-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin: 10px 0 8px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--mint-vibrant);
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .timeline-text {
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .timeline-text strong {
+            color: var(--primary-dark);
+            display: block;
+        }
+
+        .timeline-text small {
+            color: var(--text-muted);
+            font-size: 0.68rem;
+        }
+
+        /* MODAL DE EDIÇÃO DE SALDO */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 55, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            width: 90%;
+            max-width: 420px;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .modal-card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+        }
+
+        .modal-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #F1F5F9;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .btn-confirm {
+            background: var(--primary-dark);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-confirm:hover {
+            background: var(--primary-green);
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-main-grid {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand-logo">
+            <div class="brand-icon">F</div>
+            <div>
+                <div class="brand-name">FISTU</div>
+                <span class="brand-badge">ADMIN DASHBOARD</span>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="{{ url_for('admin_dashboard') }}" class="nav-item active">
+                <i class="fa-solid fa-table-columns"></i>
+                Dashboard
+            </a>
+            <a href="#tabela-usuarios" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                Usuários & Saldos
+            </a>
+            <a href="#tabela-transacoes" class="nav-item">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+                Transações
+            </a>
+            <a href="#cashflow-section" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                Fluxo de Caixa
+            </a>
+            <a href="{{ url_for('home') }}" class="nav-item">
+                <i class="fa-solid fa-wallet"></i>
+                Visão do Cliente
+            </a>
+            <a href="{{ url_for('logout') }}" class="nav-item" style="color: #E53E3E; margin-top: auto;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Sair
+            </a>
+        </nav>
+
+        <div class="sidebar-footer-card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h5>Acesso Total Master</h5>
+            <p>Controle de saldos, usuários cadastrados e auditoria em tempo real.</p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Buscar usuário, transação..." id="adminSearchInput" onkeyup="filtrarUsuarios()">
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    Supabase PostgreSQL Ativo
+                </div>
+                
+                <div class="admin-profile">
+                    <div class="admin-avatar">AD</div>
+                    <div class="admin-text">
+                        <span class="admin-name">{{ admin.nome }}</span>
+                        <span class="admin-role">Super Admin</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD CONTAINER -->
+        <main class="content">
+
+            <!-- 3 SUMMARY METRIC TILES -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-info">
+                        <h6>Entradas Totais</h6>
+                        <h3>R$ 78.000,00</h3>
+                        <span class="metric-badge badge-positive">
+                            <i class="fa-solid fa-arrow-trend-up"></i> +12% este mês
+                        </span>
+                    </div>
+                    <div class="metric-icon-box">
+                        <i class="fa-solid fa-arrow-down-left"></i>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-info">
+                        <h6>Despesas do Sistema</h6>
+                        <h3>R$ 43.000,00</h3>
+                        <span class="metric-badge badge-neutral">
+                            <i class="fa-solid fa-arrow-trend-down"></i> -4% controlado
+                        </span>
+                    </div>
+                    <div class="metric-icon-box" style="background: #FEE2E2; color: #DC2626;">
+                        <i class="fa-solid fa-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-info">
+                        <h6>Total Investido / Poupança</h6>
+                        <h3>R$ {{ "%.2f"|format(admin.total_investimentos) }}</h3>
+                        <span class="metric-badge badge-positive">
+                            <i class="fa-solid fa-vault"></i> {{ admin.total_usuarios }} correntistas
+                        </span>
+                    </div>
+                    <div class="metric-icon-box" style="background: #FEF3C7; color: #D97706;">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3-COLUMN STRUCTURE (MATCHING REFERENCE IMAGE) -->
+            <div class="dashboard-main-grid">
+
+                <!-- COLUMN 1: MASTER CARD, ACTIONS, LIMIT, SAVINGS -->
+                <div class="col-left">
+                    
+                    <!-- MASTER CARD -->
+                    <div class="master-card">
+                        <div class="card-top">
+                            <div class="card-chip"></div>
+                            <i class="fa-solid fa-wifi card-waves"></i>
+                        </div>
+                        <div class="card-holder">{{ admin.nome }}</div>
+                        <div class="card-balance-label">Saldo Total sob Gestão</div>
+                        <div class="card-balance-val">R$ {{ "%.2f"|format(admin.total_saldo) }}</div>
+                        <div class="card-bottom">
+                            <span>EXP: 05/29</span>
+                            <span>CVV: 323</span>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="alert('Função de aporte direto selecionada.')">
+                            <div class="action-icon"><i class="fa-solid fa-plus"></i></div>
+                            <span>Aporte</span>
+                        </button>
+                        <button class="action-btn" onclick="alert('Função de transferência bancária.')">
+                            <div class="action-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                            <span>Transferir</span>
+                        </button>
+                        <button class="action-btn" onclick="alert('Solicitação de liquidez gerada.')">
+                            <div class="action-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <span>Cobrar</span>
+                        </button>
+                        <button class="action-btn" onclick="alert('Histórico de conciliação atualizado.')">
+                            <div class="action-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                            <span>Histórico</span>
+                        </button>
+                    </div>
+
+                    <!-- DAILY LIMIT -->
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4>Limite Diário Operacional</h4>
+                            <span>34%</span>
+                        </div>
+                        <p style="font-size: 0.85rem; font-weight: 800; color: var(--primary-dark);">
+                            R$ 3.400,00 <span style="font-weight: 500; font-size: 0.72rem; color: var(--text-muted);">de R$ 10.000,00</span>
+                        </p>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-fill" style="width: 34%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- SAVING PLANS -->
+                    <div class="widget-box">
+                        <div class="widget-header">
+                            <h4>Planos de Poupança</h4>
+                            <span style="color: var(--primary-green); font-weight: 800; cursor: pointer;">+ Novo</span>
+                        </div>
+                        
+                        <div class="savings-item">
+                            <div class="savings-info">
+                                <span><i class="fa-solid fa-triangle-exclamation" style="color: #F59E0B;"></i> Reserva de Emergência</span>
+                                <span>R$ 38.000 / R$ 50k</span>
+                            </div>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 76%; background: #F59E0B;"></div>
+                            </div>
+                        </div>
+
+                        <div class="savings-item">
+                            <div class="savings-info">
+                                <span><i class="fa-solid fa-plane" style="color: #3B82F6;"></i> Fundo de Férias</span>
+                                <span>R$ 18.000 / R$ 25k</span>
+                            </div>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 72%; background: #3B82F6;"></div>
+                            </div>
+                        </div>
+
+                        <div class="savings-item">
+                            <div class="savings-info">
+                                <span><i class="fa-solid fa-house" style="color: var(--primary-green);"></i> Entrada Imobiliária</span>
+                                <span>R$ 28.500 / R$ 100k</span>
+                            </div>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 28%; background: var(--primary-green);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COLUMN 2: CASHFLOW CHART & RECENT TRANSACTIONS + USER MANAGEMENT -->
+                <div class="col-center">
+                    
+                    <!-- CASHFLOW BAR CHART (COINEST DESIGN) -->
+                    <div class="cashflow-card" id="cashflow-section">
+                        <div class="cashflow-header">
+                            <div class="cashflow-balance">
+                                <h5>Fluxo de Caixa Anual (Cashflow)</h5>
+                                <h2>R$ 562.000,00</h2>
+                            </div>
+                            <div class="cashflow-legend">
+                                <div class="legend-item"><span class="legend-dot-dark"></span> Entradas</div>
+                                <div class="legend-item"><span class="legend-dot-light"></span> Saídas</div>
+                            </div>
+                        </div>
+
+                        <!-- BARS -->
+                        <div class="bars-chart">
+                            <div class="bar-group" title="Jan: +R$ 6.000 | -R$ 4.000">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 75px;"></div>
+                                    <div class="bar-light" style="height: 50px;"></div>
+                                </div>
+                                <span class="bar-label">Jan</span>
+                            </div>
+                            <div class="bar-group" title="Fev: +R$ 8.500 | -R$ 5.200">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 95px;"></div>
+                                    <div class="bar-light" style="height: 60px;"></div>
+                                </div>
+                                <span class="bar-label">Fev</span>
+                            </div>
+                            <div class="bar-group" title="Mar: +R$ 7.200 | -R$ 4.800">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 85px;"></div>
+                                    <div class="bar-light" style="height: 55px;"></div>
+                                </div>
+                                <span class="bar-label">Mar</span>
+                            </div>
+                            <div class="bar-group" title="Abr: +R$ 9.100 | -R$ 6.000">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 110px;"></div>
+                                    <div class="bar-light" style="height: 70px;"></div>
+                                </div>
+                                <span class="bar-label">Abr</span>
+                            </div>
+                            <div class="bar-group" title="Mai: +R$ 10.400 | -R$ 6.800">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 125px;"></div>
+                                    <div class="bar-light" style="height: 80px;"></div>
+                                </div>
+                                <span class="bar-label">Mai</span>
+                            </div>
+                            <div class="bar-group" title="Jun: +R$ 8.900 | -R$ 5.500">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 100px;"></div>
+                                    <div class="bar-light" style="height: 65px;"></div>
+                                </div>
+                                <span class="bar-label">Jun</span>
+                            </div>
+                            <div class="bar-group" title="Jul: +R$ 11.200 | -R$ 7.100">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 130px;"></div>
+                                    <div class="bar-light" style="height: 85px;"></div>
+                                </div>
+                                <span class="bar-label">Jul</span>
+                            </div>
+                            <div class="bar-group" title="Ago: +R$ 9.800 | -R$ 6.200">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 115px;"></div>
+                                    <div class="bar-light" style="height: 72px;"></div>
+                                </div>
+                                <span class="bar-label">Ago</span>
+                            </div>
+                            <div class="bar-group" title="Set: +R$ 12.000 | -R$ 7.900">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 138px;"></div>
+                                    <div class="bar-light" style="height: 90px;"></div>
+                                </div>
+                                <span class="bar-label">Set</span>
+                            </div>
+                            <div class="bar-group" title="Out: +R$ 10.500 | -R$ 6.500">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 120px;"></div>
+                                    <div class="bar-light" style="height: 75px;"></div>
+                                </div>
+                                <span class="bar-label">Out</span>
+                            </div>
+                            <div class="bar-group" title="Nov: +R$ 11.800 | -R$ 7.400">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 132px;"></div>
+                                    <div class="bar-light" style="height: 82px;"></div>
+                                </div>
+                                <span class="bar-label">Nov</span>
+                            </div>
+                            <div class="bar-group" title="Dez: +R$ 13.500 | -R$ 8.900">
+                                <div class="bars-container">
+                                    <div class="bar-dark" style="height: 140px;"></div>
+                                    <div class="bar-light" style="height: 95px;"></div>
+                                </div>
+                                <span class="bar-label">Dez</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USER MANAGEMENT TABLE (LIVE SUPABASE USERS) -->
+                    <div class="table-card" id="tabela-usuarios">
+                        <div class="user-mgmt-header">
+                            <div>
+                                <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--primary-dark);">Gestão de Usuários do Sistema</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);">Saldos e cargos cadastrados no Supabase PostgreSQL</p>
+                            </div>
+                            <span class="brand-badge" style="padding: 4px 8px;">{{ usuarios|length }} Registrados</span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Usuário</th>
+                                        <th>Cargo</th>
+                                        <th>Saldo em Conta</th>
+                                        <th>Investimentos</th>
+                                        <th>Ações de Admin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for u in usuarios %}
+                                    <tr data-user-row="{{ u.id }}">
+                                        <td>#{{ u.id }}</td>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-user"></i></div>
+                                                <div>
+                                                    <span style="display:block;">{{ u.nome or 'Sem Nome' }}</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem;">{{ u.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if u.tipo == 'admin' %}
+                                            <span class="status-badge" style="background: #12372A; color: #FFFFFF;">🛡️ Admin</span>
+                                            {% else %}
+                                            <span class="status-badge status-completed">👤 Usuário</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>R$ {{ "%.2f"|format(u.saldo or 0) }}</strong></td>
+                                        <td><strong style="color: var(--primary-green);">R$ {{ "%.2f"|format(u.investimentos or 0) }}</strong></td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action-small" onclick="abrirModalEdicao({{ u.id }}, '{{ u.nome }}', {{ u.saldo or 0 }}, {{ u.investimentos or 0 }})" title="Editar Saldos">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                                {% if u.tipo == 'admin' %}
+                                                <button class="btn-action-small" style="background: #D97706;" onclick="alterarTipoUsuario({{ u.id }}, 'usuario')" title="Rebaixar a Usuário">
+                                                    <i class="fa-solid fa-user-minus"></i>
+                                                </button>
+                                                {% else %}
+                                                <button class="btn-action-small" style="background: #12372A;" onclick="alterarTipoUsuario({{ u.id }}, 'admin')" title="Promover a Admin">
+                                                    <i class="fa-solid fa-shield"></i>
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- RECENT TRANSACTIONS TABLE (MATCHING MOCKUP) -->
+                    <div class="table-card" id="tabela-transacoes">
+                        <div class="widget-header">
+                            <h4>Transações Financeiras Recentes</h4>
+                            <span style="font-weight: 700; color: var(--primary-green);">Este Mês <i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Data & Hora</th>
+                                        <th>Valor</th>
+                                        <th>Categoria</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-bolt"></i></div>
+                                                <div>
+                                                    <span>Conta de Energia</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem; display:block;">Enel Distribuição</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2026-03-15 <small style="color: var(--text-muted);">14:20</small></td>
+                                        <td style="color: #DC2626; font-weight: 700;">- R$ 245,20</td>
+                                        <td>Moradia</td>
+                                        <td><span class="status-badge status-completed">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+                                                <div>
+                                                    <span>Supermercado</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem; display:block;">Pão de Açúcar</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2026-03-09 <small style="color: var(--text-muted);">18:45</small></td>
+                                        <td style="color: #DC2626; font-weight: 700;">- R$ 487,00</td>
+                                        <td>Alimentação</td>
+                                        <td><span class="status-badge status-completed">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                                                <div>
+                                                    <span>Tesouro IPCA+ 2029</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem; display:block;">Aporte Direto Fistu</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2026-03-08 <small style="color: var(--text-muted);">10:30</small></td>
+                                        <td style="color: var(--primary-green); font-weight: 700;">+ R$ 820,00</td>
+                                        <td>Investimento</td>
+                                        <td><span class="status-badge status-completed">Concluído</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-film"></i></div>
+                                                <div>
+                                                    <span>Cinema & Lazer</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem; display:block;">Cinemark Iguatemi</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2026-03-07 <small style="color: var(--text-muted);">21:15</small></td>
+                                        <td style="color: #DC2626; font-weight: 700;">- R$ 97,50</td>
+                                        <td>Entretenimento</td>
+                                        <td><span class="status-badge status-pending">Pendente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="merchant-cell">
+                                                <div class="merchant-icon"><i class="fa-solid fa-utensils"></i></div>
+                                                <div>
+                                                    <span>Restaurante Italiano</span>
+                                                    <small style="color: var(--text-muted); font-size: 0.7rem; display:block;">Nonna Mia Trattoria</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>2026-03-01 <small style="color: var(--text-muted);">13:00</small></td>
+                                        <td style="color: #DC2626; font-weight: 700;">- R$ 184,00</td>
+                                        <td>Alimentação</td>
+                                        <td><span class="status-badge status-completed">Concluído</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COLUMN 3: STATISTIC DONUT & RECENT ACTIVITY -->
+                <div class="col-right">
+                    
+                    <!-- STATISTIC DONUT -->
+                    <div class="donut-card">
+                        <div class="widget-header" style="margin-bottom: 5px;">
+                            <h4>Estatísticas</h4>
+                            <span style="font-weight: 700; color: var(--primary-green);">Este Mês</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Despesas por Categoria</p>
+
+                        <!-- DONUT SVG -->
+                        <div class="donut-wrapper">
+                            <svg width="140" height="140" viewBox="0 0 42 42">
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#E2E8F0" stroke-width="5"></circle>
+                                <!-- Segment 1: Moradia (55%) -->
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#12372A" stroke-width="5" stroke-dasharray="55 45" stroke-dashoffset="0"></circle>
+                                <!-- Segment 2: Investimentos (22%) -->
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#10B981" stroke-width="5" stroke-dasharray="22 78" stroke-dashoffset="-55"></circle>
+                                <!-- Segment 3: Educação (11%) -->
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#86EFAC" stroke-width="5" stroke-dasharray="11 89" stroke-dashoffset="-77"></circle>
+                                <!-- Segment 4: Alimentação (12%) -->
+                                <circle cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#F59E0B" stroke-width="5" stroke-dasharray="12 88" stroke-dashoffset="-88"></circle>
+                            </svg>
+                            <div class="donut-center-text">
+                                <span>Despesas</span>
+                                <h4>R$ 3.500</h4>
+                            </div>
+                        </div>
+
+                        <!-- LEGEND -->
+                        <div class="donut-legend-list">
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-title">
+                                    <span class="donut-legend-dot" style="background: #12372A;"></span>
+                                    Aluguel & Moradia
+                                </span>
+                                <span class="donut-legend-val">R$ 2.100</span>
+                            </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-title">
+                                    <span class="donut-legend-dot" style="background: #10B981;"></span>
+                                    Investimentos
+                                </span>
+                                <span class="donut-legend-val">R$ 820</span>
+                            </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-title">
+                                    <span class="donut-legend-dot" style="background: #86EFAC;"></span>
+                                    Educação
+                                </span>
+                                <span class="donut-legend-val">R$ 400</span>
+                            </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-title">
+                                    <span class="donut-legend-dot" style="background: #F59E0B;"></span>
+                                    Alimentação
+                                </span>
+                                <span class="donut-legend-val">R$ 280</span>
+                            </div>
+                            <div class="donut-legend-item">
+                                <span class="donut-legend-title">
+                                    <span class="donut-legend-dot" style="background: #94A3B8;"></span>
+                                    Entretenimento
+                                </span>
+                                <span class="donut-legend-val">R$ 175</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RECENT ACTIVITY FEED -->
+                    <div class="activity-card">
+                        <div class="widget-header">
+                            <h4>Atividades Recentes</h4>
+                            <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted); cursor: pointer;"></i>
+                        </div>
+
+                        <div class="timeline-section-title">Hoje</div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-text">
+                                <strong>{{ admin.nome }} logou no painel</strong>
+                                <small>Sessão de auditoria iniciada às 10:14</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-dot" style="background: #3B82F6;"></div>
+                            <div class="timeline-text">
+                                <strong>Novo aporte em CDI confirmado</strong>
+                                <small>Aplicação de R$ 1.200 realizada às 09:20</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-dot" style="background: var(--primary-green);"></div>
+                            <div class="timeline-text">
+                                <strong>Meta de Poupança atingida</strong>
+                                <small>Fundo de Emergência ultrapassou 75%</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-section-title">Ontem</div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-dot" style="background: #94A3B8;"></div>
+                            <div class="timeline-text">
+                                <strong>Sincronização de Banco de Dados</strong>
+                                <small>Tabelas do Supabase atualizadas com sucesso</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-dot" style="background: #F59E0B;"></div>
+                            <div class="timeline-text">
+                                <strong>Transação Pix processada</strong>
+                                <small>Liquidação instantânea concluída</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE SALDOS DE USUÁRIO -->
+    <div class="modal-overlay" id="modalEdicaoUsuario">
+        <div class="modal-card">
+            <h3>Editar Saldos do Usuário</h3>
+            <p id="modalUserDesc">Atualize o saldo de conta corrente e investimentos no banco de dados.</p>
+            
+            <input type="hidden" id="editUserId">
+
+            <div class="form-group">
+                <label>Saldo em Conta Corrente (R$)</label>
+                <input type="number" step="0.01" id="editSaldoInput">
+            </div>
+
+            <div class="form-group">
+                <label>Total em Investimentos (R$)</label>
+                <input type="number" step="0.01" id="editInvestimentosInput">
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="btn-cancel" onclick="fecharModalEdicao()">Cancelar</button>
+                <button type="button" class="btn-confirm" onclick="salvarSaldosUsuario()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filtrarUsuarios() {
+            const query = document.getElementById('adminSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tbody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        function abrirModalEdicao(id, nome, saldo, investimentos) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('modalUserDesc').innerText = `Alterando saldos de: ${nome} (#${id})`;
+            document.getElementById('editSaldoInput').value = parseFloat(saldo).toFixed(2);
+            document.getElementById('editInvestimentosInput').value = parseFloat(investimentos).toFixed(2);
+            document.getElementById('modalEdicaoUsuario').classList.add('active');
+        }
+
+        function fecharModalEdicao() {
+            document.getElementById('modalEdicaoUsuario').classList.remove('active');
+        }
+
+        async function salvarSaldosUsuario() {
+            const id = document.getElementById('editUserId').value;
+            const saldo = document.getElementById('editSaldoInput').value;
+            const investimentos = document.getElementById('editInvestimentosInput').value;
+
+            try {
+                const res = await fetch(`/api/admin/usuario/${id}/saldo`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ saldo: saldo, investimentos: investimentos })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Saldos atualizados com sucesso no Supabase!');
+                    window.location.reload();
+                } else {
+                    alert(data.erro || 'Erro ao atualizar saldos.');
+                }
+            } catch (e) {
+                alert('Erro na requisição ao servidor.');
+            }
+        }
+
+        async function alterarTipoUsuario(id, novoTipo) {
+            if (!confirm(`Deseja realmente alterar o cargo deste usuário para ${novoTipo.toUpperCase()}?`)) return;
+
+            try {
+                const res = await fetch(`/api/admin/usuario/${id}/tipo`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ tipo: novoTipo })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`Cargo alterado para ${novoTipo.toUpperCase()} com sucesso!`);
+                    window.location.reload();
+                } else {
+                    alert(data.erro || 'Erro ao alterar cargo.');
+                }
+            } catch (e) {
+                alert('Erro na requisição ao servidor.');
+            }
+        }
+    </script>
+</body>
+</html>
