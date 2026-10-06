@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fistu - Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
 
@@ -48,12 +48,6 @@
                 <a href="javascript:void(0)" class="forgot-link" onclick="toggleForgotCard(true)">Esqueceu sua senha?</a>
 
                 <button type="submit" class="btn-primary">ENTRAR</button>
-                <a href="{{ url_for('admin_login') }}" class="admin-access-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                    Acesso Administrativo
-                </a>
             </form>
 
             <div class="card-forgot-overlay" id="forgotOverlay">

@@ -26,6 +26,7 @@ wheels/
 # Ambiente e Chaves Secretas (NUNCA SUBIR)
 .env
 .env.local
+env
 
 # Node & Frontend
 node_modules/

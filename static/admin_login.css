@@ -1,0 +1,49 @@
+.admin-badge-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #12372A;
+            color: #BFD8C2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .side-left h1 {
+            color: #12372A;
+            margin-bottom: 6px;
+        }
+
+        .admin-sub {
+            font-size: 0.82rem;
+            color: #556B5A;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .security-badge {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: #2F6B4F;
+            background: rgba(47, 107, 79, 0.08);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .demo-cred-box {
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: #2F6B4F;
+            background: #E8F5E9;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px dashed #A5D6A7;
+            text-align: center;
+        }

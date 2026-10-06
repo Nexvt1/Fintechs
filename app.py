@@ -43,24 +43,69 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from dotenv import load_dotenv
 
-# Carrega as variáveis do arquivo .env
-load_dotenv()
+# Carrega as variáveis do arquivo .env ou env no diretório do projeto
+basedir = os.path.dirname(os.path.abspath(__file__))
+env_arquivos = [
+    os.path.join(basedir, '.env'),
+    os.path.join(basedir, 'env'),
+    '.env',
+    'env'
+]
+
+carregado = False
+for arquivo in env_arquivos:
+    if os.path.isfile(arquivo):
+        load_dotenv(arquivo, override=True)
+        carregado = True
+
+if not carregado:
+    load_dotenv(override=True)
 
 app = Flask(__name__)
 
-# --- CONFIGURAÇÃO DA CHAVE SECRETA E SESSÃO PERMANENTE ---
-app.secret_key = os.getenv('SECRET_KEY', 'chave_padrao_caso_nao_encontre')
+# --- CONFIGURAÇÃO DA CHAVE SECRETA E SESSÃO PERMANENTE (LIDAS DO ENV) ---
+app.secret_key = os.getenv('SECRET_KEY') or os.getenv('FLASK_SECRET_KEY') or 'chave_padrao_caso_nao_encontre'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-# --- CONFIGURAÇÃO DO BANCO DE DADOS (SUPABASE / POSTGRESQL) ---
-db_url = os.getenv('DATABASE_URL')
-if db_url and db_url.startswith("postgresql://"):
+# --- CONFIGURAÇÕES DO SUPABASE OBTIDAS DO ENV ---
+SUPABASE_URL = os.getenv('SUPABASE_URL') or os.getenv('VITE_SUPABASE_URL')
+SUPABASE_ANON_KEY = (
+    os.getenv('SUPABASE_ANON_KEY')
+    or os.getenv('SUPABASE_KEY')
+    or os.getenv('VITE_SUPABASE_ANON_KEY')
+)
+SUPABASE_SERVICE_ROLE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY')
+
+app.config['SUPABASE_URL'] = SUPABASE_URL
+app.config['SUPABASE_ANON_KEY'] = SUPABASE_ANON_KEY
+
+# --- CONFIGURAÇÃO DO BANCO DE DADOS (SUPABASE / POSTGRESQL OBTIDO DO ENV) ---
+db_url = (
+    os.getenv('DATABASE_URL')
+    or os.getenv('SUPABASE_DATABASE_URL')
+    or os.getenv('SUPABASE_DB_URL')
+    or os.getenv('POSTGRES_URL')
+)
+
+if not db_url:
+    raise RuntimeError(
+        "Erro de configuração: DATABASE_URL não foi encontrada no arquivo de ambiente (.env ou env). "
+        "Defina DATABASE_URL no seu arquivo env com a string de conexão do Supabase PostgreSQL."
+    )
+
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+psycopg2://"):
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+}
 
 db = SQLAlchemy(app)
 
@@ -125,7 +170,7 @@ def init_db():
             )
         '''))
 
-        # Garante que as colunas saldo e investimentos existem
+        # Garante que as colunas saldo, investimentos e personalização existem
         try:
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS saldo NUMERIC DEFAULT 1500.00'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS investimentos NUMERIC DEFAULT 3200.00'))
@@ -136,6 +181,11 @@ def init_db():
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_hearts INTEGER DEFAULT 5'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_nivel_atual INTEGER DEFAULT 0'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_ultima_missao TEXT'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS modo_anonimo_padrao BOOLEAN DEFAULT FALSE'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS notificar_status BOOLEAN DEFAULT TRUE'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS tema TEXT DEFAULT \'escuro\''))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS foto_perfil TEXT'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS tom_verde TEXT DEFAULT \'#0b3d2c\''))
             db.session.execute(text('UPDATE "Usuarios" SET saldo = 1500.00 WHERE saldo IS NULL'))
             db.session.execute(text('UPDATE "Usuarios" SET investimentos = 3200.00 WHERE investimentos IS NULL'))
             db.session.commit()
@@ -150,14 +200,16 @@ def init_db():
         except Exception:
             db.session.rollback()
 
-        # Garante usuário administrador padrão (admin@fistu.com / admin123)
+        # Garante usuário administrador padrão (lido do env com fallback)
         try:
             admin_check = db.session.execute(text("SELECT id FROM \"Usuarios\" WHERE tipo = 'admin'")).fetchone()
             if not admin_check:
+                admin_email = os.getenv('ADMIN_EMAIL', 'admin@fistu.com')
+                admin_password = os.getenv('ADMIN_PASSWORD', 'admin123')
                 db.session.execute(text('''
                     INSERT INTO "Usuarios" (nome, email, senha_hash, tipo, saldo, investimentos)
-                    VALUES ('Administrador', 'admin@fistu.com', :senha, 'admin', 50000.00, 120000.00)
-                '''), {'senha': generate_password_hash('admin123')})
+                    VALUES ('Administrador', :email, :senha, 'admin', 50000.00, 120000.00)
+                '''), {'email': admin_email, 'senha': generate_password_hash(admin_password)})
                 db.session.commit()
         except Exception:
             db.session.rollback()
@@ -175,6 +227,23 @@ def init_db():
         db.session.commit()
 
 init_db()
+
+# --- CONTEXT PROCESSOR E ENDPOINTS DE CONFIGURAÇÃO DO SUPABASE ---
+@app.context_processor
+def inject_supabase_config():
+    """Disponibiliza as credenciais públicas do Supabase para todos os templates."""
+    return {
+        'SUPABASE_URL': app.config.get('SUPABASE_URL'),
+        'SUPABASE_ANON_KEY': app.config.get('SUPABASE_ANON_KEY')
+    }
+
+@app.route('/api/config/supabase', methods=['GET'])
+def api_supabase_config():
+    """Retorna as configurações do Supabase (URL e Anon Key) obtidas exclusivamente do arquivo env."""
+    return jsonify({
+        'supabase_url': app.config.get('SUPABASE_URL'),
+        'supabase_anon_key': app.config.get('SUPABASE_ANON_KEY')
+    })
 
 # --- ROTAS DE CONFIGURAÇÕES DE USUÁRIO ---
 @app.route('/configuracoes')
@@ -234,14 +303,20 @@ def home():
     if 'usuario_email' not in session:
         return redirect(url_for('login'))
         
+    campos = (
+        'id, nome, email, tipo, saldo, investimentos, '
+        'trilha_progresso, trilha_xp, trilha_streak, trilha_coins, '
+        'trilha_hearts, trilha_nivel_atual, trilha_ultima_missao, '
+        'modo_anonimo_padrao, notificar_status, tema, foto_perfil, tom_verde'
+    )
     usuario_db = db.session.execute(
-        text('SELECT id, nome, email, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" WHERE id = :id'),
+        text(f'SELECT {campos} FROM "Usuarios" WHERE id = :id'),
         {'id': session.get('user_id')}
     ).mappings().fetchone()
     
     if not usuario_db:
         usuario_db = db.session.execute(
-            text('SELECT id, nome, email, tipo, saldo, investimentos, trilha_progresso, trilha_xp, trilha_streak, trilha_coins, trilha_hearts, trilha_nivel_atual, trilha_ultima_missao FROM "Usuarios" WHERE email = :email'),
+            text(f'SELECT {campos} FROM "Usuarios" WHERE email = :email'),
             {'email': session.get('usuario_email')}
         ).mappings().fetchone()
         
@@ -254,6 +329,53 @@ def home():
     session['usuario_tipo'] = usuario_db['tipo'] or 'usuario'
     
     return render_template('home.html', usuario=usuario_db)
+
+@app.route('/api/usuario/personalizacao', methods=['POST'])
+def api_usuario_personalizacao():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'erro': 'Não autorizado'}), 401
+
+    dados = request.get_json() or {}
+    nome = dados.get('nome')
+    tema = dados.get('tema')
+    tom_verde = dados.get('tom_verde')
+    foto_perfil = dados.get('foto_perfil')
+    notificar_status = dados.get('notificar_status')
+    modo_anonimo = dados.get('modo_anonimo')
+
+    try:
+        updates = []
+        params = {'id': user_id}
+        if nome is not None and str(nome).strip():
+            updates.append("nome = :nome")
+            params['nome'] = str(nome).strip()
+            session['usuario_nome'] = str(nome).strip()
+        if tema is not None:
+            updates.append("tema = :tema")
+            params['tema'] = str(tema)
+        if tom_verde is not None:
+            updates.append("tom_verde = :tom_verde")
+            params['tom_verde'] = str(tom_verde)
+        if foto_perfil is not None:
+            updates.append("foto_perfil = :foto_perfil")
+            params['foto_perfil'] = str(foto_perfil)
+        if notificar_status is not None:
+            updates.append("notificar_status = :notificar")
+            params['notificar'] = bool(notificar_status)
+        if modo_anonimo is not None:
+            updates.append("modo_anonimo_padrao = :anonimo")
+            params['anonimo'] = bool(modo_anonimo)
+
+        if updates:
+            sql_query = f'UPDATE "Usuarios" SET {", ".join(updates)} WHERE id = :id'
+            db.session.execute(text(sql_query), params)
+            db.session.commit()
+
+        return jsonify({'sucesso': True, 'mensagem': 'Personalizações salvas no Supabase!'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'erro': f'Erro ao salvar: {str(e)}'}), 500
 
 # --- ROTAS DE ACESSO ADMINISTRATIVO ---
 @app.route('/admin')
