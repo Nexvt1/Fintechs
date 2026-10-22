@@ -80,8 +80,19 @@ $ManifestXml = @'
     android:versionCode="2"
     android:versionName="2.0">
 
+    <uses-sdk
+        android:minSdkVersion="22"
+        android:targetSdkVersion="34" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <application
         android:label="@string/app_name"
@@ -178,6 +189,8 @@ if ($LASTEXITCODE -ne 0) { throw "Falha no aapt2 compile" }
 & (Join-Path $BtBin "aapt2.exe") link -o $UnalignedApk `
     -I $AsciiAndroidJar `
     --manifest (Join-Path $WorkDir "AndroidManifest.xml") `
+    --min-sdk-version 22 `
+    --target-sdk-version 34 `
     -A $AssetsDir `
     --java (Join-Path $WorkDir "src") `
     $CompiledResZip
