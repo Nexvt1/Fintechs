@@ -27,12 +27,9 @@
 
     <!-- HEADER GLOBAL -->
     <header class="fistu-header">
-        <div class="header-brand" onclick="mudarAba('conta')">
-            <div class="brand-badge">F</div>
-            <div class="brand-text">
-                <h2>Fistu</h2>
-                <p>CONTA DIGITAL & INVESTIMENTOS</p>
-            </div>
+        <div class="header-brand" onclick="mudarAba('conta')" title="Fistu - Início">
+            <img src="{{ url_for('static', filename='logo_fistu_white.png') }}" alt="Fistu" class="brand-logo-img logo-white">
+            <img src="{{ url_for('static', filename='logo_fistu.png') }}" alt="Fistu" class="brand-logo-img logo-dark">
         </div>
 
         <!-- TABS DE NAVEGAÇÃO ENTRE AS TELAS -->

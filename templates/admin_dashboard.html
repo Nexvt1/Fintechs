@@ -11,12 +11,9 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="brand-logo">
-            <div class="brand-icon">F</div>
-            <div>
-                <div class="brand-name">FISTU</div>
-                <span class="brand-badge">ADMIN DASHBOARD</span>
-            </div>
+        <div class="brand-logo" style="display: flex; align-items: center; gap: 10px;">
+            <img src="{{ url_for('static', filename='logo_fistu_white.png') }}" alt="Fistu" style="height: 38px; object-fit: contain;">
+            <span class="brand-badge" style="background: #D97706; color: #FFF; font-weight: 800; font-size: 0.65rem; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px;">ADMIN DASHBOARD</span>
         </div>
 
         <nav class="nav-menu">

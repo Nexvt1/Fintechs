@@ -6,6 +6,7 @@
     <title>Fistu - Acesso Administrativo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin_login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
@@ -33,6 +34,7 @@
     <div class="retangulo" id="mainContainer">
         
         <div class="side side-left">
+            <div style="text-align: center; margin-bottom: 16px;"><img src="{{ url_for('static', filename='logo_fistu_white.png') }}" alt="Fistu" style="height: 46px; object-fit: contain;"></div>
             <div class="admin-badge-header">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>

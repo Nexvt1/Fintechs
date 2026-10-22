@@ -98,6 +98,35 @@
             cursor: pointer;
         }
 
+        .brand-logo-img {
+            height: 38px;
+            width: auto;
+            max-width: 140px;
+            object-fit: contain;
+            display: block;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .header-brand:hover .brand-logo-img {
+            transform: scale(1.03);
+        }
+
+        body.theme-dark .brand-logo-img.logo-dark,
+        body:not(.theme-light) .brand-logo-img.logo-dark {
+            display: none !important;
+        }
+        body.theme-dark .brand-logo-img.logo-white,
+        body:not(.theme-light) .brand-logo-img.logo-white {
+            display: block !important;
+        }
+
+        body.theme-light .brand-logo-img.logo-white {
+            display: none !important;
+        }
+        body.theme-light .brand-logo-img.logo-dark {
+            display: block !important;
+        }
+
         .brand-badge {
             width: 40px;
             height: 40px;

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fistu - Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
@@ -32,6 +33,7 @@
     <div class="retangulo" id="mainContainer">
         
         <div class="side side-left">
+            <div style="text-align: center; margin-bottom: 18px;"><img src="{{ url_for('static', filename='logo_fistu.png') }}" alt="Fistu" style="height: 48px; object-fit: contain;"></div>
             <h1>Entrar</h1>
             
             <form id="loginForm" onsubmit="handleLogin(event)">
@@ -69,6 +71,7 @@
         </div>
 
         <div class="side side-right">
+            <div style="text-align: center; margin-bottom: 16px;"><img src="{{ url_for('static', filename='logo_icon_white.png') }}" alt="Fistu" style="height: 64px; object-fit: contain;"></div>
             <h1>Seja bem-vindo!</h1>
             <p class="sub-text">Insira seus dados pessoais e comece sua jornada conosco</p>
             <button class="btn-outline">CADASTRAR-SE</button>
