@@ -6,7 +6,7 @@
     <title>Fistu - Conta Digital & Educação Financeira</title>
     <!-- FontAwesome 6 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Client (bundled local file with fallback to CDN) -->
+    <!-- Supabase JS Client -->
     <script src="supabase.js"></script>
     <script>
         if (!window.supabase) {
@@ -15,511 +15,718 @@
     </script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-dark">
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="toast-box">
-        <i id="toastIcon" class="fa-solid fa-circle-check"></i>
-        <span id="toastMsg">Notificação</span>
+    <!-- NOTIFICAÇÃO TOAST FLUTUANTE -->
+    <div class="notification-container" id="fistuNotification" style="position: fixed; top: max(16px, env(safe-area-inset-top)); right: 16px; left: 16px; margin: 0 auto; max-width: 360px; z-index: 3000; transform: translateY(-120px); opacity: 0; transition: all 0.4s ease;">
+      <div class="succsess-alert" style="display: flex; align-items: center; justify-content: space-between; border-radius: 14px; background: #12372A; border: 1px solid #2F6B4F; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); color: white;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i id="notifIcon" class="fa-solid fa-circle-check" style="color: #86EFAC; font-size: 1.25rem;"></i>
+          <div>
+            <p id="notifTitle" style="font-size: 12px; font-weight: 800;">Operação Concluída</p>
+            <p id="notifDesc" style="font-size: 11px; color: #BFD8C2;">Transação realizada com sucesso.</p>
+          </div>
+        </div>
+        <button onclick="fecharNotificacao()" style="background: transparent; border: none; color: #BFD8C2; cursor: pointer; font-size: 1rem; padding: 4px;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- HEADER GERAL -->
-    <header class="fistu-header" id="mainHeader">
-        <div class="brand-box" onclick="irParaAba('conta')">
-            <div class="brand-badge">F</div>
-            <div class="brand-titles">
-                <h2>fistu</h2>
-                <p>Digital & Educação</p>
-            </div>
-        </div>
-
-        <div class="header-actions">
-            <div id="adminIndicator" class="admin-pill" style="display: none;">
-                <i class="fa-solid fa-shield-halved"></i> Admin
-            </div>
-            <button class="header-btn" onclick="toggleSaldoVisivel()" title="Ocultar/Exibir Saldo">
-                <i id="btnEyeIcon" class="fa-solid fa-eye"></i>
-            </button>
-            <button class="header-btn" onclick="fazerLogout()" title="Sair da Conta">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- ========================================== -->
-    <!-- VIEW 1: AUTHENTICATION (LOGIN & CADASTRO)   -->
-    <!-- ========================================== -->
-    <main id="viewAuth" class="view-content active">
-        <div style="text-align: center; margin: 20px 0 10px 0;">
-            <div style="width: 60px; height: 60px; border-radius: 16px; background: #F3FAF4; color: #12372A; display: inline-grid; place-items: center; font-size: 2rem; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">F</div>
-            <h1 style="font-size: 1.7rem; font-weight: 900; margin-top: 12px; color: #FFFFFF;">fistu</h1>
-            <p style="font-size: 0.85rem; color: #BFD8C2;">Sua Conta Digital e Trilha Financeira</p>
-        </div>
-
+    <!-- ========================================================
+         TELA DE AUTENTICAÇÃO (LOGIN & CADASTRO NO APLICATIVO)
+         ======================================================== -->
+    <div id="viewAuth" class="view-auth-wrapper">
         <div class="auth-card">
-            <div class="auth-switch">
-                <button id="tabBtnLogin" class="auth-switch-btn active" onclick="switchAuthTab('login')">Entrar</button>
-                <button id="tabBtnCadastro" class="auth-switch-btn" onclick="switchAuthTab('cadastro')">Criar Conta</button>
+            <div class="auth-logo-badge">F</div>
+            <h1 style="text-align: center; font-size: 1.8rem; font-weight: 900; color: #FFFFFF; margin-bottom: 4px;">fistu</h1>
+            <p style="text-align: center; font-size: 0.85rem; color: #A3B8A8; margin-bottom: 22px;">Conta Digital & Educação Financeira</p>
+
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-btn active" id="tabBtnLogin" onclick="alternarAbaAuth('login')">Entrar</button>
+                <button type="button" class="auth-tab-btn" id="tabBtnSignup" onclick="alternarAbaAuth('signup')">Cadastrar</button>
             </div>
 
-            <form id="authForm" onsubmit="handleAuthSubmit(event)">
-                <div id="authNomeGroup" class="auth-input-group" style="display: none;">
-                    <label>Seu Nome Completo</label>
-                    <input type="text" id="authNome" class="auth-input" placeholder="Ex: João Toledo">
-                </div>
-
-                <div class="auth-input-group">
+            <!-- FORMULÁRIO DE LOGIN -->
+            <form id="formAuthLogin" onsubmit="executarLogin(event)">
+                <div class="auth-field">
                     <label>E-mail ou Usuário</label>
-                    <input type="text" id="authEmail" class="auth-input" placeholder="exemplo@email.com" required>
+                    <input type="text" id="authLoginEmail" class="auth-input" placeholder="seu.email@exemplo.com" required autocomplete="username">
                 </div>
-
-                <div class="auth-input-group">
+                <div class="auth-field">
                     <label>Senha</label>
-                    <input type="password" id="authSenha" class="auth-input" placeholder="••••••••" required>
+                    <input type="password" id="authLoginSenha" class="auth-input" placeholder="••••••••" required autocomplete="current-password">
                 </div>
-
-                <button type="submit" id="authSubmitBtn" class="btn-duo-main">
-                    Entrar na Conta
+                <button type="submit" id="btnSubmitLogin" class="btn-auth-submit">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> ENTRAR NA CONTA
                 </button>
             </form>
 
-            <div class="demo-box">
-                <div class="demo-title">Acesso Rápido para Avaliação</div>
-                <div class="demo-btns-row">
-                    <button class="btn-demo" onclick="entrarDemo('cliente')">
-                        <i class="fa-solid fa-user"></i> Cliente Demo
-                    </button>
+            <!-- FORMULÁRIO DE CADASTRO -->
+            <form id="formAuthSignup" onsubmit="executarCadastro(event)" style="display: none;">
+                <div class="auth-field">
+                    <label>Nome Completo</label>
+                    <input type="text" id="authSignupNome" class="auth-input" placeholder="Seu Nome" required>
                 </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- ========================================== -->
-    <!-- VIEW 2: BANKING HOME (CONTA DIGITAL)        -->
-    <!-- ========================================== -->
-    <main id="viewConta" class="view-content">
-        <!-- SAUDAÇÃO DO USUÁRIO -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-            <div>
-                <h3 id="userGreeting" style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF;">Olá, Cliente</h3>
-                <p style="font-size: 0.72rem; color: #BFD8C2;">Agência 0001 • Conta 10293-8</p>
-            </div>
-            <div id="userRoleBadge" class="admin-pill" style="display: none;">Admin</div>
-        </div>
-
-        <!-- CARD SALDO TOTAL -->
-        <div class="card-dark-glass">
-            <div class="balance-label">
-                <span>Saldo em Conta</span>
-                <i class="fa-solid fa-shield-check" style="color: #86EFAC;"></i>
-            </div>
-            <div class="balance-value-row">
-                <span class="balance-currency">R$</span>
-                <span id="txtSaldo" class="balance-number">1.500,00</span>
-            </div>
-            <div class="balance-badge">
-                <i class="fa-solid fa-chart-line"></i> Rendendo 100% do CDI automaticamente
-            </div>
-        </div>
-
-        <!-- BOTÕES DE AÇÕES RÁPIDAS -->
-        <div class="actions-grid">
-            <button class="action-btn" onclick="abrirModal('modalDeposito')">
-                <div class="action-circle"><i class="fa-solid fa-plus"></i></div>
-                <span>Depósito</span>
-            </button>
-            <button class="action-btn" onclick="abrirModal('modalPix')">
-                <div class="action-circle"><i class="fa-brands fa-pix"></i></div>
-                <span>Pix</span>
-            </button>
-            <button class="action-btn" onclick="abrirModal('modalInvestir')">
-                <div class="action-circle"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                <span>Investir</span>
-            </button>
-            <button class="action-btn" onclick="abrirModal('modalResgate')">
-                <div class="action-circle"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-                <span>Resgatar</span>
-            </button>
-        </div>
-
-        <!-- CARD INVESTIMENTOS -->
-        <div class="card-white">
-            <div class="invest-header">
-                <div>
-                    <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #64748B;">Total Investido</span>
-                    <div id="txtInvestimentos" class="invest-amount">R$ 3.200,00</div>
+                <div class="auth-field">
+                    <label>E-mail</label>
+                    <input type="email" id="authSignupEmail" class="auth-input" placeholder="seu.email@exemplo.com" required>
                 </div>
-                <button onclick="abrirModal('modalInvestir')" style="background: #E8F5E9; color: #2F6B4F; border: none; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 0.75rem; cursor: pointer;">
-                    + Aportar
+                <div class="auth-field">
+                    <label>Senha</label>
+                    <input type="password" id="authSignupSenha" class="auth-input" placeholder="••••••••" required minlength="4">
+                </div>
+                <button type="submit" id="btnSubmitSignup" class="btn-auth-submit" style="background: #10B981;">
+                    <i class="fa-solid fa-user-plus"></i> CRIAR CONTA FISTU
                 </button>
-            </div>
+            </form>
 
-            <div class="invest-bar">
-                <div class="bar-cdi"></div>
-                <div class="bar-selic"></div>
-                <div class="bar-acoes"></div>
-            </div>
-
-            <div class="invest-legend">
-                <span><span class="legend-dot" style="background: #10B981;"></span> Super Caixinha (60%)</span>
-                <span><span class="legend-dot" style="background: #3B82F6;"></span> Tesouro Selic (25%)</span>
-                <span><span class="legend-dot" style="background: #A855F7;"></span> Renda Variável (15%)</span>
-            </div>
-        </div>
-
-        <!-- EXTRATO RECENTE -->
-        <div class="section-title">
-            <span>Movimentações Recentes</span>
-            <span style="font-size: 0.75rem; color: #86EFAC; font-weight: 700; cursor: pointer;">Ver Todas</span>
-        </div>
-
-        <div class="tx-list" id="txHistoryList">
-            <!-- Renderizado dinamicamente -->
-        </div>
-    </main>
-
-    <!-- ========================================== -->
-    <!-- VIEW 3: GAMIFIED TRAIL (TRILHA DUOLINGO)   -->
-    <!-- ========================================== -->
-    <main id="viewTrilha" class="view-content">
-        <!-- CARD DO USUÁRIO NA TRILHA -->
-        <div class="user-trail-card">
-            <div class="trail-user-info">
-                <div class="trail-avatar" id="trailAvatar">J</div>
-                <div class="trail-user-text">
-                    <h4 id="trailUserName">Trilha de João</h4>
-                    <p id="trailUserLevel">Nível: Iniciante</p>
-                </div>
-            </div>
-
-            <div class="trail-stats-row">
-                <div class="stat-pill streak" title="Ofensiva diária">
-                    <i class="fa-solid fa-fire"></i> <span id="statStreak">1</span>
-                </div>
-                <div class="stat-pill coins" title="Fistu Coins">
-                    <i class="fa-solid fa-gem"></i> <span id="statCoins">0</span>
-                </div>
-                <div class="stat-pill hearts" title="Vidas disponíveis">
-                    <i class="fa-solid fa-heart"></i> <span id="statHearts">5</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- AVISO DE MODO ADMIN (SE FOR ADMIN) -->
-        <div id="adminTrailBanner" class="admin-test-banner" style="display: none;">
-            <i class="fa-solid fa-unlock-keyhole"></i>
-            <span>Modo Administrador Ativo: Todos os 4 níveis e 15 fases estão 100% liberados para testes!</span>
-        </div>
-
-        <!-- ABAS DOS 4 NÍVEIS -->
-        <div class="level-tabs" id="levelTabsContainer">
-            <!-- Preenchido via script -->
-        </div>
-
-        <!-- DUOLINGO ZIG-ZAG PATH CANVAS -->
-        <div class="trail-path-box" id="trailPathContainer">
-            <!-- 15 estágios zig-zag sem baús renderizados via script -->
-        </div>
-    </main>
-
-    <!-- ========================================== -->
-    <!-- VIEW 4: ADMIN DASHBOARD & TRILHA MASTER     -->
-    <!-- ========================================== -->
-    <main id="viewAdmin" class="view-content">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-            <div>
-                <h2 style="font-size: 1.3rem; font-weight: 900; color: #FFFFFF;">Painel de Controle</h2>
-                <p style="font-size: 0.72rem; color: #BFD8C2;">Visão Geral do Sistema & Trilha Master</p>
-            </div>
-            <button onclick="carregarDadosAdmin()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
-                <i class="fa-solid fa-rotate-right"></i> Atualizar
-            </button>
-        </div>
-
-        <!-- STATS DO ADMIN -->
-        <div class="admin-stats-grid">
-            <div class="admin-stat-card">
-                <div class="admin-stat-lbl">Usuários</div>
-                <div id="adminStatUsers" class="admin-stat-num">0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="admin-stat-lbl">Saldo Total</div>
-                <div id="adminStatSaldo" class="admin-stat-num">R$ 0</div>
-            </div>
-            <div class="admin-stat-card">
-                <div class="admin-stat-lbl">Investido</div>
-                <div id="adminStatInvest" class="admin-stat-num">R$ 0</div>
-            </div>
-        </div>
-
-        <!-- SUB-TABS ADMIN: USUÁRIOS VS TRILHA MASTER -->
-        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-            <button id="adminTabUsersBtn" class="auth-switch-btn active" style="background: #2F6B4F; color: #FFF;" onclick="switchAdminSubTab('users')">
-                <i class="fa-solid fa-users"></i> Gestão de Usuários
-            </button>
-            <button id="adminTabMasterBtn" class="auth-switch-btn" style="background: rgba(255,255,255,0.1); color: #BFD8C2;" onclick="switchAdminSubTab('master')">
-                <i class="fa-solid fa-crown" style="color: #FFC800;"></i> Trilha Master 100%
-            </button>
-        </div>
-
-        <!-- SUB-TAB 1: TABELA DE USUÁRIOS -->
-        <div id="adminSubTabUsers">
-            <div class="users-table-box" id="adminUsersList">
-                <div style="padding: 20px; text-align: center; color: #64748B;">Carregando usuários do Supabase...</div>
-            </div>
-        </div>
-
-        <!-- SUB-TAB 2: TRILHA MASTER 100% LIBERADA -->
-        <div id="adminSubTabMaster" style="display: none;">
-            <div style="background: rgba(255, 150, 0, 0.15); border: 1px solid #FF9600; padding: 12px; border-radius: var(--radius-md); margin-bottom: 14px; font-size: 0.8rem; color: #FFD480;">
-                <i class="fa-solid fa-crown"></i> <strong>Trilha Master Administrativa:</strong> Teste qualquer uma das 60 perguntas avançadas sem limite diário e com todas as fases destravadas.
-            </div>
-            <div class="trail-path-box" id="adminMasterTrailContainer">
-                <!-- Trilha Master renderizada com tudo desbloqueado -->
-            </div>
-        </div>
-    </main>
-
-    <!-- ========================================== -->
-    <!-- BOTTOM NAVIGATION (CONTA, TRILHA, ADMIN)    -->
-    <!-- ========================================== -->
-    <nav class="bottom-nav" id="bottomNav">
-        <div class="nav-item active" onclick="irParaAba('conta')">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Conta</span>
-        </div>
-        <div class="nav-item" onclick="irParaAba('trilha')">
-            <i class="fa-solid fa-route"></i>
-            <span>Trilha</span>
-        </div>
-        <div class="nav-item" id="navItemAdmin" style="display: none;" onclick="irParaAba('admin')">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>Admin</span>
-        </div>
-        <div class="nav-item" onclick="fazerLogout()">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            <span>Sair</span>
-        </div>
-    </nav>
-
-    <!-- ========================================== -->
-    <!-- MODAL 1: DEPÓSITO                          -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalDeposito">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-plus-circle" style="color: #2F6B4F;"></i> Adicionar Saldo</h3>
-                <button class="btn-modal-close" onclick="fecharModais()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.82rem; color: #64748B; margin-bottom: 16px;">
-                Simule um aporte por Pix ou TED direto para a sua conta corrente Fistu.
-            </p>
-            <div class="auth-input-group">
-                <label>Valor do Depósito (R$)</label>
-                <input type="number" step="0.01" id="depositoValorInput" class="auth-input" placeholder="Ex: 250.00">
-            </div>
-            <button class="btn-duo-main" onclick="confirmarDeposito()">Confirmar Depósito</button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 2: PIX                               -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalPix">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-brands fa-pix" style="color: #10B981;"></i> Transferência Pix</h3>
-                <button class="btn-modal-close" onclick="fecharModais()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.82rem; color: #64748B; margin-bottom: 16px;">
-                Envie valores instantaneamente debitando do seu saldo em conta.
-            </p>
-            <div class="auth-input-group">
-                <label>Chave Pix Destinatária</label>
-                <input type="text" id="pixChaveInput" class="auth-input" placeholder="CPF, e-mail ou celular">
-            </div>
-            <div class="auth-input-group">
-                <label>Valor do Pix (R$)</label>
-                <input type="number" step="0.01" id="pixValorInput" class="auth-input" placeholder="Ex: 50.00">
-            </div>
-            <button class="btn-duo-main" onclick="confirmarPix()">Transferir Agora</button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 3: INVESTIR (APORTE)                 -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalInvestir">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-arrow-trend-up" style="color: #3B82F6;"></i> Novo Aporte</h3>
-                <button class="btn-modal-close" onclick="fecharModais()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.82rem; color: #64748B; margin-bottom: 16px;">
-                Transfira do seu saldo em conta para sua carteira de investimentos com rendimento diário.
-            </p>
-            <div class="auth-input-group">
-                <label>Produto de Destino</label>
-                <select id="investProdutoSelect" class="auth-input">
-                    <option value="Super Caixinha CDI">Super Caixinha CDI (102% CDI)</option>
-                    <option value="Tesouro Selic 2029">Tesouro Selic 2029</option>
-                    <option value="Fundo Multimercado Global">Fundo Multimercado Global</option>
-                </select>
-            </div>
-            <div class="auth-input-group">
-                <label>Valor do Aporte (R$)</label>
-                <input type="number" step="0.01" id="investValorInput" class="auth-input" placeholder="Ex: 100.00">
-            </div>
-            <button class="btn-duo-main" onclick="confirmarInvestimento()">Confirmar Aporte</button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 4: RESGATE                           -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalResgate">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-hand-holding-dollar" style="color: #FF9600;"></i> Resgatar Investimento</h3>
-                <button class="btn-modal-close" onclick="fecharModais()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 0.82rem; color: #64748B; margin-bottom: 16px;">
-                Transfira valores dos seus investimentos de volta para o seu saldo em conta com liquidez imediata.
-            </p>
-            <div class="auth-input-group">
-                <label>Valor a Resgatar (R$)</label>
-                <input type="number" step="0.01" id="resgateValorInput" class="auth-input" placeholder="Ex: 100.00">
-            </div>
-            <button class="btn-duo-main" onclick="confirmarResgate()">Confirmar Resgate</button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 5: DUOLINGO QUIZ                     -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalQuiz">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <span id="quizStageName" style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #64748B;">FASE 1</span>
-                    <h3 id="quizLevelTitle" style="font-size: 1.1rem; color: #12372A;">Iniciante</h3>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 0.85rem; font-weight: 800; color: #EF4444;"><i class="fa-solid fa-heart"></i> <span id="quizHeartsCount">5</span></span>
-                    <button class="btn-modal-close" onclick="fecharQuiz()"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            </div>
-
-            <div class="quiz-progress-bar">
-                <div id="quizProgressBar" class="quiz-progress-fill"></div>
-            </div>
-
-            <div id="quizQuestionBox">
-                <p id="quizQuestionText" class="quiz-question-text">Carregando pergunta...</p>
-                <div id="quizOptionsContainer">
-                    <!-- Opções renderizadas dinamicamente -->
-                </div>
-            </div>
-
-            <div id="quizFeedbackBox" class="quiz-feedback-box">
-                <i id="quizFeedbackIcon" class="fa-solid fa-circle-check"></i>
-                <span id="quizFeedbackText">Muito bem!</span>
-            </div>
-
-            <button id="btnVerificarResposta" class="btn-duo-main" onclick="verificarRespostaQuiz()" style="margin-top: 16px;">
-                Verificar Resposta
-            </button>
-            <button id="btnProximaPergunta" class="btn-duo-main" onclick="proximaPerguntaQuiz()" style="margin-top: 16px; display: none;">
-                Continuar
-            </button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 6: VITÓRIA NA ETAPA                  -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalVitoria">
-        <div class="modal-card" style="text-align: center; padding: 32px 22px;">
-            <div style="width: 72px; height: 72px; border-radius: 50%; background: #DCFCE7; color: #16A34A; display: inline-grid; place-items: center; font-size: 2.2rem; margin-bottom: 16px; animation: bounce 0.6s infinite alternate;">
-                <i class="fa-solid fa-trophy"></i>
-            </div>
-            <h2 style="font-size: 1.4rem; font-weight: 900; color: #12372A; margin-bottom: 6px;">Etapa Concluída!</h2>
-            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 20px;">Você absorveu novos conhecimentos financeiros com maestria!</p>
-
-            <div style="background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                    <div style="font-size: 0.7rem; font-weight: 700; color: #64748B;">RECOMPENSA</div>
-                    <div style="font-size: 1.1rem; font-weight: 900; color: #10B981;">+ R$ 5,00</div>
-                </div>
-                <div>
-                    <div style="font-size: 0.7rem; font-weight: 700; color: #64748B;">EXPERIÊNCIA</div>
-                    <div style="font-size: 1.1rem; font-weight: 900; color: #3B82F6;">+ 15 XP</div>
-                </div>
-            </div>
-
-            <button class="btn-duo-main" onclick="fecharModalVitoria()">
-                Continuar na Trilha
-            </button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL 7: EDITAR USUÁRIO (ADMIN)            -->
-    <!-- ========================================== -->
-    <div class="modal-overlay" id="modalAdminEditUser">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-user-pen" style="color: #2F6B4F;"></i> Editar Usuário</h3>
-                <button class="btn-modal-close" onclick="fecharModais()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <input type="hidden" id="adminEditUserId">
-            <div class="auth-input-group">
-                <label>Nome do Usuário</label>
-                <input type="text" id="adminEditUserName" class="auth-input" readonly>
-            </div>
-            <div class="auth-input-group">
-                <label>Saldo em Conta (R$)</label>
-                <input type="number" step="0.01" id="adminEditUserSaldo" class="auth-input">
-            </div>
-            <div class="auth-input-group">
-                <label>Investimentos (R$)</label>
-                <input type="number" step="0.01" id="adminEditUserInvest" class="auth-input">
-            </div>
-            <div class="auth-input-group">
-                <label>Nível de Permissão</label>
-                <select id="adminEditUserTipo" class="auth-input">
-                    <option value="usuario">Cliente (usuario)</option>
-                    <option value="admin">Administrador (admin)</option>
-                </select>
-            </div>
-            <button class="btn-duo-main" onclick="salvarEdicaoUsuarioAdmin()">Salvar Alterações</button>
+            <div id="authFeedback" style="display: none; margin-top: 14px; font-size: 0.82rem; text-align: center; padding: 10px; border-radius: 10px;"></div>
         </div>
     </div>
 
     <!-- ========================================================
-         SCRIPTS: DATABASE (SUPABASE), TRILHA DUOLINGO E FINANCEIRO
+         APLICATIVO PRINCIPAL (IDÊNTICO À VERSÃO DE PC)
+         ======================================================== -->
+    <div id="mainApp" style="display: none; width: 100%;">
+
+        <!-- HEADER GLOBAL (IDÊNTICO AO PC) -->
+        <header class="fistu-header">
+            <div class="header-brand" onclick="mudarAba('conta')">
+                <div class="brand-badge">F</div>
+                <div class="brand-text">
+                    <h2>Fistu</h2>
+                    <p>CONTA DIGITAL & INVESTIMENTOS</p>
+                </div>
+            </div>
+
+            <!-- TABS DE NAVEGAÇÃO ENTRE AS TELAS -->
+            <div class="nav-tabs-pill">
+                <button class="nav-tab-btn active" id="btnTabConta" onclick="mudarAba('conta')">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Conta & Investimentos</span>
+                </button>
+                <button class="nav-tab-btn" id="btnTabEdu" onclick="mudarAba('educacao')">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>Trilha de Educação</span>
+                </button>
+                <button class="nav-tab-btn" id="btnTabPersonalizacao" onclick="mudarAba('personalizacao')">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Personalização</span>
+                </button>
+            </div>
+
+            <div class="header-actions">
+                <!-- MINI AVATAR CLICÁVEL -->
+                <div class="header-profile-pill" onclick="mudarAba('personalizacao')" title="Personalizar Perfil e Tema">
+                    <div class="header-mini-avatar" id="headerMiniAvatar">
+                        <img id="navAvatarImg" src="" alt="Avatar" class="hidden">
+                        <span id="navAvatarInitial">U</span>
+                    </div>
+                    <span class="header-user-fname" id="navUserFirstName">Usuário</span>
+                </div>
+
+                <div id="adminIndicator" class="admin-pill" style="display: none;">
+                    <i class="fa-solid fa-shield-halved"></i> Admin
+                </div>
+
+                <button class="header-btn" onclick="alternarVisibilidadeSaldo()" title="Ocultar/Exibir Saldo">
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                </button>
+
+                <button class="btn-logout" onclick="fazerLogout()" title="Encerrar sessão">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- ========================================================
+             TELA 1: CONTA DIGITAL & INVESTIMENTOS (EXATA DO PC)
+             ======================================================== -->
+        <div class="screen-view active" id="screenConta">
+            <main class="bank-container">
+                
+                <!-- SAUDAÇÃO COM FOTO E CONTROLE RÁPIDO -->
+                <div class="greeting-bar">
+                    <div class="greeting-with-avatar">
+                        <div class="greeting-avatar-large" onclick="mudarAba('personalizacao')" title="Clique para trocar sua foto ou tema">
+                            <img id="greetingAvatarImg" src="" alt="Avatar" class="hidden">
+                            <span id="greetingAvatarInitial">U</span>
+                            <div class="avatar-camera-pill" title="Personalizar"><i class="fa-solid fa-camera"></i></div>
+                        </div>
+                        <div class="greeting-text">
+                            <h1>Olá, <span id="displayUserGreeting">Usuário</span>! 👋</h1>
+                            <p><span id="displayUserEmail">usuario@fistu.com</span> • Conta Corrente Digital</p>
+                        </div>
+                    </div>
+
+                    <div class="greeting-actions-right">
+                        <button class="btn-quick-theme" onclick="alternarTemaRapido()" title="Alternar Modo Claro / Escuro">
+                            <i class="fa-solid fa-moon" id="quickThemeIcon"></i>
+                            <span id="quickThemeLabel">Tema Escuro</span>
+                        </button>
+                        <div class="badge-supabase">
+                            <i class="fa-solid fa-shield-halved"></i> Conexão Segura Supabase
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRID DOS 2 CARDS DESTAQUE (SALDO EM CONTA & TOTAL INVESTIDO) -->
+                <section class="overview-grid">
+                    
+                    <!-- CARD SALDO EM CONTA -->
+                    <div class="bank-card">
+                        <div>
+                            <div class="bank-card-top">
+                                <span class="card-label card-label-green">
+                                    <i class="fa-solid fa-wallet"></i> SALDO EM CONTA
+                                </span>
+                                <button class="btn-eye" onclick="alternarVisibilidadeSaldo()" title="Ocultar/Exibir Saldo">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </div>
+
+                            <div class="card-amount" id="displaySaldo">
+                                R$ 1.500,00
+                            </div>
+
+                            <p class="card-subtext">Disponível para Pix, compras e aplicações</p>
+                        </div>
+
+                        <div class="card-buttons-row">
+                            <button class="btn-filled-dark" onclick="abrirModalPix()">
+                                <i class="fa-brands fa-pix"></i> Área Pix
+                            </button>
+                            <button class="btn-outline-dark" onclick="abrirModalDeposito()">
+                                <i class="fa-solid fa-plus"></i> Depositar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CARD TOTAL INVESTIDO -->
+                    <div class="bank-card">
+                        <div>
+                            <div class="bank-card-top">
+                                <span class="card-label card-label-invest">
+                                    <i class="fa-solid fa-chart-line"></i> TOTAL INVESTIDO
+                                </span>
+                                <span class="badge-rate">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> +13,4% a.a. CDI
+                                </span>
+                            </div>
+
+                            <div class="card-amount" id="displayInvestimentos">
+                                R$ 3.200,00
+                            </div>
+
+                            <p class="card-subtext">Rendimento estimado: <strong>+100% do CDI com liquidez diária</strong></p>
+                        </div>
+
+                        <div class="card-buttons-row">
+                            <button class="btn-filled-emerald" onclick="abrirModalInvestir()">
+                                <i class="fa-solid fa-chart-pie"></i> Novo Aporte
+                            </button>
+                            <button class="btn-outline-dark" onclick="abrirModalResgate()">
+                                Resgatar
+                            </button>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- BANNER DE ENTRADA PARA A EDUCAÇÃO / DUOLINGO -->
+                <section class="edu-callout-banner">
+                    <div class="edu-callout-left">
+                        <span class="edu-callout-icon">🦉</span>
+                        <div>
+                            <h4>Aprenda e Ganhe Dinheiro Real na Conta</h4>
+                            <p>Complete as fases da trilha no estilo Duolingo, responda aos quizzes e resgate FinCoins em saldo!</p>
+                        </div>
+                    </div>
+                    <button class="btn-open-edu" onclick="mudarAba('educacao')">
+                        <i class="fa-solid fa-play"></i> Continuar Trilha (Ofensiva 🔥 <span id="bannerStreak">1</span>)
+                    </button>
+                </section>
+
+                <!-- SEÇÃO: OPÇÕES DE INVESTIMENTO (4 CARDS) -->
+                <section>
+                    <div class="section-title-row">
+                        <h3><i class="fa-solid fa-vault"></i> Opções de Investimento</h3>
+                        <span>Renda Fixa & Reserva</span>
+                    </div>
+
+                    <div class="products-grid" style="margin-top: 14px;">
+                        <!-- PRODUTO 1: SUPER CAIXINHA CDI -->
+                        <div class="product-item-card">
+                            <div>
+                                <div class="product-icon-box"><i class="fa-solid fa-box-archive"></i></div>
+                                <div class="product-name">Super Caixinha CDI</div>
+                                <div class="product-percentage">100% CDI</div>
+                                <p class="product-info-text">Liquidez imediata e rendimento diário. O porto seguro para sua reserva de emergência.</p>
+                            </div>
+                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Super Caixinha CDI')">
+                                Investir na Caixinha
+                            </button>
+                        </div>
+
+                        <!-- PRODUTO 2: TESOURO IPCA+ 2029 -->
+                        <div class="product-item-card">
+                            <div>
+                                <div class="product-icon-box"><i class="fa-solid fa-landmark"></i></div>
+                                <div class="product-name">Tesouro IPCA+ 2029</div>
+                                <div class="product-percentage">IPCA + 6,2% a.a.</div>
+                                <p class="product-info-text">Proteção total contra a inflação e garantia soberana do Tesouro Nacional.</p>
+                            </div>
+                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Tesouro IPCA+ 2029')">
+                                Investir em IPCA+
+                            </button>
+                        </div>
+
+                        <!-- PRODUTO 3: CDB TURBO FISTU -->
+                        <div class="product-item-card">
+                            <div>
+                                <div class="product-icon-box"><i class="fa-solid fa-coins"></i></div>
+                                <div class="product-name">CDB Turbo Fistu</div>
+                                <div class="product-percentage">115% do CDI</div>
+                                <p class="product-info-text">Rendimento turbinado com prazo fixo de 12 meses e garantia do FGC até R$ 250 mil.</p>
+                            </div>
+                            <button class="btn-apply-mint" onclick="abrirModalInvestir('CDB Turbo Fistu')">
+                                Investir no CDB
+                            </button>
+                        </div>
+
+                        <!-- PRODUTO 4: FUNDO IMOBILIÁRIO FII -->
+                        <div class="product-item-card">
+                            <div>
+                                <div class="product-icon-box"><i class="fa-solid fa-building"></i></div>
+                                <div class="product-name">Fundo Imobiliário FII</div>
+                                <div class="product-percentage">Dividendos Mensais</div>
+                                <p class="product-info-text">Renda passiva isenta de Imposto de Renda com galpões e lajes corporativas triple A.</p>
+                            </div>
+                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Fundo Imobiliário FII')">
+                                Investir no FII
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+        <!-- ========================================================
+             TELA 2: TRILHA DE EDUCAÇÃO (DUOLINGO STYLE)
+             ======================================================== -->
+        <div class="screen-view" id="screenEducacao">
+            <div class="edu-screen-wrapper">
+
+                <!-- CARTÃO DE IDENTIFICAÇÃO DA TRILHA DO USUÁRIO -->
+                <div class="user-trail-header-card">
+                    <div class="user-trail-left">
+                        <div class="user-trail-avatar">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <span class="user-trail-badge">TRILHA DO USUÁRIO</span>
+                            <h3 class="user-trail-name" id="userTrailName">Cliente Fistu</h3>
+                            <p class="user-trail-sub" id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas</p>
+                        </div>
+                    </div>
+                    <div class="user-trail-meta">
+                        <span class="user-trail-account-pill" id="userTrailAccountPill">Conta #1</span>
+                    </div>
+                </div>
+
+                <!-- BARRA DE STATUS DO TOPO -->
+                <div class="duo-stats-bar">
+                    <div class="stat-badge stat-flag" title="Nível / Pontos">
+                        <span style="font-size: 1.3rem;">🇧🇷</span>
+                        <span id="eduXp">0</span>
+                    </div>
+                    <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
+                        <span>🔥</span>
+                        <span id="eduStreak">1</span>
+                    </div>
+                    <div class="stat-badge stat-gems" title="FinCoins acumuladas">
+                        <span>💎</span>
+                        <span id="eduCoins">0</span>
+                    </div>
+                    <div class="stat-badge stat-hearts" title="Vidas disponíveis">
+                        <span>❤️</span>
+                        <span id="eduHearts">5</span>
+                    </div>
+                </div>
+
+                <!-- SELETOR DOS NÍVEIS DO CURSO -->
+                <div class="level-tabs-bar" id="levelTabsContainer">
+                    <div class="level-pill active" onclick="selecionarNivel(0)">🌱 Iniciante</div>
+                    <div class="level-pill locked" onclick="selecionarNivel(1)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Interm.</div>
+                    <div class="level-pill locked" onclick="selecionarNivel(2)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Analista</div>
+                    <div class="level-pill locked" onclick="selecionarNivel(3)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Sênior</div>
+                </div>
+
+                <!-- BANNER DE TESTES LIVRES PARA O ADMINISTRADOR -->
+                <div class="admin-test-banner" id="adminTestBanner" style="display: none;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem; color: #D97706;"></i>
+                    <div>
+                        <strong>Modo Administrador Ativo:</strong> Todas as 4 trilhas e 15 estágios estão 100% liberados para teste livre, sem limite diário!
+                    </div>
+                </div>
+
+                <!-- BANNER DE LIMITE DIÁRIO (1 MISSÃO POR DIA) -->
+                <div class="daily-mission-banner" id="dailyMissionBanner">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-calendar-check" id="dailyMissionIcon" style="color: #64748B; font-size: 1rem;"></i>
+                        <span id="dailyMissionText">Missão diária: <strong>0/1</strong> concluída hoje.</span>
+                    </div>
+                    <span class="mission-tag" id="dailyMissionTag">Disponível</span>
+                </div>
+
+                <!-- BANNER DA SEÇÃO E UNIDADE -->
+                <div class="duo-section-banner" id="duoSectionBanner">
+                    <div class="banner-info">
+                        <h5 id="bannerSectionTitle">SEÇÃO 1, UNIDADE 1</h5>
+                        <h3 id="bannerUnitTitle">Fundamentos Financeiros</h3>
+                    </div>
+                    <div class="btn-guidebook" onclick="abrirGuiaUnidade()" title="Guia da Unidade">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                </div>
+
+                <!-- A TRILHA EM ZIG-ZAG COM BOTÕES 3D REDONDOS -->
+                <div class="duo-path-container" id="duoPathWrapper">
+                    <!-- Nós renderizados via JS -->
+                </div>
+
+                <!-- BOTÃO FLUTUANTE ⬆️ PARA VOLTAR AO NÓ ATIVO -->
+                <button class="btn-fab-up" onclick="scrollParaAtivo()" title="Voltar ao estágio atual">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
+
+            </div>
+        </div>
+
+        <!-- ========================================================
+             TELA 3: PERSONALIZAÇÃO DO USUÁRIO (EXATA DO PC)
+             ======================================================== -->
+        <div class="screen-view" id="screenPersonalizacao">
+            <div class="personalizacao-container">
+                
+                <div class="personalizacao-header-box">
+                    <div>
+                        <h2><i class="fa-solid fa-sliders"></i> Personalização da Conta</h2>
+                        <p>Altere sua foto de perfil, alterne entre tema claro/escuro e personalize a tonalidade verde de fundo.</p>
+                    </div>
+                    <div class="badge-supabase" id="badgeStatusPersonalizacao">
+                        <i class="fa-solid fa-circle-check"></i> Sincronizado com Supabase
+                    </div>
+                </div>
+
+                <div class="personalizacao-layout-grid">
+                    
+                    <!-- CARD 1: FOTO DO PERFIL & AVATARES -->
+                    <div class="custom-card">
+                        <div class="custom-card-header">
+                            <h3><i class="fa-solid fa-camera-retro" style="color: #15803D;"></i> Foto de Perfil</h3>
+                            <span class="custom-card-badge">Avatar</span>
+                        </div>
+
+                        <div class="avatar-photo-area">
+                            <div class="avatar-large-preview" id="mainAvatarPreviewBox">
+                                <img id="mainAvatarImg" src="" alt="Foto do Usuário" class="hidden">
+                                <span id="mainAvatarInitial" class="avatar-initials-text">U</span>
+                            </div>
+
+                            <div class="avatar-controls-col">
+                                <input type="file" id="inputFotoArquivo" accept="image/*" style="display: none;" onchange="aoSelecionarArquivoFoto(event)">
+                                <button type="button" class="btn-upload-pic" onclick="document.getElementById('inputFotoArquivo').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Carregar Nova Foto
+                                </button>
+                                <button type="button" class="btn-remove-pic" onclick="removerFotoDoUsuario()">
+                                    <i class="fa-solid fa-trash-can"></i> Remover Foto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="quick-avatars-box">
+                            <h4>Avatares Rápidos Express:</h4>
+                            <div class="quick-avatars-grid">
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('💼')" title="Executivo">💼</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🦁')" title="Leão Fintech">🦁</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🚀')" title="Investidor">🚀</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('👑')" title="VIP">👑</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('⚡')" title="Trader">⚡</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('💎')" title="Diamante">💎</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🦊')" title="Estrategista">🦊</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🎯')" title="Focado">🎯</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🎓')" title="Estudante">🎓</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🏆')" title="Campeão">🏆</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🍀')" title="Sorte">🍀</div>
+                                <div class="quick-avatar-pill" onclick="definirAvatarEmoji('🏦')" title="Banqueiro">🏦</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: TEMA CLARO E ESCURO & MATIZ DE VERDE -->
+                    <div class="custom-card">
+                        <div class="custom-card-header">
+                            <h3><i class="fa-solid fa-circle-half-stroke" style="color: #15803D;"></i> Tema da Interface</h3>
+                            <span class="custom-card-badge">Aparência</span>
+                        </div>
+
+                        <div class="theme-selector-cards">
+                            <!-- TEMA ESCURO -->
+                            <div class="theme-mode-card selected" id="cardTemaEscuro" onclick="selecionarTemaInterface('escuro')">
+                                <div class="theme-preview-box theme-preview-dark">
+                                    <div class="preview-row-bar"></div>
+                                    <div class="preview-row-cards">
+                                        <div class="preview-mini-card"></div>
+                                        <div class="preview-mini-card"></div>
+                                    </div>
+                                </div>
+                                <div class="theme-mode-info">
+                                    <div class="theme-mode-title">
+                                        <i class="fa-solid fa-moon"></i> Tema Escuro
+                                    </div>
+                                    <div class="theme-check-badge"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <small style="font-size: 0.72rem; color: var(--text-muted);">Preto OLED Noturno</small>
+                            </div>
+
+                            <!-- TEMA CLARO -->
+                            <div class="theme-mode-card" id="cardTemaClaro" onclick="selecionarTemaInterface('claro')">
+                                <div class="theme-preview-box theme-preview-light">
+                                    <div class="preview-row-bar"></div>
+                                    <div class="preview-row-cards">
+                                        <div class="preview-mini-card"></div>
+                                        <div class="preview-mini-card"></div>
+                                    </div>
+                                </div>
+                                <div class="theme-mode-info">
+                                    <div class="theme-mode-title">
+                                        <i class="fa-solid fa-sun"></i> Tema Claro
+                                    </div>
+                                    <div class="theme-check-badge"><i class="fa-solid fa-check"></i></div>
+                                </div>
+                                <small style="font-size: 0.72rem; color: var(--text-muted);">Verde menta suave</small>
+                            </div>
+                        </div>
+
+                        <!-- PALETA DE TONS DE FUNDO VERDE -->
+                        <div class="green-shades-palette">
+                            <h4><i class="fa-solid fa-palette"></i> Tonalidades de Verde para o Fundo:</h4>
+                            <div class="shades-row">
+                                <div class="shade-circle active" style="background: #000000;" onclick="selecionarTomVerdeFundo('#000000')" title="Preto Puro OLED">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="shade-circle" style="background: #0b3d2c;" onclick="selecionarTomVerdeFundo('#0b3d2c')" title="Verde Esmeralda">
+                                    <i class="fa-solid fa-check" style="display:none;"></i>
+                                </div>
+                                <div class="shade-circle" style="background: #093325;" onclick="selecionarTomVerdeFundo('#093325')" title="Floresta Noturno">
+                                    <i class="fa-solid fa-check" style="display:none;"></i>
+                                </div>
+                                <div class="shade-circle" style="background: #12372A;" onclick="selecionarTomVerdeFundo('#12372A')" title="Verde Fistu">
+                                    <i class="fa-solid fa-check" style="display:none;"></i>
+                                </div>
+                                <div class="shade-circle" style="background: #0e4e37;" onclick="selecionarTomVerdeFundo('#0e4e37')" title="Verde Tech">
+                                    <i class="fa-solid fa-check" style="display:none;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: PREFERÊNCIAS E DADOS -->
+                    <div class="custom-card custom-card-wide">
+                        <div class="custom-card-header">
+                            <h3><i class="fa-solid fa-user-pen" style="color: #15803D;"></i> Dados do Usuário & Preferências</h3>
+                            <span class="custom-card-badge">Conta</span>
+                        </div>
+
+                        <div class="form-pref-row">
+                            <div class="pref-input-group">
+                                <label><i class="fa-solid fa-signature"></i> Nome de Exibição:</label>
+                                <input type="text" id="prefInputNome" class="pref-input" value="Cliente Fistu" placeholder="Seu nome">
+                            </div>
+                            <div class="pref-input-group">
+                                <label><i class="fa-solid fa-envelope"></i> E-mail Cadastrado:</label>
+                                <input type="email" id="prefInputEmail" class="pref-input" value="" disabled style="opacity: 0.65; cursor: not-allowed; background: rgba(255,255,255,0.05);">
+                            </div>
+                        </div>
+
+                        <div class="toggles-group">
+                            <label class="toggle-item">
+                                <input type="checkbox" id="prefCheckNotif" style="display: none;" checked>
+                                <div class="toggle-switch-ui"></div>
+                                <div class="toggle-text-info">
+                                    <strong>Notificações de Rendimento e Missões</strong>
+                                    <small>Receba avisos instantâneos quando seus investimentos renderem ou novas etapas liberarem.</small>
+                                </div>
+                            </label>
+
+                            <label class="toggle-item">
+                                <input type="checkbox" id="prefCheckAnon" style="display: none;">
+                                <div class="toggle-switch-ui"></div>
+                                <div class="toggle-text-info">
+                                    <strong>Modo Anônimo Padrão</strong>
+                                    <small>Oculta seu nome e e-mail ao criar novos relatos na plataforma.</small>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 10px;">
+                            <button type="button" class="btn-save-pref" onclick="salvarConfiguracoesCompletas()">
+                                <i class="fa-solid fa-floppy-disk"></i> Salvar Preferências
+                            </button>
+                            <span id="msgFeedbackSalvar" style="font-size: 0.88rem; font-weight: 700; color: #10B981;"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================
+         MODAL DE QUIZ DO DUOLINGO (5 PERGUNTAS INTERATIVAS)
+         ======================================================== -->
+    <div class="modal-duo-overlay" id="modalQuiz">
+        <div class="duo-quiz-box" id="quizBoxContent">
+            <!-- Renderizado via JS -->
+        </div>
+    </div>
+
+    <!-- MODAL GUIA DA UNIDADE -->
+    <div class="modal-duo-overlay" id="modalGuia">
+        <div class="duo-quiz-box" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="color: var(--duo-green-dark);"><i class="fa-solid fa-book"></i> Guia da Unidade</h3>
+                <button onclick="fecharModais()" style="background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color:#999;">✕</button>
+            </div>
+            <div style="font-size: 0.88rem; line-height: 1.5; color: var(--text-dark); margin: 14px 0;">
+                <p><strong>🎯 Objetivo:</strong> Construir sua reserva de emergência e tomar decisões financeiras conscientes.</p>
+                <br>
+                <p><strong>💡 Regra de Ouro:</strong> Primeiro poupe, depois gaste. Mantenha de 3 a 6 meses do seu custo de vida alocado em ativos com 100% do CDI e liquidez imediata.</p>
+                <br>
+                <p><strong>💎 Recompensa:</strong> Ao concluir cada stage, você recebe <strong>20 FinCoins</strong> e um crédito de <strong>R$ 5,00</strong> no saldo da sua conta Fistu!</p>
+            </div>
+            <button onclick="fecharModais()" style="width: 100%; padding: 12px; border-radius: 14px; background: var(--duo-green); color: white; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 var(--duo-green-dark);">
+                Entendi, vamos praticar!
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL INVESTIR -->
+    <div class="modal-duo-overlay" id="modalInvestir">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-chart-line" style="color: #2F6B4F;"></i> Fazer Aporte em Investimento</h3>
+            <p>O valor será debitado do seu Saldo em Conta e adicionado ao seu Patrimônio Investido.</p>
+
+            <div class="modal-input-field">
+                <label>Selecione a Aplicação</label>
+                <select id="investProdutoSelect">
+                    <option value="Super Caixinha CDI">Super Caixinha CDI (100% CDI - Liquidez Diária)</option>
+                    <option value="Tesouro IPCA+ 2029">Tesouro IPCA+ 2029 (IPCA + 6,2%)</option>
+                    <option value="CDB Turbo Fistu">CDB Turbo Fistu (115% do CDI)</option>
+                    <option value="Fundo Imobiliário FII">Fundo Imobiliário FII (Dividendos)</option>
+                </select>
+            </div>
+
+            <div class="modal-input-field">
+                <label>Valor da Aplicação (R$)</label>
+                <input type="number" step="0.01" id="investValorInput" placeholder="Ex: 100.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarInvestimento()">Confirmar Aporte</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RESGATE -->
+    <div class="modal-duo-overlay" id="modalResgate">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-arrow-down-left-and-up-right-to-center" style="color: #2F6B4F;"></i> Resgatar Investimento</h3>
+            <p>O valor será transferido dos seus Investimentos de volta para o seu Saldo Disponível.</p>
+
+            <div class="modal-input-field">
+                <label>Valor a Resgatar (R$)</label>
+                <input type="number" step="0.01" id="resgateValorInput" placeholder="Ex: 50.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarResgate()">Confirmar Resgate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DEPÓSITO -->
+    <div class="modal-duo-overlay" id="modalDeposito">
+        <div class="bank-modal-box">
+            <h3><i class="fa-solid fa-plus-circle" style="color: #2F6B4F;"></i> Adicionar Saldo na Conta</h3>
+            <p>Simule a entrada de fundos por Pix ou TED direto para a sua conta corrente Fistu.</p>
+
+            <div class="modal-input-field">
+                <label>Valor do Depósito (R$)</label>
+                <input type="number" step="0.01" id="depositoValorInput" placeholder="Ex: 200.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarDeposito()">Confirmar Depósito</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PIX -->
+    <div class="modal-duo-overlay" id="modalPix">
+        <div class="bank-modal-box">
+            <h3><i class="fa-brands fa-pix" style="color: #2F6B4F;"></i> Enviar Transferência Pix</h3>
+            <p>O valor será liquidado em instantes debitando do seu saldo em conta.</p>
+
+            <div class="modal-input-field">
+                <label>Chave Pix Destinatária</label>
+                <input type="text" id="pixChaveInput" placeholder="contato@exemplo.com">
+            </div>
+
+            <div class="modal-input-field">
+                <label>Valor do Pix (R$)</label>
+                <input type="number" step="0.01" id="pixValorInput" placeholder="Ex: 50.00">
+            </div>
+
+            <div class="modal-btn-row">
+                <button type="button" class="btn-modal-cancel" onclick="fecharModais()">Cancelar</button>
+                <button type="button" class="btn-modal-confirm" onclick="confirmarPix()">Transferir Agora</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         JAVASCRIPT: SUPABASE SDK, LÓGICA DO APP E DA TRILHA
          ======================================================== -->
     <script>
         // CONFIGURAÇÕES DO SUPABASE
         const SUPABASE_URL = "https://hzhetvhmvsxavjyufcpz.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6aGV0dmhtdnN4YXZqeXVmY3B6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjAyNDgsImV4cCI6MjEwNjQzNjI0OH0.5HQ1C9X8bpdPyC1zv2JHvOS7xUlRMQmwE2d9_Gvt3FQ";
-        
+
         let dbClient = null;
         try {
             if (window.supabase && typeof window.supabase.createClient === 'function') {
                 dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
         } catch(e) {
-            console.warn("Supabase SDK init notice:", e);
+            console.warn("Supabase init:", e);
         }
 
-        // POOL COMPLETO DE 60 QUESTÕES TÉCNICAS E DESAFIADORAS
+        // POOL COMPLETO DE QUESTÕES (60 QUESTÕES TÉCNICAS E DESAFIADORAS)
         const makeQuestion = (q, correct, wrongA, wrongB) => ({
             q,
             options: [{ text: correct, correct: true }, { text: wrongA, correct: false }, { text: wrongB, correct: false }]
         });
 
-        const difficultyQuestionPools = [// NÍVEL 0: INICIANTE (Conceitos Sólidos, Reserva, Tributação e Orçamento Prático)
+        const difficultyQuestionPools = [
+            // NÍVEL 0: INICIANTE
             [
                 makeQuestion("Qual o critério técnico para dimensionar a Reserva de Emergência de um profissional autônomo vs CLT?", "6 a 12 meses de custo de vida para autônomos e 3 a 6 meses para CLT", "Sempre 1 mês de salário bruto", "Apenas o limite do cartão de crédito"),
                 makeQuestion("Qual o impacto da alíquota regressiva de IR no resgate de um CDB em menos de 180 dias?", "Tributação máxima de 22,5% sobre o rendimento obtido", "Isenção total abaixo de R$ 20 mil", "Alíquota fixa de 15% sobre o capital total"),
@@ -537,7 +744,7 @@
                 makeQuestion("Qual é o principal risco ao alocar a reserva de emergência em um ativo com carência de 2 anos?", "Risco de iliquidez: impossibilidade de resgatar o capital imediatamente frente a um imprevisto", "Risco de calote automático do Banco Central", "Risco de tributação em 50% de IOF"),
                 makeQuestion("O que significa o 'custo de oportunidade' ao manter todo o capital parado em conta sem remuneração?", "O rendimento seguro que você deixou de ganhar (ex: 100% do CDI) e a perda de poder de compra pela inflação", "Uma penalidade cobrada pela bandeira do cartão", "O desconto de taxa de custódia na B3")
             ],
-            // NÍVEL 1: INTERMEDIÁRIO (Marcação a Mercado, Duration, FIIs, Derivativos e Crédito Privado)
+            // NÍVEL 1: INTERMEDIÁRIO
             [
                 makeQuestion("Como a Marcação a Mercado (MTM) afeta o preço unitário (PU) de uma NTN-B de longo prazo quando os juros sobem?", "O preço unitário (PU) cai, pois o fluxo futuro é descontado por uma taxa de desconto maior", "O preço unitário sobe proporcionalmente à taxa de juros", "O PU permanece constante pois o título é de renda fixa"),
                 makeQuestion("Qual a diferença fundamental entre a tabela de amortização SAC e a Tabela Price em financiamentos?", "Na SAC as amortizações são constantes e as parcelas decrescentes; na Price as parcelas são fixas", "Na SAC o juro é zero; na Price não há amortização", "A Price é exclusiva para veículos e a SAC para comércio"),
@@ -555,7 +762,7 @@
                 makeQuestion("Em uma operação de COE (Certificado de Operações Estruturadas) com Capital Protegido, qual é o risco oculto?", "Custo de oportunidade e perda de poder de compra pela inflação caso o ativo subjacente não atinja as metas", "Perda obrigatória do valor inicialmente investido", "Cobrança antecipada de IPTU sobre o saldo investido"),
                 makeQuestion("O que é o 'Beta' de uma ação ou carteira de investimentos em relação ao Ibovespa?", "A medida de sensibilidade e covariância dos retornos do ativo em resposta aos movimentos do índice de mercado de referência", "A quantidade total de dividendos distribuídos no último trimestre", "O valor de mercado dividido pelo patrimônio líquido")
             ],
-            // NÍVEL 2: ANALISTA (CAPM, WACC, DCF, Múltiplos, VaR Paramétrico, Fronteira Eficiente)
+            // NÍVEL 2: ANALISTA
             [
                 makeQuestion("Como se calcula e interpreta a taxa de desconto pelo modelo WACC (Custo Médio Ponderado de Capital)?", "Pondera o custo do capital de terceiros líquido de benefício fiscal e o custo do capital próprio (Ke) pela estrutura de capital", "Média simples entre a taxa Selic e o juro cobrado pelo banco no cheque especial", "Soma das despesas financeiras operacionais brutas"),
                 makeQuestion("No modelo CAPM, como o Custo de Capital Próprio (Ke) é formalmente estruturado?", "Ke = Rf + Beta * [E(Rm) - Rf], onde Rf é o ativo livre de risco e [E(Rm) - Rf] é o prêmio de risco de mercado", "Ke = Lucro Líquido / Preço da Ação + Taxa de Inflação Oficial", "Ke = Custo da Dívida Bruta multiplicado pelo EBITDA"),
@@ -573,7 +780,7 @@
                 makeQuestion("Em uma operação de arbitragem estatística ('Long & Short' por cointegração), o objetivo é:", "Explorar a reversão à média do spread entre dois ativos estatisticamente cointegrados mantendo exposição líquida nula (market neutral)", "Comprar ações de empresas estatais e vender títulos privados sem garantia", "Manter posições de compra no índice futuro por prazo indeterminado"),
                 makeQuestion("O que é o 'Free Float' de uma companhia aberta e por que ele é relevante na governança e precificação?", "A porcentagem de ações em livre circulação no mercado, influenciando diretamente a liquidez, formação de preço e dispersão acionária", "O total de dividendos em dinheiro pendentes de pagamento na tesouraria", "O montante de dívida bancária de curto prazo não refinanciada")
             ],
-            // NÍVEL 3: SÊNIOR (LDI, ALM, Imunização Avançada, Reverse Stress Testing, CoCo Bonds e Risco Sistêmico)
+            // NÍVEL 3: SÊNIOR
             [
                 makeQuestion("Qual o objetivo primordial de uma estratégia de Liability-Driven Investment (LDI) para fundos de pensão?", "Imunizar o balanço casando a duration e o fluxo de caixa dos ativos com o perfil atuarial dos passivos e obrigações futuras", "Maximizar o retorno absoluto em ações de tecnologia independentemente do perfil dos beneficiários", "Manter 100% dos recursos em caixa disponível em conta corrente"),
                 makeQuestion("Em um Teste de Estresse Reverso (Reverse Stress Testing), a instituição financeira busca:", "Identificar os cenários de eventos extremos e simultâneos que tornariam o modelo de negócio insolvente ou inviável", "Confirmar que as premissas do orçamento anual serão batidas sem desvios", "Medir o ganho financeiro nos melhores trimestres históricos"),
@@ -590,7 +797,8 @@
                 makeQuestion("Na análise de crédito estruturado de FIDCs, o que garante a higidez e proteção da cota Sênior contra inadimplência?", "A subordinação das Cotas Mezanino e Subordinadas, que absorvem primeiramente as perdas e inadimplência da carteira de recebíveis", "A garantia soberana e irrestrita concedida pelo Banco Central do Brasil", "A obrigatoriedade de liquidação em moeda estrangeira"),
                 makeQuestion("Em estratégias de Carry Trade com moedas internacionais, qual é o principal risco assimétrico de cauda?", "Desvalorização abrupta e violenta da moeda de alta taxa ('unwinding do carry trade') em momentos de aversão ao risco global", "O pagamento antecipado de juros pelo banco central estrangeiro", "A cobrança de taxa de corretagem fixa nas bolsas de valores"),
                 makeQuestion("Uma governança de investimentos de alto nível (Institutional Investment Policy Statement) deve conter obrigatoriamente:", "Tolerância a risco, horizonte temporal, restrições regulatórias/ESG, benchmarks claros, bandas de rebalanceamento e limites de drawdown", "A indicação do palpite da diretoria sobre qual ação subirá no próximo mês", "A promessa de rentabilidade de 20% ao ano sem qualquer oscilação")
-            ]];
+            ]
+        ];
 
         const stageCatalog = [
             "Orçamento e escolhas", "Receitas e despesas", "Reserva de emergência", "Primeiros investimentos",
@@ -642,957 +850,1020 @@
             }
         ];
 
-        // POOL POR NÍVEL (15 STAGES COM 5 QUESTÕES CADA)
         const levelQuestionPools = levelCatalog.map((level, levelIndex) => stageCatalog.map((stage, stageIndex) => {
             const questionPool = difficultyQuestionPools[levelIndex];
             const startIndex = (stageIndex % 3) * 5;
             return questionPool.slice(startIndex, startIndex + 5);
         }));
 
-        // ÍCONES TEMÁTICOS DO DUOLINGO (SEM BAÚS!)
         const duoIcons = [
             'fa-headphones', 'fa-star', 'fa-video', 'fa-book-open', 'fa-headphones', 
             'fa-microphone', 'fa-star', 'fa-video', 'fa-book', 'fa-trophy',
             'fa-headphones', 'fa-microphone', 'fa-star', 'fa-book-open', 'fa-crown'
         ];
 
-        // ESTADO GLOBAL DO USUÁRIO E DO APP
+        // ESTADO GLOBAL DO APLICATIVO
         let currentUser = null;
+        let saldoAtual = 1500.0;
+        let investAtual = 3200.0;
         let saldoVisivel = true;
-        let selectedLevelIndex = 0;
-        let currentQuiz = {
-            stageIndex: 0,
-            levelIndex: 0,
-            questionIndex: 0,
-            correctCount: 0,
-            questions: [],
-            selectedOptionIndex: -1,
-            isMaster: false
+        let isAdmin = false;
+        let selectedLevel = 0;
+
+        let eduState = {
+            xp: 0,
+            streak: 1,
+            coins: 0,
+            hearts: 5,
+            progress: levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))
         };
 
-        let transactionsHistory = [
-            { title: 'Bônus de Boas-Vindas', date: 'Hoje', val: 1500.00, type: 'in' },
-            { title: 'Aplicação Super Caixinha', date: 'Hoje', val: -100.00, type: 'out' }
-        ];
+        let estadoPersonalizacao = {
+            tema: 'escuro',
+            tomVerde: '#000000',
+            fotoPerfil: ''
+        };
 
-        // --- INICIALIZAÇÃO DO APP ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('fistu_user');
-            if (saved) {
-                try {
-                    currentUser = JSON.parse(saved);
-                    iniciarSessaoUsuario();
-                    sincronizarComSupabase();
-                } catch(e) {
-                    fazerLogout();
-                }
-            } else {
-                mostrarTelaAuth();
-            }
-        });
+        let currentQuiz = {
+            levelIndex: 0,
+            stageNumber: 1,
+            questionIndex: 0,
+            correctCount: 0,
+            questions: []
+        };
 
-        // --- SISTEMA DE TOAST COM ÍCONE DE ERRO (fa-circle-xmark) ---
-        function mostrarToast(mensagem, tipo = 'success') {
-            const toast = document.getElementById('toast');
-            const icon = document.getElementById('toastIcon');
-            const msg = document.getElementById('toastMsg');
-
-            toast.className = 'toast-box ' + tipo;
-            if (tipo === 'error') {
-                icon.className = 'fa-solid fa-circle-xmark';
-            } else {
-                icon.className = 'fa-solid fa-circle-check';
-            }
-            msg.innerText = mensagem;
-
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3200);
-        }
-
-        // --- AUTENTICAÇÃO E LOGIN ---
-        function switchAuthTab(tab) {
+        // --- SISTEMA DE AUTENTICAÇÃO ---
+        function alternarAbaAuth(aba) {
             const btnLogin = document.getElementById('tabBtnLogin');
-            const btnCadastro = document.getElementById('tabBtnCadastro');
-            const nomeGroup = document.getElementById('authNomeGroup');
-            const submitBtn = document.getElementById('authSubmitBtn');
+            const btnSignup = document.getElementById('tabBtnSignup');
+            const formLogin = document.getElementById('formAuthLogin');
+            const formSignup = document.getElementById('formAuthSignup');
+            const feedback = document.getElementById('authFeedback');
+            feedback.style.display = 'none';
 
-            if (tab === 'cadastro') {
-                btnLogin.classList.remove('active');
-                btnCadastro.classList.add('active');
-                nomeGroup.style.display = 'block';
-                submitBtn.innerText = 'Criar Minha Conta Fistu';
-            } else {
-                btnCadastro.classList.remove('active');
+            if (aba === 'login') {
                 btnLogin.classList.add('active');
-                nomeGroup.style.display = 'none';
-                submitBtn.innerText = 'Entrar na Conta';
-            }
-        }
-
-        async function handleAuthSubmit(event) {
-            event.preventDefault();
-            const isCadastro = document.getElementById('tabBtnCadastro').classList.contains('active');
-            const email = document.getElementById('authEmail').value.trim();
-            const senha = document.getElementById('authSenha').value.trim();
-            const nome = document.getElementById('authNome').value.trim();
-
-            if (!email || !senha) {
-                mostrarToast('Preencha todos os campos obrigatórios.', 'error');
-                return;
-            }
-
-            if (isCadastro) {
-                await cadastrarNovoUsuario(nome || email.split('@')[0], email, senha);
+                btnSignup.classList.remove('active');
+                formLogin.style.display = 'block';
+                formSignup.style.display = 'none';
             } else {
-                await autenticarUsuario(email, senha);
+                btnSignup.classList.add('active');
+                btnLogin.classList.remove('active');
+                formSignup.style.display = 'block';
+                formLogin.style.display = 'none';
             }
         }
 
-        async function entrarDemo(tipo) {
-            if (tipo === 'admin') {
-                document.getElementById('authEmail').value = 'admin@fistu.com';
-                document.getElementById('authSenha').value = 'admin123';
-                await autenticarUsuario('admin@fistu.com', 'admin123');
-            } else {
-                document.getElementById('authEmail').value = 'joao.toledo@fistu.com';
-                document.getElementById('authSenha').value = '123456';
-                await autenticarUsuario('joao.toledo@fistu.com', '123456');
-            }
-        }
+        async function executarLogin(e) {
+            e.preventDefault();
+            const emailOrUser = document.getElementById('authLoginEmail').value.trim();
+            const senha = document.getElementById('authLoginSenha').value;
+            const btn = document.getElementById('btnSubmitLogin');
+            const feedback = document.getElementById('authFeedback');
 
-        async function autenticarUsuario(emailOrLogin, senha) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
+
             try {
-                // Tenta consultar no Supabase
                 if (dbClient) {
-                    const { data, error } = await dbClient
-                        .from('Usuarios')
-                        .select('*')
-                        .or(`email.eq.${emailOrLogin},nome.eq.${emailOrLogin}`)
-                        .limit(1);
+                    // Consulta o Supabase
+                    let query = dbClient.from('Usuarios').select('*');
+                    if (emailOrUser.includes('@')) {
+                        query = query.eq('email', emailOrUser);
+                    } else {
+                        query = query.or(`email.eq.${emailOrUser},nome.eq.${emailOrUser}`);
+                    }
+                    const { data, error } = await query.limit(1);
+
+                    if (error) throw error;
 
                     if (data && data.length > 0) {
-                        const userFound = data[0];
-                        currentUser = normalizarUsuario(userFound);
-                        salvarSessao();
-                        iniciarSessaoUsuario();
-                        mostrarToast(`Bem-vindo, ${currentUser.nome}!`, 'success');
+                        const user = data[0];
+                        // Suporte a login direto
+                        inicializarAppComUsuario(user);
                         return;
                     }
                 }
 
-                // Se for demo local ou offline
-                if (emailOrLogin.includes('admin') || senha === 'admin123') {
-                    currentUser = {
-                        id: 1,
-                        nome: 'Administrador Master',
-                        email: emailOrLogin,
-                        tipo: 'admin',
-                        saldo: 50000.00,
-                        investimentos: 120000.00,
-                        trilha_xp: 320,
-                        trilha_streak: 5,
-                        trilha_coins: 120,
-                        trilha_hearts: 5,
-                        trilha_nivel_atual: 3,
-                        trilha_progresso: JSON.stringify([[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]),
-                        trilha_ultima_missao: null
-                    };
-                } else {
-                    currentUser = {
-                        id: 2,
-                        nome: emailOrLogin.split('@')[0],
-                        email: emailOrLogin,
-                        tipo: 'usuario',
-                        saldo: 1500.00,
-                        investimentos: 3200.00,
-                        trilha_xp: 15,
-                        trilha_streak: 1,
-                        trilha_coins: 20,
-                        trilha_hearts: 5,
-                        trilha_nivel_atual: 0,
-                        trilha_progresso: JSON.stringify([[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]),
-                        trilha_ultima_missao: null
-                    };
-                }
-
-                salvarSessao();
-                iniciarSessaoUsuario();
-                mostrarToast(`Acesso concedido: ${currentUser.nome}`, 'success');
-            } catch(err) {
-                console.error("Erro no login:", err);
-                mostrarToast('Falha na autenticação.', 'error');
+                // Fallback ou mock local se banco offline
+                const mockUser = {
+                    id: 1,
+                    nome: emailOrUser.split('@')[0],
+                    email: emailOrUser.includes('@') ? emailOrUser : emailOrUser + '@fistu.com',
+                    tipo: 'usuario',
+                    saldo: 1500.0,
+                    investimentos: 3200.0,
+                    trilha_xp: 0,
+                    trilha_streak: 1,
+                    trilha_coins: 0,
+                    trilha_hearts: 5,
+                    trilha_nivel_atual: 0,
+                    tema: 'escuro',
+                    tom_verde: '#000000',
+                    foto_perfil: ''
+                };
+                inicializarAppComUsuario(mockUser);
+            } catch (err) {
+                feedback.style.display = 'block';
+                feedback.style.background = '#742A2A';
+                feedback.style.color = '#FCA5A5';
+                feedback.innerText = 'Erro ao autenticar: ' + (err.message || 'Verifique seus dados.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> ENTRAR NA CONTA';
             }
         }
 
-        async function cadastrarNovoUsuario(nome, email, senha) {
-            const novo = {
-                nome: nome,
-                email: email,
-                senha_hash: senha,
-                tipo: 'usuario',
-                saldo: 1500.00,
-                investimentos: 3200.00,
-                trilha_xp: 0,
-                trilha_streak: 1,
-                trilha_coins: 0,
-                trilha_hearts: 5,
-                trilha_nivel_atual: 0,
-                trilha_progresso: JSON.stringify([[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]),
-                trilha_ultima_missao: null
-            };
+        async function executarCadastro(e) {
+            e.preventDefault();
+            const nome = document.getElementById('authSignupNome').value.trim();
+            const email = document.getElementById('authSignupEmail').value.trim();
+            const senha = document.getElementById('authSignupSenha').value;
+            const btn = document.getElementById('btnSubmitSignup');
+            const feedback = document.getElementById('authFeedback');
 
-            if (dbClient) {
-                try {
-                    const { data, error } = await dbClient.from('Usuarios').insert([novo]).select();
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando conta...';
+
+            try {
+                const novoUsuario = {
+                    nome: nome,
+                    email: email,
+                    tipo: 'usuario',
+                    saldo: 1500.0,
+                    investimentos: 3200.0,
+                    trilha_progresso: JSON.stringify(levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))),
+                    trilha_xp: 0,
+                    trilha_streak: 1,
+                    trilha_coins: 0,
+                    trilha_hearts: 5,
+                    trilha_nivel_atual: 0,
+                    tema: 'escuro',
+                    tom_verde: '#000000',
+                    foto_perfil: ''
+                };
+
+                if (dbClient) {
+                    const { data, error } = await dbClient.from('Usuarios').insert([novoUsuario]).select();
+                    if (error) throw error;
                     if (data && data.length > 0) {
-                        currentUser = normalizarUsuario(data[0]);
-                        salvarSessao();
-                        iniciarSessaoUsuario();
-                        mostrarToast('Conta criada com sucesso!', 'success');
+                        inicializarAppComUsuario(data[0]);
                         return;
                     }
-                } catch(e) {
-                    console.warn("Cadastro remoto offline, salvando localmente:", e);
                 }
+
+                novoUsuario.id = Math.floor(Math.random() * 1000) + 10;
+                inicializarAppComUsuario(novoUsuario);
+            } catch (err) {
+                feedback.style.display = 'block';
+                feedback.style.background = '#742A2A';
+                feedback.style.color = '#FCA5A5';
+                feedback.innerText = 'Erro ao cadastrar: ' + (err.message || 'E-mail já existente.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> CRIAR CONTA FISTU';
             }
-
-            currentUser = { ...novo, id: Date.now() };
-            salvarSessao();
-            iniciarSessaoUsuario();
-            mostrarToast('Conta criada com sucesso!', 'success');
-        }
-
-        function normalizarUsuario(u) {
-            return {
-                id: u.id,
-                nome: u.nome || 'Cliente',
-                email: u.email,
-                tipo: u.tipo || 'usuario',
-                saldo: parseFloat(u.saldo || 1500.0),
-                investimentos: parseFloat(u.investimentos || 3200.0),
-                trilha_xp: parseInt(u.trilha_xp || 0),
-                trilha_streak: parseInt(u.trilha_streak || 1),
-                trilha_coins: parseInt(u.trilha_coins || 0),
-                trilha_hearts: parseInt(u.trilha_hearts || 5),
-                trilha_nivel_atual: parseInt(u.trilha_nivel_atual || 0),
-                trilha_progresso: u.trilha_progresso || JSON.stringify([[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]),
-                trilha_ultima_missao: u.trilha_ultima_missao || null
-            };
-        }
-
-        function salvarSessao() {
-            localStorage.setItem('fistu_user', JSON.stringify(currentUser));
-        }
-
-        async function sincronizarComSupabase() {
-            if (!dbClient || !currentUser || !currentUser.id) return;
-            try {
-                const { data, error } = await dbClient
-                    .from('Usuarios')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-
-                if (data) {
-                    currentUser = normalizarUsuario(data);
-                    salvarSessao();
-                    atualizarInterfaceConta();
-                    atualizarInterfaceTrilha();
-                }
-            } catch(e) {
-                console.warn("Sincronização em segundo plano offline");
-            }
-        }
-
-        async function salvarDadosNoSupabase() {
-            salvarSessao();
-            if (!dbClient || !currentUser || !currentUser.id) return;
-            try {
-                await dbClient.from('Usuarios').update({
-                    saldo: currentUser.saldo,
-                    investimentos: currentUser.investimentos,
-                    trilha_progresso: currentUser.trilha_progresso,
-                    trilha_xp: currentUser.trilha_xp,
-                    trilha_streak: currentUser.trilha_streak,
-                    trilha_coins: currentUser.trilha_coins,
-                    trilha_hearts: currentUser.trilha_hearts,
-                    trilha_nivel_atual: currentUser.trilha_nivel_atual,
-                    trilha_ultima_missao: currentUser.trilha_ultima_missao
-                }).eq('id', currentUser.id);
-            } catch(e) {
-                console.warn("Falha ao salvar no Supabase:", e);
-            }
-        }
-
-        function iniciarSessaoUsuario() {
-            document.getElementById('viewAuth').classList.remove('active');
-            document.getElementById('mainHeader').style.display = 'flex';
-            document.getElementById('bottomNav').style.display = 'flex';
-
-            const isAdmin = (currentUser.tipo === 'admin');
-            document.getElementById('adminIndicator').style.display = isAdmin ? 'flex' : 'none';
-            document.getElementById('userRoleBadge').style.display = isAdmin ? 'inline-flex' : 'none';
-            document.getElementById('adminTrailBanner').style.display = isAdmin ? 'flex' : 'none';
-            const navAdmin = document.getElementById('navItemAdmin');
-            if (navAdmin) navAdmin.style.display = isAdmin ? 'flex' : 'none';
-
-            atualizarInterfaceConta();
-            atualizarInterfaceTrilha();
-            renderizarExtrato();
-            irParaAba('conta');
         }
 
         function fazerLogout() {
+            localStorage.removeItem('fistu_logged_user');
             currentUser = null;
-            localStorage.removeItem('fistu_user');
-            mostrarTelaAuth();
-            mostrarToast('Sessão encerrada.', 'success');
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('viewAuth').style.display = 'flex';
+            exibirNotificacao('Sessão Encerrada', 'Você saiu da sua conta.');
         }
 
-        function mostrarTelaAuth() {
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-            document.getElementById('viewAuth').classList.add('active');
-            document.getElementById('mainHeader').style.display = 'none';
-            document.getElementById('bottomNav').style.display = 'none';
-            const navAdmin = document.getElementById('navItemAdmin');
-            if (navAdmin) navAdmin.style.display = 'none';
-        }
+        // --- INICIALIZAÇÃO DA INTERFACE COM OS DADOS DO USUÁRIO ---
+        function inicializarAppComUsuario(user) {
+            currentUser = user;
+            localStorage.setItem('fistu_logged_user', JSON.stringify(user));
 
-        // --- NAVEGAÇÃO ENTRE ABAS ---
-        function irParaAba(aba) {
-            if (aba === 'admin' && (!currentUser || currentUser.tipo !== 'admin')) {
-                mostrarToast('Acesso restrito ao Administrador!', 'error');
-                return;
+            isAdmin = (user.tipo === 'admin');
+            saldoAtual = parseFloat(user.saldo || 1500.0);
+            investAtual = parseFloat(user.investimentos || 3200.0);
+
+            // Carrega estado da Trilha
+            let dbProgress = null;
+            try {
+                if (user.trilha_progresso) dbProgress = JSON.parse(user.trilha_progresso);
+            } catch(e) {}
+
+            if (!Array.isArray(dbProgress) || dbProgress.length !== levelCatalog.length) {
+                dbProgress = levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })));
             }
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+            eduState = {
+                xp: parseInt(user.trilha_xp || 0),
+                streak: parseInt(user.trilha_streak || 1),
+                coins: parseInt(user.trilha_coins || 0),
+                hearts: parseInt(user.trilha_hearts || 5),
+                progress: dbProgress
+            };
+
+            selectedLevel = parseInt(user.trilha_nivel_atual || 0);
+
+            estadoPersonalizacao = {
+                tema: user.tema || 'escuro',
+                tomVerde: user.tom_verde || '#000000',
+                fotoPerfil: user.foto_perfil || ''
+            };
+
+            // Atualiza o DOM
+            document.getElementById('displayUserGreeting').innerText = user.nome || 'Cliente';
+            document.getElementById('displayUserEmail').innerText = user.email || '';
+            document.getElementById('userTrailName').innerText = user.nome || 'Cliente Fistu';
+            document.getElementById('userTrailAccountPill').innerText = 'Conta #' + (user.id || 1);
+            document.getElementById('prefInputNome').value = user.nome || 'Cliente Fistu';
+            document.getElementById('prefInputEmail').value = user.email || '';
+            document.getElementById('navUserFirstName').innerText = (user.nome || 'Conta').split(' ')[0];
+
+            if (isAdmin) {
+                const adminInd = document.getElementById('adminIndicator');
+                if (adminInd) adminInd.style.display = 'flex';
+                const adminBanner = document.getElementById('adminTestBanner');
+                if (adminBanner) adminBanner.style.display = 'flex';
+            }
+
+            atualizarDisplaysSaldo();
+            atualizarStatsBar();
+            renderLevelTabs();
+            atualizarDailyMissionBanner();
+            atualizarUserTrailSub();
+            renderDuoPath();
+            aplicarTemaInterface(estadoPersonalizacao.tema, estadoPersonalizacao.tomVerde);
+            atualizarFotoPerfilUI(estadoPersonalizacao.fotoPerfil);
+
+            document.getElementById('viewAuth').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+
+            exibirNotificacao('Bem-vindo ao Fistu!', `Sessão ativa como ${user.nome || 'Usuário'}.`);
+        }
+
+        // --- NAVEGAÇÃO DE ABAS (EXATA DO PC) ---
+        function mudarAba(aba) {
+            document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
 
             if (aba === 'conta') {
-                document.getElementById('viewConta').classList.add('active');
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
-                atualizarInterfaceConta();
-            } else if (aba === 'trilha') {
-                document.getElementById('viewTrilha').classList.add('active');
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-                atualizarInterfaceTrilha();
-            } else if (aba === 'admin') {
-                document.getElementById('viewAdmin').classList.add('active');
-                document.getElementById('navItemAdmin').classList.add('active');
-                carregarDadosAdmin();
+                document.getElementById('screenConta').classList.add('active');
+                document.getElementById('btnTabConta').classList.add('active');
+            } else if (aba === 'educacao') {
+                document.getElementById('screenEducacao').classList.add('active');
+                document.getElementById('btnTabEdu').classList.add('active');
+                renderLevelTabs();
+                atualizarDailyMissionBanner();
+                renderDuoPath();
+            } else if (aba === 'personalizacao') {
+                document.getElementById('screenPersonalizacao').classList.add('active');
+                document.getElementById('btnTabPersonalizacao').classList.add('active');
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- INTERFACE CONTA & SALDO ---
+        // --- SISTEMA BANCÁRIO & MODAIS ---
         function formatarMoeda(val) {
-            return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return 'R$ ' + parseFloat(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        function toggleSaldoVisivel() {
+        function atualizarDisplaysSaldo() {
+            const elSaldo = document.getElementById('displaySaldo');
+            const elInvest = document.getElementById('displayInvestimentos');
+            if (saldoVisivel) {
+                elSaldo.innerText = formatarMoeda(saldoAtual);
+                elInvest.innerText = formatarMoeda(investAtual);
+            } else {
+                elSaldo.innerText = 'R$ ••••••';
+                elInvest.innerText = 'R$ ••••••';
+            }
+        }
+
+        function alternarVisibilidadeSaldo() {
             saldoVisivel = !saldoVisivel;
-            const eyeIcon = document.getElementById('btnEyeIcon');
-            if (saldoVisivel) {
-                eyeIcon.className = 'fa-solid fa-eye';
-            } else {
-                eyeIcon.className = 'fa-solid fa-eye-slash';
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (eyeIcon) {
+                eyeIcon.className = saldoVisivel ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
             }
-            atualizarInterfaceConta();
+            atualizarDisplaysSaldo();
         }
 
-        function atualizarInterfaceConta() {
+        function fecharModais() {
+            document.querySelectorAll('.modal-duo-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        function abrirModalInvestir(produtoNome = null) {
+            if (produtoNome) {
+                const select = document.getElementById('investProdutoSelect');
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value.includes(produtoNome)) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            document.getElementById('investValorInput').value = '';
+            document.getElementById('modalInvestir').classList.add('active');
+        }
+
+        function abrirModalResgate() {
+            document.getElementById('resgateValorInput').value = '';
+            document.getElementById('modalResgate').classList.add('active');
+        }
+
+        function abrirModalDeposito() {
+            document.getElementById('depositoValorInput').value = '';
+            document.getElementById('modalDeposito').classList.add('active');
+        }
+
+        function abrirModalPix() {
+            document.getElementById('pixChaveInput').value = '';
+            document.getElementById('pixValorInput').value = '';
+            document.getElementById('modalPix').classList.add('active');
+        }
+
+        async function sincronizarSaldoSupabase() {
             if (!currentUser) return;
-            document.getElementById('userGreeting').innerText = `Olá, ${currentUser.nome}`;
-            
-            if (saldoVisivel) {
-                document.getElementById('txtSaldo').innerText = formatarMoeda(currentUser.saldo);
-                document.getElementById('txtInvestimentos').innerText = `R$ ${formatarMoeda(currentUser.investimentos)}`;
-            } else {
-                document.getElementById('txtSaldo').innerText = '••••••';
-                document.getElementById('txtInvestimentos').innerText = 'R$ ••••••';
+            currentUser.saldo = saldoAtual;
+            currentUser.investimentos = investAtual;
+            localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+
+            if (dbClient && currentUser.id) {
+                try {
+                    await dbClient.from('Usuarios').update({
+                        saldo: saldoAtual,
+                        investimentos: investAtual
+                    }).eq('id', currentUser.id);
+                } catch(e) {
+                    console.warn("Sync saldo Supabase:", e);
+                }
             }
         }
 
-        function renderizarExtrato() {
-            const list = document.getElementById('txHistoryList');
-            if (!transactionsHistory.length) {
-                list.innerHTML = '<div style="color: #BFD8C2; font-size: 0.8rem; text-align: center; padding: 10px;">Nenhuma transação recente.</div>';
-                return;
-            }
-
-            list.innerHTML = transactionsHistory.map(tx => `
-                <div class="tx-item">
-                    <div class="tx-icon ${tx.type}">
-                        <i class="fa-solid ${tx.type === 'in' ? 'fa-arrow-down' : (tx.type === 'trail' ? 'fa-gem' : 'fa-arrow-up')}"></i>
-                    </div>
-                    <div class="tx-details">
-                        <div class="tx-title">${tx.title}</div>
-                        <div class="tx-date">${tx.date}</div>
-                    </div>
-                    <div class="tx-val ${tx.val >= 0 ? 'pos' : 'neg'}">
-                        ${tx.val >= 0 ? '+' : ''} R$ ${formatarMoeda(Math.abs(tx.val))}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- OPERAÇÕES FINANCEIRAS (DEPÓSITO, PIX, APORTE, RESGATE) ---
         async function confirmarDeposito() {
-            const valInput = document.getElementById('depositoValorInput');
-            const valor = parseFloat(valInput.value);
-
-            if (isNaN(valor) || valor <= 0) {
-                mostrarToast('Informe um valor de depósito válido.', 'error');
+            const val = parseFloat(document.getElementById('depositoValorInput').value);
+            if (!val || val <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para depósito.', true);
                 return;
             }
-
-            currentUser.saldo += valor;
-            transactionsHistory.unshift({
-                title: 'Depósito Recebido',
-                date: 'Hoje',
-                val: valor,
-                type: 'in'
-            });
-
-            valInput.value = '';
+            saldoAtual += val;
+            atualizarDisplaysSaldo();
             fecharModais();
-            atualizarInterfaceConta();
-            renderizarExtrato();
-            await salvarDadosNoSupabase();
-            mostrarToast(`Depósito de R$ ${formatarMoeda(valor)} creditado!`, 'success');
+            exibirNotificacao('Depósito Concluído!', `Adicionado ${formatarMoeda(val)} ao seu saldo.`);
+            await sincronizarSaldoSupabase();
         }
 
         async function confirmarPix() {
             const chave = document.getElementById('pixChaveInput').value.trim();
-            const valInput = document.getElementById('pixValorInput');
-            const valor = parseFloat(valInput.value);
-
+            const val = parseFloat(document.getElementById('pixValorInput').value);
             if (!chave) {
-                mostrarToast('A chave Pix é obrigatória.', 'error');
+                exibirNotificacao('Atenção', 'Informe a chave Pix destinatária.', true);
                 return;
             }
-
-            if (isNaN(valor) || valor <= 0) {
-                mostrarToast('Informe um valor de Pix válido.', 'error');
+            if (!val || val <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para transferir.', true);
                 return;
             }
-
-            if (currentUser.saldo < valor) {
-                mostrarToast(`Saldo insuficiente! Seu saldo é R$ ${formatarMoeda(currentUser.saldo)}`, 'error');
+            if (val > saldoAtual) {
+                exibirNotificacao('Saldo Insuficiente', 'Você não tem saldo suficiente para este Pix.', true);
                 return;
             }
-
-            currentUser.saldo -= valor;
-            transactionsHistory.unshift({
-                title: `Pix enviado para ${chave}`,
-                date: 'Hoje',
-                val: -valor,
-                type: 'out'
-            });
-
-            document.getElementById('pixChaveInput').value = '';
-            valInput.value = '';
+            saldoAtual -= val;
+            atualizarDisplaysSaldo();
             fecharModais();
-            atualizarInterfaceConta();
-            renderizarExtrato();
-            await salvarDadosNoSupabase();
-            mostrarToast(`Pix de R$ ${formatarMoeda(valor)} enviado!`, 'success');
+            exibirNotificacao('Pix Enviado!', `Transferência de ${formatarMoeda(val)} realizada com sucesso.`);
+            await sincronizarSaldoSupabase();
         }
 
         async function confirmarInvestimento() {
-            const produto = document.getElementById('investProdutoSelect').value;
-            const valInput = document.getElementById('investValorInput');
-            const valor = parseFloat(valInput.value);
-
-            if (isNaN(valor) || valor <= 0) {
-                mostrarToast('Informe um valor válido para investir.', 'error');
+            const val = parseFloat(document.getElementById('investValorInput').value);
+            const prod = document.getElementById('investProdutoSelect').value;
+            if (!val || val <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para aplicar.', true);
                 return;
             }
-
-            if (currentUser.saldo < valor) {
-                mostrarToast(`Saldo insuficiente para investir.`, 'error');
+            if (val > saldoAtual) {
+                exibirNotificacao('Saldo Insuficiente', 'Saldo insuficiente para realizar este aporte.', true);
                 return;
             }
-
-            currentUser.saldo -= valor;
-            currentUser.investimentos += valor;
-
-            transactionsHistory.unshift({
-                title: `Aporte em ${produto}`,
-                date: 'Hoje',
-                val: -valor,
-                type: 'out'
-            });
-
-            valInput.value = '';
+            saldoAtual -= val;
+            investAtual += val;
+            atualizarDisplaysSaldo();
             fecharModais();
-            atualizarInterfaceConta();
-            renderizarExtrato();
-            await salvarDadosNoSupabase();
-            mostrarToast(`Aporte de R$ ${formatarMoeda(valor)} concluído!`, 'success');
+            exibirNotificacao('Aporte Concluído!', `Aplicado ${formatarMoeda(val)} em ${prod}.`);
+            await sincronizarSaldoSupabase();
         }
 
         async function confirmarResgate() {
-            const valInput = document.getElementById('resgateValorInput');
-            const valor = parseFloat(valInput.value);
-
-            if (isNaN(valor) || valor <= 0) {
-                mostrarToast('Informe um valor de resgate válido.', 'error');
+            const val = parseFloat(document.getElementById('resgateValorInput').value);
+            if (!val || val <= 0) {
+                exibirNotificacao('Atenção', 'Informe um valor válido para resgate.', true);
                 return;
             }
-
-            if (currentUser.investimentos < valor) {
-                mostrarToast(`Saldo em investimentos insuficiente.`, 'error');
+            if (val > investAtual) {
+                exibirNotificacao('Valor Excedido', 'O valor informado é maior que o total investido.', true);
                 return;
             }
-
-            currentUser.investimentos -= valor;
-            currentUser.saldo += valor;
-
-            transactionsHistory.unshift({
-                title: 'Resgate de Investimento',
-                date: 'Hoje',
-                val: valor,
-                type: 'in'
-            });
-
-            valInput.value = '';
+            investAtual -= val;
+            saldoAtual += val;
+            atualizarDisplaysSaldo();
             fecharModais();
-            atualizarInterfaceConta();
-            renderizarExtrato();
-            await salvarDadosNoSupabase();
-            mostrarToast(`Resgate de R$ ${formatarMoeda(valor)} creditado na conta!`, 'success');
+            exibirNotificacao('Resgate Realizado!', `Transferido ${formatarMoeda(val)} para seu saldo em conta.`);
+            await sincronizarSaldoSupabase();
         }
 
-        // --- TRILHA DO CONHECIMENTO GAMIFICADA ---
-        function getProgressoMatriz() {
-            try {
-                if (currentUser && currentUser.trilha_progresso) {
-                    const m = JSON.parse(currentUser.trilha_progresso);
-                    if (Array.isArray(m) && m.length === 4) return m;
+        // --- SISTEMA DUOLINGO TRILHA ---
+        function renderLevelTabs() {
+            const container = document.getElementById('levelTabsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            levelCatalog.forEach((lvl, idx) => {
+                const isUnlocked = isLevelUnlocked(idx);
+                const isActive = (idx === selectedLevel);
+                const pill = document.createElement('div');
+                pill.className = `level-pill ${isActive ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}`;
+                pill.onclick = () => selecionarNivel(idx);
+
+                let iconHtml = lvl.icon + ' ';
+                if (!isUnlocked && !isAdmin) {
+                    iconHtml = '<i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>';
                 }
-            } catch(e) {}
-            return [
-                new Array(15).fill(0),
-                new Array(15).fill(0),
-                new Array(15).fill(0),
-                new Array(15).fill(0)
-            ];
+                pill.innerHTML = iconHtml + lvl.shortTitle;
+                container.appendChild(pill);
+            });
         }
 
-        function salvarProgressoMatriz(m) {
-            currentUser.trilha_progresso = JSON.stringify(m);
+        function isLevelUnlocked(lvlIdx) {
+            if (isAdmin || lvlIdx === 0) return true;
+            const prevLevelStages = eduState.progress[lvlIdx - 1];
+            return prevLevelStages && prevLevelStages.every(s => s.completed);
         }
 
-        function atualizarInterfaceTrilha() {
-            if (!currentUser) return;
-
-            // Dados do cabeçalho da trilha atribuídos ao usuário logado
-            document.getElementById('trailAvatar').innerText = (currentUser.nome || 'C')[0].toUpperCase();
-            document.getElementById('trailUserName').innerText = `Trilha de ${currentUser.nome}`;
-            
-            const levelInfo = levelCatalog[selectedLevelIndex] || levelCatalog[0];
-            document.getElementById('trailUserLevel').innerText = `Nível: ${levelInfo.title}`;
-
-            document.getElementById('statStreak').innerText = currentUser.trilha_streak || 1;
-            document.getElementById('statCoins').innerText = currentUser.trilha_coins || 0;
-            document.getElementById('statHearts').innerText = currentUser.trilha_hearts || 5;
-
-            renderizarAbasNiveis();
-            renderizarCaminhoTrilha();
+        function selecionarNivel(lvlIdx) {
+            if (!isAdmin && !isLevelUnlocked(lvlIdx)) {
+                exibirNotificacao('Nível Bloqueado 🔒', 'Complete todos os 15 estágios do nível anterior primeiro!', true);
+                return;
+            }
+            selectedLevel = lvlIdx;
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarUserTrailSub();
+            salvarEduState();
         }
 
-        function renderizarAbasNiveis() {
-            const tabsBox = document.getElementById('levelTabsContainer');
-            const matriz = getProgressoMatriz();
-            const isAdmin = (currentUser.tipo === 'admin');
+        function renderDuoPath() {
+            const wrapper = document.getElementById('duoPathWrapper');
+            if (!wrapper) return;
+            wrapper.innerHTML = '';
 
-            tabsBox.innerHTML = levelCatalog.map((level, idx) => {
-                const isSelected = (idx === selectedLevelIndex);
-                
-                // Regra de bloqueio solicitada:
-                // Intermediário (1), Analista (2) e Sênior (3) começam bloqueados para usuário comum
-                // Se for Admin, tudo liberado!
-                let isLocked = false;
-                if (!isAdmin && idx > 0) {
-                    const concluidosAnterior = matriz[idx - 1].filter(v => v === 1).length;
-                    if (concluidosAnterior < 15) {
-                        isLocked = true;
-                    }
+            const level = levelCatalog[selectedLevel];
+            document.getElementById('bannerSectionTitle').innerText = `${level.section}, UNIDADE 1`;
+            document.getElementById('bannerUnitTitle').innerText = `${stageCatalog[0]}`;
+
+            const banner = document.getElementById('duoSectionBanner');
+            if (banner) {
+                banner.style.backgroundColor = level.primary;
+                banner.style.boxShadow = `0 6px 0 ${level.dark}`;
+            }
+
+            const stages = eduState.progress[selectedLevel];
+            let activeFound = false;
+            const xOffsets = [0, 45, 90, 45, 0, -45, -90, -45, 0, 45, 90, 45, 0, -45, 0];
+
+            for (let i = 0; i < stageCatalog.length; i++) {
+                const stageNum = i + 1;
+                const isCompleted = stages[i].completed;
+                const isLocked = isAdmin ? false : (i > 0 && !stages[i - 1].completed);
+                const isActive = !isCompleted && !isLocked && !activeFound;
+                if (isActive) activeFound = true;
+
+                const row = document.createElement('div');
+                row.className = 'duo-step-row';
+                const offsetX = xOffsets[i % xOffsets.length];
+
+                let btnClass = 'duo-node-btn';
+                let btnStyle = '';
+                let tooltip = '';
+
+                if (isCompleted) {
+                    btnClass += ' completed';
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark};`;
+                } else if (isActive) {
+                    btnClass += ' active-node';
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark}, 0 12px 18px rgba(0,0,0,0.15);`;
+                    tooltip = `<div class="duo-tooltip-bubble" style="color: ${level.dark}; border-color: ${level.primary};">COMEÇAR!</div>`;
+                } else if (isAdmin) {
+                    btnStyle = `background: ${level.primary}; box-shadow: 0 8px 0 ${level.dark}; opacity: 0.95;`;
+                } else {
+                    btnClass += ' locked';
+                    btnStyle = `background: #333333; box-shadow: 0 8px 0 #222222; color: #777777;`;
                 }
 
-                const cor = level.primary;
-                return `
-                    <button class="level-tab-btn ${isSelected ? 'active' : ''} ${isLocked ? 'locked' : ''}"
-                            onclick="selecionarNivelTrilha(${idx}, ${isLocked})"
-                            style="${isSelected ? `background: ${cor}; box-shadow: 0 4px 0 ${level.dark};` : ''}">
-                        <div>${level.icon} ${level.shortTitle}</div>
-                        <div style="font-size: 0.62rem; margin-top: 2px;">
-                            ${isLocked ? '<i class="fa-solid fa-lock"></i> Bloqueado' : `${matriz[idx].filter(v => v === 1).length}/15`}
+                const icon = duoIcons[i % duoIcons.length];
+
+                row.innerHTML = `
+                    <div style="transform: translateX(${offsetX}px); display: flex; flex-direction: column; align-items: center; position: relative;">
+                        ${tooltip}
+                        <button class="${btnClass}" style="${btnStyle}" onclick="abrirQuizStage(${stageNum})" id="node-${stageNum}">
+                            <i class="fa-solid ${isLocked ? 'fa-lock' : icon}"></i>
+                        </button>
+                        <div class="stars-row ${isCompleted ? 'achieved' : ''}">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
                         </div>
+                    </div>
+                `;
+                wrapper.appendChild(row);
+            }
+        }
+
+        function scrollParaAtivo() {
+            const activeNode = document.querySelector('.duo-node-btn.active-node');
+            if (activeNode) {
+                activeNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function abrirGuiaUnidade() {
+            document.getElementById('modalGuia').classList.add('active');
+        }
+
+        function abrirQuizStage(stageNum) {
+            const stageIndex = stageNum - 1;
+            const stages = eduState.progress[selectedLevel];
+            const isStageCompleted = stages[stageIndex].completed;
+
+            if (!isAdmin) {
+                if (!isLevelUnlocked(selectedLevel)) {
+                    exibirNotificacao('Trilha Bloqueada 🔒', 'Você ainda não desbloqueou esta trilha!', true);
+                    return;
+                }
+                if (stageIndex > 0 && !stages[stageIndex - 1].completed) {
+                    exibirNotificacao('Estágio Bloqueado 🔒', 'Complete os estágios anteriores para avançar!', true);
+                    return;
+                }
+            }
+
+            if (eduState.hearts <= 0) {
+                exibirNotificacao('Sem Vidas ❤️', 'Suas vidas acabaram! Recarregando vidas...', true);
+                eduState.hearts = 5;
+                salvarEduState();
+            }
+
+            currentQuiz.levelIndex = selectedLevel;
+            currentQuiz.stageNumber = stageNum;
+            currentQuiz.questionIndex = 0;
+            currentQuiz.correctCount = 0;
+
+            const pool = levelQuestionPools[selectedLevel][stageIndex];
+            currentQuiz.questions = [...pool].sort(() => Math.random() - 0.5);
+
+            renderQuizQuestion();
+            document.getElementById('modalQuiz').classList.add('active');
+        }
+
+        function renderQuizQuestion() {
+            const quizBox = document.getElementById('quizBoxContent');
+            const qIndex = currentQuiz.questionIndex;
+            const level = levelCatalog[selectedLevel];
+
+            if (qIndex >= 5) {
+                renderQuizFinal();
+                return;
+            }
+
+            const qData = currentQuiz.questions[qIndex];
+            const shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+
+            let dotsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                let dotClass = 'quiz-dot';
+                if (i === qIndex) dotClass += ' active';
+                else if (i < qIndex) dotClass += ' correct';
+                dotsHtml += `<div class="${dotClass}"></div>`;
+            }
+
+            let optionsHtml = '';
+            shuffledOptions.forEach((opt) => {
+                optionsHtml += `
+                    <button class="quiz-opt-btn" onclick="selecionarOpcao(${opt.correct}, this)">
+                        ${opt.text}
                     </button>
                 `;
-            }).join('');
+            });
+
+            quizBox.innerHTML = `
+                <div class="quiz-top-bar">
+                    <button onclick="fecharModais()" style="background: transparent; border: none; font-size: 1.1rem; color: #777; cursor: pointer;">✕</button>
+                    <div class="quiz-progress-dots-row">${dotsHtml}</div>
+                    <div class="quiz-hearts-left">
+                        <i class="fa-solid fa-heart"></i> ${eduState.hearts}
+                    </div>
+                </div>
+
+                <div style="font-size: 0.75rem; font-weight: 800; color: ${level.dark}; text-transform: uppercase;">
+                    ${level.title} • Stage ${currentQuiz.stageNumber}/15
+                </div>
+
+                <h3 class="quiz-question-title">${qData.q}</h3>
+
+                <div class="quiz-options-list" id="quizOptionsList">
+                    ${optionsHtml}
+                </div>
+            `;
         }
 
-        function selecionarNivelTrilha(idx, isLocked) {
-            if (isLocked) {
-                mostrarToast('Complete a trilha anterior para desbloquear este nível!', 'error');
-                return;
+        function selecionarOpcao(isCorrect, btn) {
+            const list = document.getElementById('quizOptionsList');
+            list.style.pointerEvents = 'none';
+
+            if (isCorrect) {
+                btn.classList.add('correct-opt');
+                currentQuiz.correctCount++;
+                eduState.xp += 10;
+            } else {
+                btn.classList.add('wrong-opt');
+                eduState.hearts = Math.max(0, eduState.hearts - 1);
             }
-            selectedLevelIndex = idx;
-            atualizarInterfaceTrilha();
+
+            salvarEduState();
+
+            setTimeout(() => {
+                currentQuiz.questionIndex++;
+                renderQuizQuestion();
+            }, 750);
         }
 
-        // RENDERIZAÇÃO DA TRILHA DUOLINGO (15 FASES EM ZIG-ZAG, SEM BAÚS!)
-        function renderizarCaminhoTrilha() {
-            const container = document.getElementById('trailPathContainer');
-            const matriz = getProgressoMatriz();
-            const progressoNivel = matriz[selectedLevelIndex] || new Array(15).fill(0);
-            const level = levelCatalog[selectedLevelIndex];
-            const isAdmin = (currentUser.tipo === 'admin');
+        async function renderQuizFinal() {
+            const quizBox = document.getElementById('quizBoxContent');
+            const hits = currentQuiz.correctCount;
+            const passou = hits >= 3;
+            const level = levelCatalog[selectedLevel];
 
-            // Encontra o estágio atual desbloqueado
-            let primeiroIncompleto = progressoNivel.findIndex(v => v === 0);
-            if (primeiroIncompleto === -1) primeiroIncompleto = 14;
+            if (passou) {
+                const stageIndex = currentQuiz.stageNumber - 1;
+                eduState.progress[selectedLevel][stageIndex].completed = true;
+                eduState.coins += 20;
+                eduState.streak += 1;
+                saldoAtual += 5.0; // Bônus de R$ 5,00 no saldo!
+                atualizarDisplaysSaldo();
+                salvarEduState();
+                await sincronizarSaldoSupabase();
 
-            // Zig-zag positions: [center, right, left, center, right, left...]
-            const offsets = [50, 72, 28, 50, 72, 28, 50, 72, 28, 50, 72, 28, 50, 72, 50];
+                renderLevelTabs();
+                renderDuoPath();
+                atualizarDailyMissionBanner();
 
-            container.innerHTML = stageCatalog.map((stageName, stageIdx) => {
-                const isConcluido = (progressoNivel[stageIdx] === 1);
-                const isAtual = (stageIdx === primeiroIncompleto && !isConcluido);
-                
-                // Se for admin, todos estão desbloqueados para teste!
-                const isDisponivel = isAdmin || isConcluido || isAtual;
-
-                const leftPercent = offsets[stageIdx];
-                const iconClass = duoIcons[stageIdx % duoIcons.length];
-
-                let bg = '#334155';
-                let shadowColor = '#1E293B';
-                let iconContent = `<i class="fa-solid fa-lock" style="font-size: 1.1rem; color: #64748B;"></i>`;
-
-                if (isConcluido) {
-                    bg = level.primary;
-                    shadowColor = level.dark;
-                    iconContent = `<i class="fa-solid fa-check" style="color: #FFFFFF;"></i>`;
-                } else if (isDisponivel) {
-                    bg = level.primary;
-                    shadowColor = level.dark;
-                    iconContent = `<i class="fa-solid ${iconClass}" style="color: #FFFFFF;"></i>`;
-                }
-
-                return `
-                    <div class="trail-node-row">
-                        <button class="trail-node-btn"
-                                onclick="iniciarQuizEstagio(${stageIdx}, ${isDisponivel}, false)"
-                                style="left: calc(${leftPercent}% - 34px); background: ${bg}; box-shadow: 0 6px 0 ${shadowColor};">
-                            ${iconContent}
-                            <div class="trail-node-label">${stageIdx + 1}. ${stageName}</div>
+                quizBox.innerHTML = `
+                    <div style="text-align: center; padding: 10px 0;">
+                        <span style="font-size: 3.5rem;">🎉</span>
+                        <h2 style="color: ${level.dark}; font-size: 1.5rem; font-weight: 900; margin: 10px 0;">Mandou Muito Bem!</h2>
+                        <p style="font-size: 0.95rem; color: var(--text-dark); margin-bottom: 16px;">
+                            Você acertou <strong>${hits}/5 questões</strong> no Stage ${currentQuiz.stageNumber}!
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 20px;">
+                            <div style="background: ${level.light}; color: ${level.dark}; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
+                                💎 +20 FinCoins
+                            </div>
+                            <div style="background: #DEF7EC; color: #03543F; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
+                                💵 +R$ 5,00 Saldo
+                            </div>
+                        </div>
+                        <button onclick="fecharQuiz()" style="width: 100%; padding: 14px; border-radius: 16px; background: ${level.primary}; color: white; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 ${level.dark};">
+                            Continuar Jornada
                         </button>
                     </div>
                 `;
-            }).join('');
-        }
-
-        // --- QUIZ E VERIFICAÇÃO COM ÍCONE DE ERRO (fa-circle-xmark) ---
-        function iniciarQuizEstagio(stageIndex, isDisponivel, isMaster = false) {
-            if (!isDisponivel) {
-                mostrarToast('Conclua os estágios anteriores para avançar!', 'error');
-                return;
-            }
-
-            const hoje = new Date().toISOString().split('T')[0];
-            const isAdmin = (currentUser.tipo === 'admin');
-
-            // Regra de 1 missão por dia para usuários normais (Admin não tem bloqueio!)
-            if (!isAdmin && !isMaster && currentUser.trilha_ultima_missao === hoje) {
-                mostrarToast('Você já completou sua missão de hoje! Volte amanhã para continuar sua sequência!', 'error');
-                return;
-            }
-
-            const levelIdx = isMaster ? 3 : selectedLevelIndex;
-            const pool = levelQuestionPools[levelIdx][stageIndex];
-
-            currentQuiz = {
-                stageIndex: stageIndex,
-                levelIndex: levelIdx,
-                questionIndex: 0,
-                correctCount: 0,
-                questions: [...pool].sort(() => Math.random() - 0.5),
-                selectedOptionIndex: -1,
-                isMaster: isMaster
-            };
-
-            document.getElementById('quizStageName').innerText = `FASE ${stageIndex + 1} • ${stageCatalog[stageIndex]}`;
-            document.getElementById('quizLevelTitle').innerText = levelCatalog[levelIdx].title;
-            document.getElementById('quizHeartsCount').innerText = currentUser.trilha_hearts || 5;
-
-            renderizarPerguntaQuiz();
-            abrirModal('modalQuiz');
-        }
-
-        function renderizarPerguntaQuiz() {
-            const qData = currentQuiz.questions[currentQuiz.questionIndex];
-            const qNum = currentQuiz.questionIndex + 1;
-            const total = currentQuiz.questions.length;
-
-            document.getElementById('quizProgressBar').style.width = `${(qNum / total) * 100}%`;
-            document.getElementById('quizQuestionText').innerText = `${qNum}. ${qData.q}`;
-
-            const container = document.getElementById('quizOptionsContainer');
-            const shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
-            qData.currentShuffled = shuffledOptions;
-
-            container.innerHTML = shuffledOptions.map((opt, idx) => `
-                <button class="quiz-option-btn" id="qOptBtn_${idx}" onclick="selecionarOpcaoQuiz(${idx})">
-                    ${opt.text}
-                </button>
-            `).join('');
-
-            currentQuiz.selectedOptionIndex = -1;
-            document.getElementById('quizFeedbackBox').style.display = 'none';
-            document.getElementById('btnVerificarResposta').style.display = 'block';
-            document.getElementById('btnProximaPergunta').style.display = 'none';
-        }
-
-        function selecionarOpcaoQuiz(idx) {
-            currentQuiz.selectedOptionIndex = idx;
-            document.querySelectorAll('.quiz-option-btn').forEach((btn, i) => {
-                btn.classList.toggle('selected', i === idx);
-            });
-        }
-
-        function verificarRespostaQuiz() {
-            if (currentQuiz.selectedOptionIndex === -1) {
-                mostrarToast('Selecione uma alternativa antes de verificar.', 'error');
-                return;
-            }
-
-            const qData = currentQuiz.questions[currentQuiz.questionIndex];
-            const chosen = qData.currentShuffled[currentQuiz.selectedOptionIndex];
-            const feedbackBox = document.getElementById('quizFeedbackBox');
-            const feedbackIcon = document.getElementById('quizFeedbackIcon');
-            const feedbackText = document.getElementById('quizFeedbackText');
-
-            // Desabilita opções
-            document.querySelectorAll('.quiz-option-btn').forEach((btn, i) => {
-                btn.disabled = true;
-                const isCorrect = qData.currentShuffled[i].correct;
-                if (isCorrect) btn.classList.add('correct');
-                else if (i === currentQuiz.selectedOptionIndex) btn.classList.add('wrong');
-            });
-
-            if (chosen.correct) {
-                currentQuiz.correctCount++;
-                feedbackBox.className = 'quiz-feedback-box correct';
-                feedbackIcon.className = 'fa-solid fa-circle-check';
-                feedbackText.innerText = 'Excelente! Resposta técnica correta!';
             } else {
-                // Perde 1 vida
-                currentUser.trilha_hearts = Math.max(1, (currentUser.trilha_hearts || 5) - 1);
-                document.getElementById('quizHeartsCount').innerText = currentUser.trilha_hearts;
-                
-                // Ícone de erro trocado para fa-circle-xmark conforme solicitado!
-                feedbackBox.className = 'quiz-feedback-box wrong';
-                feedbackIcon.className = 'fa-solid fa-circle-xmark';
-                feedbackText.innerText = 'Incorreto. Observe a alternativa correta destacada em verde.';
+                quizBox.innerHTML = `
+                    <div style="text-align: center; padding: 10px 0;">
+                        <span style="font-size: 3.5rem;">📚</span>
+                        <h2 style="color: #FF4B4B; font-size: 1.4rem; font-weight: 900; margin: 10px 0;">Pratique Mais um Pouco</h2>
+                        <p style="font-size: 0.9rem; color: var(--text-dark); margin-bottom: 18px;">
+                            Você acertou <strong>${hits}/5 questões</strong>. Precisa de pelo menos 3 acertos para concluir o stage.
+                        </p>
+                        <button onclick="abrirQuizStage(${currentQuiz.stageNumber})" style="width: 100%; padding: 14px; border-radius: 16px; background: #FF4B4B; color: white; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 0 5px 0 #D93838;">
+                            Tentar Novamente
+                        </button>
+                    </div>
+                `;
             }
-
-            feedbackBox.style.display = 'flex';
-            document.getElementById('btnVerificarResposta').style.display = 'none';
-            document.getElementById('btnProximaPergunta').style.display = 'block';
-        }
-
-        function proximaPerguntaQuiz() {
-            currentQuiz.questionIndex++;
-            if (currentQuiz.questionIndex < currentQuiz.questions.length) {
-                renderizarPerguntaQuiz();
-            } else {
-                finalizarQuizComSucesso();
-            }
-        }
-
-        async function finalizarQuizComSucesso() {
-            fecharModais();
-
-            // Marca o estágio como concluído
-            const matriz = getProgressoMatriz();
-            matriz[currentQuiz.levelIndex][currentQuiz.stageIndex] = 1;
-            salvarProgressoMatriz(matriz);
-
-            // Recompensas: +15 XP, +20 Coins e +R$ 5,00 no saldo!
-            currentUser.trilha_xp = (currentUser.trilha_xp || 0) + 15;
-            currentUser.trilha_coins = (currentUser.trilha_coins || 0) + 20;
-            currentUser.saldo = (currentUser.saldo || 0) + 5.00;
-            currentUser.trilha_ultima_missao = new Date().toISOString().split('T')[0];
-
-            transactionsHistory.unshift({
-                title: `Bônus Trilha: Fase ${currentQuiz.stageIndex + 1}`,
-                date: 'Hoje',
-                val: 5.00,
-                type: 'trail'
-            });
-
-            atualizarInterfaceConta();
-            atualizarInterfaceTrilha();
-            renderizarExtrato();
-            await salvarDadosNoSupabase();
-
-            abrirModal('modalVitoria');
         }
 
         function fecharQuiz() {
             fecharModais();
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarDailyMissionBanner();
+            exibirNotificacao('Stage Concluído!', 'Recompensa creditada na sua conta Fistu.');
         }
 
-        function fecharModalVitoria() {
-            fecharModais();
-            mostrarToast('Parabéns! R$ 5,00 adicionados ao seu saldo!', 'success');
+        function salvarEduState() {
+            if (!currentUser) return;
+            currentUser.trilha_xp = eduState.xp;
+            currentUser.trilha_streak = eduState.streak;
+            currentUser.trilha_coins = eduState.coins;
+            currentUser.trilha_hearts = eduState.hearts;
+            currentUser.trilha_progresso = JSON.stringify(eduState.progress);
+            currentUser.trilha_nivel_atual = selectedLevel;
+            localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+
+            atualizarStatsBar();
+            atualizarUserTrailSub();
+
+            if (dbClient && currentUser.id) {
+                dbClient.from('Usuarios').update({
+                    trilha_xp: eduState.xp,
+                    trilha_streak: eduState.streak,
+                    trilha_coins: eduState.coins,
+                    trilha_hearts: eduState.hearts,
+                    trilha_progresso: JSON.stringify(eduState.progress),
+                    trilha_nivel_atual: selectedLevel
+                }).eq('id', currentUser.id).then(() => {}).catch(e => console.warn(e));
+            }
         }
 
-        // --- PAINEL DO ADMINISTRADOR & TRILHA MASTER ---
-        function switchAdminSubTab(subTab) {
-            const btnUsers = document.getElementById('adminTabUsersBtn');
-            const btnMaster = document.getElementById('adminTabMasterBtn');
-            const boxUsers = document.getElementById('adminSubTabUsers');
-            const boxMaster = document.getElementById('adminSubTabMaster');
+        function atualizarStatsBar() {
+            document.getElementById('eduXp').innerText = eduState.xp;
+            document.getElementById('eduStreak').innerText = eduState.streak;
+            const bannerStreak = document.getElementById('bannerStreak');
+            if (bannerStreak) bannerStreak.innerText = eduState.streak;
+            document.getElementById('eduCoins').innerText = eduState.coins;
+            document.getElementById('eduHearts').innerText = eduState.hearts;
+        }
 
-            if (subTab === 'master') {
-                btnUsers.style.background = 'rgba(255,255,255,0.1)';
-                btnUsers.style.color = '#BFD8C2';
-                btnMaster.style.background = '#2F6B4F';
-                btnMaster.style.color = '#FFF';
-                boxUsers.style.display = 'none';
-                boxMaster.style.display = 'block';
-                renderizarTrilhaMasterAdmin();
+        function atualizarUserTrailSub() {
+            const sub = document.getElementById('userTrailSub');
+            if (!sub) return;
+            const currentLvl = levelCatalog[selectedLevel] || levelCatalog[0];
+            const completedCount = eduState.progress[selectedLevel].filter(s => s.completed).length;
+            sub.innerText = `Nível: ${currentLvl.title} • ${completedCount}/15 etapas concluídas (${eduState.xp} XP)`;
+        }
+
+        function atualizarDailyMissionBanner() {
+            const banner = document.getElementById('dailyMissionBanner');
+            if (!banner) return;
+            const completedToday = eduState.progress[selectedLevel].filter(s => s.completed).length > 0;
+            const tag = document.getElementById('dailyMissionTag');
+            if (completedToday) {
+                document.getElementById('dailyMissionText').innerHTML = 'Missão diária: <strong>1/1</strong> concluída hoje.';
+                if (tag) {
+                    tag.innerText = 'Concluída';
+                    tag.style.background = '#03543F';
+                    tag.style.color = '#86EFAC';
+                }
             } else {
-                btnMaster.style.background = 'rgba(255,255,255,0.1)';
-                btnMaster.style.color = '#BFD8C2';
-                btnUsers.style.background = '#2F6B4F';
-                btnUsers.style.color = '#FFF';
-                boxMaster.style.display = 'none';
-                boxUsers.style.display = 'block';
+                document.getElementById('dailyMissionText').innerHTML = 'Missão diária: <strong>0/1</strong> concluída hoje.';
+                if (tag) {
+                    tag.innerText = 'Disponível';
+                    tag.style.background = '#2F6B4F';
+                    tag.style.color = '#FFFFFF';
+                }
             }
         }
 
-        async function carregarDadosAdmin() {
-            const container = document.getElementById('adminUsersList');
-            container.innerHTML = '<div style="padding: 20px; text-align: center; color: #64748B;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando dados do Supabase...</div>';
+        // --- SISTEMA DE PERSONALIZAÇÃO (EXATO DO PC) ---
+        function aplicarTemaInterface(tema, tomVerde) {
+            estadoPersonalizacao.tema = tema || 'escuro';
+            if (tomVerde) estadoPersonalizacao.tomVerde = tomVerde;
 
+            const body = document.body;
+            if (estadoPersonalizacao.tema === 'claro') {
+                body.classList.remove('theme-dark');
+                body.classList.add('theme-light');
+                document.documentElement.style.setProperty('--bg-tone', '#EBF7EE');
+                document.documentElement.style.setProperty('--bg-header', '#FFFFFF');
+
+                const cardClaro = document.getElementById('cardTemaClaro');
+                const cardEscuro = document.getElementById('cardTemaEscuro');
+                if (cardClaro) cardClaro.classList.add('selected');
+                if (cardEscuro) cardEscuro.classList.remove('selected');
+
+                const qIcon = document.getElementById('quickThemeIcon');
+                const qLabel = document.getElementById('quickThemeLabel');
+                if (qIcon) qIcon.className = 'fa-solid fa-sun';
+                if (qLabel) qLabel.innerText = 'Tema Claro';
+            } else {
+                body.classList.remove('theme-light');
+                body.classList.add('theme-dark');
+                document.documentElement.style.setProperty('--bg-tone', estadoPersonalizacao.tomVerde || '#000000');
+                document.documentElement.style.setProperty('--bg-header', '#000000');
+
+                const cardClaro = document.getElementById('cardTemaClaro');
+                const cardEscuro = document.getElementById('cardTemaEscuro');
+                if (cardEscuro) cardEscuro.classList.add('selected');
+                if (cardClaro) cardClaro.classList.remove('selected');
+
+                const qIcon = document.getElementById('quickThemeIcon');
+                const qLabel = document.getElementById('quickThemeLabel');
+                if (qIcon) qIcon.className = 'fa-solid fa-moon';
+                if (qLabel) qLabel.innerText = 'Tema Escuro';
+            }
+
+            document.querySelectorAll('.shade-circle').forEach(circle => {
+                const circleBg = circle.style.background.toLowerCase();
+                const checkIcon = circle.querySelector('i');
+                if (circleBg.includes(estadoPersonalizacao.tomVerde.toLowerCase())) {
+                    circle.classList.add('active');
+                    if (checkIcon) checkIcon.style.display = 'block';
+                } else {
+                    circle.classList.remove('active');
+                    if (checkIcon) checkIcon.style.display = 'none';
+                }
+            });
+        }
+
+        function selecionarTemaInterface(tema) {
+            aplicarTemaInterface(tema, estadoPersonalizacao.tomVerde);
+            salvarPersonalizacaoSupabase({ tema: tema });
+        }
+
+        function alternarTemaRapido() {
+            const proximoTema = estadoPersonalizacao.tema === 'claro' ? 'escuro' : 'claro';
+            selecionarTemaInterface(proximoTema);
+            exibirNotificacao('Tema Alterado', `Modo ${proximoTema === 'claro' ? 'Claro' : 'Escuro'} ativado.`);
+        }
+
+        function selecionarTomVerdeFundo(tom) {
+            estadoPersonalizacao.tomVerde = tom;
+            aplicarTemaInterface(estadoPersonalizacao.tema, tom);
+            salvarPersonalizacaoSupabase({ tom_verde: tom });
+            exibirNotificacao('Cor de Fundo', 'Tonalidade atualizada com sucesso!');
+        }
+
+        function atualizarFotoPerfilUI(fotoUrl) {
+            estadoPersonalizacao.fotoPerfil = fotoUrl || '';
+
+            const idsImg = ['navAvatarImg', 'greetingAvatarImg', 'mainAvatarImg'];
+            const idsInitial = ['navAvatarInitial', 'greetingAvatarInitial', 'mainAvatarInitial'];
+
+            if (fotoUrl && fotoUrl.trim() !== '') {
+                idsImg.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.src = fotoUrl;
+                        el.classList.remove('hidden');
+                        el.style.display = 'block';
+                    }
+                });
+                idsInitial.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.classList.add('hidden');
+                        el.style.display = 'none';
+                    }
+                });
+            } else {
+                idsImg.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.src = '';
+                        el.classList.add('hidden');
+                        el.style.display = 'none';
+                    }
+                });
+                idsInitial.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.classList.remove('hidden');
+                        el.style.display = 'block';
+                    }
+                });
+            }
+        }
+
+        function aoSelecionarArquivoFoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                exibirNotificacao('Arquivo Grande', 'A imagem deve ter no máximo 5MB.', true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                atualizarFotoPerfilUI(base64Data);
+                salvarPersonalizacaoSupabase({ foto_perfil: base64Data });
+                exibirNotificacao('Foto de Perfil', 'Foto atualizada com sucesso!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function definirAvatarEmoji(emoji) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+                <rect width="120" height="120" rx="60" fill="#0b3d2c"/>
+                <text x="50%" y="54%" font-size="64" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+            </svg>`;
+            const dataUrl = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            atualizarFotoPerfilUI(dataUrl);
+            salvarPersonalizacaoSupabase({ foto_perfil: dataUrl });
+            exibirNotificacao('Avatar Definido', 'Novo avatar aplicado com sucesso!');
+        }
+
+        function removerFotoDoUsuario() {
+            atualizarFotoPerfilUI('');
+            salvarPersonalizacaoSupabase({ foto_perfil: '' });
+            exibirNotificacao('Foto Removida', 'Foto restaurada para a inicial.');
+        }
+
+        function salvarConfiguracoesCompletas() {
+            const nome = document.getElementById('prefInputNome') ? document.getElementById('prefInputNome').value.trim() : '';
+            if (nome && currentUser) {
+                currentUser.nome = nome;
+                document.getElementById('displayUserGreeting').innerText = nome;
+                document.getElementById('userTrailName').innerText = nome;
+                document.getElementById('navUserFirstName').innerText = nome.split(' ')[0];
+                document.getElementById('mainAvatarInitial').innerText = nome[0].toUpperCase();
+                document.getElementById('navAvatarInitial').innerText = nome[0].toUpperCase();
+                document.getElementById('greetingAvatarInitial').innerText = nome[0].toUpperCase();
+            }
+
+            const notif = document.getElementById('prefCheckNotif').checked;
+            const anon = document.getElementById('prefCheckAnon').checked;
+
+            salvarPersonalizacaoSupabase({
+                nome: nome,
+                notificar_status: notif,
+                modo_anonimo_padrao: anon,
+                tema: estadoPersonalizacao.tema,
+                tom_verde: estadoPersonalizacao.tomVerde,
+                foto_perfil: estadoPersonalizacao.fotoPerfil
+            });
+
+            const feedback = document.getElementById('msgFeedbackSalvar');
+            if (feedback) {
+                feedback.innerText = '✓ Preferências salvas com sucesso!';
+                setTimeout(() => { feedback.innerText = ''; }, 3500);
+            }
+            exibirNotificacao('Sucesso', 'Configurações sincronizadas no Supabase.');
+        }
+
+        function salvarPersonalizacaoSupabase(payload) {
+            if (!currentUser) return;
+            Object.assign(currentUser, payload);
+            localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+
+            if (dbClient && currentUser.id) {
+                dbClient.from('Usuarios').update(payload).eq('id', currentUser.id)
+                    .then(() => {})
+                    .catch(e => console.warn("Erro ao salvar perfil no Supabase:", e));
+            }
+        }
+
+        // --- SISTEMA DE TOAST NOTIFICATIONS ---
+        function exibirNotificacao(titulo, mensagem, isErro = false) {
+            const notif = document.getElementById('fistuNotification');
+            const alertBox = notif.querySelector('.succsess-alert');
+            const notifIcon = document.getElementById('notifIcon');
+            document.getElementById('notifTitle').innerText = titulo;
+            document.getElementById('notifDesc').innerText = mensagem;
+
+            if (isErro) {
+                alertBox.style.backgroundColor = '#742A2A';
+                alertBox.style.borderColor = '#E53E3E';
+                if (notifIcon) {
+                    notifIcon.className = 'fa-solid fa-circle-xmark';
+                    notifIcon.style.color = '#FCA5A5';
+                }
+            } else {
+                alertBox.style.backgroundColor = '#12372A';
+                alertBox.style.borderColor = '#2F6B4F';
+                if (notifIcon) {
+                    notifIcon.className = 'fa-solid fa-circle-check';
+                    notifIcon.style.color = '#86EFAC';
+                }
+            }
+
+            notif.style.transform = 'translateY(0)';
+            notif.style.opacity = '1';
+            setTimeout(() => fecharNotificacao(), 3800);
+        }
+
+        function fecharNotificacao() {
+            const notif = document.getElementById('fistuNotification');
+            if (notif) {
+                notif.style.transform = 'translateY(-120px)';
+                notif.style.opacity = '0';
+            }
+        }
+
+        // --- VERIFICAÇÃO AUTOMÁTICA DE LOGIN NO INÍCIO ---
+        window.addEventListener('DOMContentLoaded', () => {
             try {
-                let usuarios = [];
-                if (dbClient) {
-                    const { data, error } = await dbClient
-                        .from('Usuarios')
-                        .select('*')
-                        .order('id', { ascending: true });
-                    if (data) usuarios = data;
+                const saved = localStorage.getItem('fistu_logged_user');
+                if (saved) {
+                    const user = JSON.parse(saved);
+                    if (user && user.email) {
+                        inicializarAppComUsuario(user);
+                        return;
+                    }
                 }
-
-                if (!usuarios.length && currentUser) {
-                    usuarios = [currentUser];
-                }
-
-                const totalSaldo = usuarios.reduce((acc, u) => acc + parseFloat(u.saldo || 0), 0);
-                const totalInvest = usuarios.reduce((acc, u) => acc + parseFloat(u.investimentos || 0), 0);
-
-                document.getElementById('adminStatUsers').innerText = usuarios.length;
-                document.getElementById('adminStatSaldo').innerText = `R$ ${formatarMoeda(totalSaldo)}`;
-                document.getElementById('adminStatInvest').innerText = `R$ ${formatarMoeda(totalInvest)}`;
-
-                container.innerHTML = usuarios.map(u => `
-                    <div class="user-item-row">
-                        <div>
-                            <div style="font-weight: 800; font-size: 0.88rem; color: #1E293B;">${u.nome || u.email}</div>
-                            <div style="font-size: 0.72rem; color: #64748B;">${u.email} • <span style="text-transform: uppercase; font-weight: 700; color: ${u.tipo === 'admin' ? '#FF9600' : '#10B981'}">${u.tipo || 'usuario'}</span></div>
-                            <div style="font-size: 0.75rem; font-weight: 700; color: #2F6B4F; margin-top: 3px;">
-                                Saldo: R$ ${formatarMoeda(u.saldo || 0)} | Invest: R$ ${formatarMoeda(u.investimentos || 0)}
-                            </div>
-                        </div>
-                        <button onclick='abrirModalEditarUsuario(${JSON.stringify(u)})' style="background: #E8F5E9; border: none; padding: 6px 12px; border-radius: 10px; color: #2F6B4F; font-weight: 800; font-size: 0.75rem; cursor: pointer;">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </button>
-                    </div>
-                `).join('');
-
-            } catch(err) {
-                console.error("Erro ao carregar dados admin:", err);
-                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #EF4444;">Erro ao conectar com o banco de dados.</div>';
-            }
-        }
-
-        function abrirModalEditarUsuario(u) {
-            document.getElementById('adminEditUserId').value = u.id;
-            document.getElementById('adminEditUserName').value = u.nome || u.email;
-            document.getElementById('adminEditUserSaldo').value = parseFloat(u.saldo || 0).toFixed(2);
-            document.getElementById('adminEditUserInvest').value = parseFloat(u.investimentos || 0).toFixed(2);
-            document.getElementById('adminEditUserTipo').value = u.tipo || 'usuario';
-            abrirModal('modalAdminEditUser');
-        }
-
-        async function salvarEdicaoUsuarioAdmin() {
-            const id = document.getElementById('adminEditUserId').value;
-            const saldo = parseFloat(document.getElementById('adminEditUserSaldo').value);
-            const invest = parseFloat(document.getElementById('adminEditUserInvest').value);
-            const tipo = document.getElementById('adminEditUserTipo').value;
-
-            if (dbClient) {
-                try {
-                    await dbClient.from('Usuarios').update({
-                        saldo: saldo,
-                        investimentos: invest,
-                        tipo: tipo
-                    }).eq('id', id);
-                } catch(e) {
-                    console.warn("Erro ao atualizar via Supabase:", e);
-                }
-            }
-
-            if (currentUser && currentUser.id == id) {
-                currentUser.saldo = saldo;
-                currentUser.investimentos = invest;
-                currentUser.tipo = tipo;
-                salvarSessao();
-                atualizarInterfaceConta();
-            }
-
-            fecharModais();
-            mostrarToast('Usuário atualizado com sucesso!', 'success');
-            carregarDadosAdmin();
-        }
-
-        // RENDERIZAÇÃO DA TRILHA MASTER ADMIN (100% LIBERADA)
-        function renderizarTrilhaMasterAdmin() {
-            const container = document.getElementById('adminMasterTrailContainer');
-            const offsets = [50, 72, 28, 50, 72, 28, 50, 72, 28, 50, 72, 28, 50, 72, 50];
-
-            container.innerHTML = stageCatalog.map((stageName, stageIdx) => {
-                const leftPercent = offsets[stageIdx];
-                const iconClass = duoIcons[stageIdx % duoIcons.length];
-
-                return `
-                    <div class="trail-node-row">
-                        <button class="trail-node-btn"
-                                onclick="iniciarQuizEstagio(${stageIdx}, true, true)"
-                                style="left: calc(${leftPercent}% - 34px); background: #FF9600; box-shadow: 0 6px 0 #E58500;">
-                            <i class="fa-solid ${iconClass}" style="color: #FFFFFF;"></i>
-                            <div class="trail-node-label">${stageIdx + 1}. ${stageName} (Master)</div>
-                        </button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // --- CONTROLE GERAL DE MODAIS ---
-        function abrirModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function fecharModais() {
-            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
-        }
+            } catch(e) {}
+        });
     </script>
 </body>
 </html>
