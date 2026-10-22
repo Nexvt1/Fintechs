@@ -1113,4 +1113,5 @@ def enviar_mensagem_chat():
     return jsonify({'sucesso': True, 'mensagem': 'Mensagem enviada!'}), 201
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    porta = int(os.environ.get('PORT', 5050))
+    app.run(host='0.0.0.0', port=porta, debug=True)
