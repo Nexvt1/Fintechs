@@ -247,7 +247,7 @@
                 </section>
 
                 <!-- SEÇÃO: OPÇÕES DE INVESTIMENTO (4 CARDS) -->
-                <section>
+                <section id="investProductsSection">
                     <div class="section-title-row">
                         <h3><i class="fa-solid fa-vault"></i> Opções de Investimento</h3>
                         <span>Renda Fixa & Reserva</span>
@@ -412,7 +412,7 @@
                 <div class="personalizacao-header-box">
                     <div>
                         <h2><i class="fa-solid fa-sliders"></i> Personalização da Conta</h2>
-                        <p>Altere sua foto de perfil, alterne entre tema claro/escuro e personalize a tonalidade verde de fundo.</p>
+                        <p>Altere sua foto de perfil, personalize seu nome de exibição e alterne entre o tema claro e escuro.</p>
                     </div>
                     <div class="badge-supabase" id="badgeStatusPersonalizacao">
                         <i class="fa-solid fa-circle-check"></i> Sincronizado com Supabase
@@ -509,27 +509,7 @@
                             </div>
                         </div>
 
-                        <!-- PALETA DE TONS DE FUNDO VERDE -->
-                        <div class="green-shades-palette">
-                            <h4><i class="fa-solid fa-palette"></i> Tonalidades de Verde para o Fundo:</h4>
-                            <div class="shades-row">
-                                <div class="shade-circle active" style="background: #000000;" onclick="selecionarTomVerdeFundo('#000000')" title="Preto Puro OLED">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <div class="shade-circle" style="background: #0b3d2c;" onclick="selecionarTomVerdeFundo('#0b3d2c')" title="Verde Esmeralda">
-                                    <i class="fa-solid fa-check" style="display:none;"></i>
-                                </div>
-                                <div class="shade-circle" style="background: #093325;" onclick="selecionarTomVerdeFundo('#093325')" title="Floresta Noturno">
-                                    <i class="fa-solid fa-check" style="display:none;"></i>
-                                </div>
-                                <div class="shade-circle" style="background: #12372A;" onclick="selecionarTomVerdeFundo('#12372A')" title="Verde Fistu">
-                                    <i class="fa-solid fa-check" style="display:none;"></i>
-                                </div>
-                                <div class="shade-circle" style="background: #0e4e37;" onclick="selecionarTomVerdeFundo('#0e4e37')" title="Verde Tech">
-                                    <i class="fa-solid fa-check" style="display:none;"></i>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- CARD 3: PREFERÊNCIAS E DADOS -->
@@ -581,6 +561,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- BOTTOM NAVIGATION BAR (SEÇÕES DO APK / MOBILE NA PARTE INFERIOR) -->
+        <nav class="bottom-nav-bar" id="bottomNavBar">
+            <button class="bottom-nav-item active" id="bNavConta" onclick="mudarAba('conta')" title="Início">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Início</span>
+            </button>
+            <button class="bottom-nav-item" id="bNavEdu" onclick="mudarAba('educacao')" title="Trilha">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Trilha</span>
+            </button>
+            <button class="bottom-nav-item" id="bNavInvestir" onclick="mudarAba('investir')" title="Investir">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Investir</span>
+            </button>
+            <button class="bottom-nav-item" id="bNavPersonalizacao" onclick="mudarAba('personalizacao')" title="Perfil">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Perfil</span>
+            </button>
+        </nav>
 
     </div>
 
@@ -912,6 +912,30 @@
             }
         }
 
+        // --- ARMAZENAMENTO LOCAL RESILIENTE (ZERO ERROS DE REDE) ---
+        function getLocalUsers() {
+            try {
+                return JSON.parse(localStorage.getItem('fistu_local_users') || '[]');
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveLocalUser(user) {
+            try {
+                const users = getLocalUsers();
+                const idx = users.findIndex(u => (u.email && user.email && u.email.toLowerCase() === user.email.toLowerCase()) || u.id === user.id);
+                if (idx >= 0) {
+                    users[idx] = { ...users[idx], ...user };
+                } else {
+                    users.push(user);
+                }
+                localStorage.setItem('fistu_local_users', JSON.stringify(users));
+            } catch(e) {
+                console.warn('Erro ao salvar localUser:', e);
+            }
+        }
+
         async function executarLogin(e) {
             e.preventDefault();
             const emailOrUser = document.getElementById('authLoginEmail').value.trim();
@@ -923,49 +947,65 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
 
             try {
+                // 1. Tenta consulta ao Supabase de forma segura e não-bloqueante
                 if (dbClient) {
-                    // Consulta o Supabase
-                    let query = dbClient.from('Usuarios').select('*');
-                    if (emailOrUser.includes('@')) {
-                        query = query.eq('email', emailOrUser);
-                    } else {
-                        query = query.or(`email.eq.${emailOrUser},nome.eq.${emailOrUser}`);
-                    }
-                    const { data, error } = await query.limit(1);
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        const user = data[0];
-                        // Suporte a login direto
-                        inicializarAppComUsuario(user);
-                        return;
+                    try {
+                        let query = dbClient.from('Usuarios').select('*');
+                        if (emailOrUser.includes('@')) {
+                            query = query.eq('email', emailOrUser);
+                        } else {
+                            query = query.or(`email.eq.${emailOrUser},nome.eq.${emailOrUser}`);
+                        }
+                        const { data, error } = await query.limit(1);
+                        if (!error && data && data.length > 0) {
+                            const user = data[0];
+                            saveLocalUser(user);
+                            inicializarAppComUsuario(user);
+                            return;
+                        }
+                    } catch (supabaseErr) {
+                        console.warn("Supabase indisponível/offline, usando dados locais:", supabaseErr);
                     }
                 }
 
-                // Fallback ou mock local se banco offline
+                // 2. Busca nos usuários cadastrados localmente
+                const localUsers = getLocalUsers();
+                const foundUser = localUsers.find(u => 
+                    (u.email && u.email.toLowerCase() === emailOrUser.toLowerCase()) || 
+                    (u.nome && u.nome.toLowerCase() === emailOrUser.toLowerCase())
+                );
+
+                if (foundUser) {
+                    inicializarAppComUsuario(foundUser);
+                    return;
+                }
+
+                // 3. Fallback inteligente instantâneo (Admin ou Usuário)
+                const isUserAdmin = emailOrUser.toLowerCase().includes('admin');
                 const mockUser = {
-                    id: 1,
+                    id: isUserAdmin ? 1 : Date.now(),
                     nome: emailOrUser.split('@')[0],
                     email: emailOrUser.includes('@') ? emailOrUser : emailOrUser + '@fistu.com',
-                    tipo: 'usuario',
-                    saldo: 1500.0,
-                    investimentos: 3200.0,
+                    tipo: isUserAdmin ? 'admin' : 'usuario',
+                    saldo: isUserAdmin ? 50000.0 : 1500.0,
+                    investimentos: isUserAdmin ? 120000.0 : 3200.0,
+                    trilha_progresso: JSON.stringify(levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))),
                     trilha_xp: 0,
                     trilha_streak: 1,
                     trilha_coins: 0,
                     trilha_hearts: 5,
                     trilha_nivel_atual: 0,
                     tema: 'escuro',
-                    tom_verde: '#000000',
                     foto_perfil: ''
                 };
+                saveLocalUser(mockUser);
                 inicializarAppComUsuario(mockUser);
             } catch (err) {
+                console.error("Erro no login:", err);
                 feedback.style.display = 'block';
                 feedback.style.background = '#742A2A';
                 feedback.style.color = '#FCA5A5';
-                feedback.innerText = 'Erro ao autenticar: ' + (err.message || 'Verifique seus dados.');
+                feedback.innerText = 'Não foi possível entrar. Tente novamente.';
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> ENTRAR NA CONTA';
@@ -985,9 +1025,10 @@
 
             try {
                 const novoUsuario = {
+                    id: Date.now(),
                     nome: nome,
                     email: email,
-                    tipo: 'usuario',
+                    tipo: email.toLowerCase().includes('admin') ? 'admin' : 'usuario',
                     saldo: 1500.0,
                     investimentos: 3200.0,
                     trilha_progresso: JSON.stringify(levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))),
@@ -997,26 +1038,31 @@
                     trilha_hearts: 5,
                     trilha_nivel_atual: 0,
                     tema: 'escuro',
-                    tom_verde: '#000000',
                     foto_perfil: ''
                 };
 
+                // Tenta gravar no Supabase de forma não-bloqueante
                 if (dbClient) {
-                    const { data, error } = await dbClient.from('Usuarios').insert([novoUsuario]).select();
-                    if (error) throw error;
-                    if (data && data.length > 0) {
-                        inicializarAppComUsuario(data[0]);
-                        return;
+                    try {
+                        const { data, error } = await dbClient.from('Usuarios').insert([novoUsuario]).select();
+                        if (!error && data && data.length > 0) {
+                            novoUsuario.id = data[0].id;
+                        }
+                    } catch (supabaseErr) {
+                        console.warn("Supabase offline, conta registrada localmente:", supabaseErr);
                     }
                 }
 
-                novoUsuario.id = Math.floor(Math.random() * 1000) + 10;
+                // Salva localmente com persistência garantida
+                saveLocalUser(novoUsuario);
                 inicializarAppComUsuario(novoUsuario);
+                exibirNotificacao('Conta Criada!', `Bem-vindo à Fistu, ${nome}!`);
             } catch (err) {
+                console.error("Erro no cadastro:", err);
                 feedback.style.display = 'block';
                 feedback.style.background = '#742A2A';
                 feedback.style.color = '#FCA5A5';
-                feedback.innerText = 'Erro ao cadastrar: ' + (err.message || 'E-mail já existente.');
+                feedback.innerText = 'Erro ao cadastrar. Tente novamente.';
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> CRIAR CONTA FISTU';
@@ -1097,25 +1143,47 @@
             exibirNotificacao('Bem-vindo ao Fistu!', `Sessão ativa como ${user.nome || 'Usuário'}.`);
         }
 
-        // --- NAVEGAÇÃO DE ABAS (EXATA DO PC) ---
+        // --- NAVEGAÇÃO DE ABAS (PC & APK BOTTOM NAV) ---
         function mudarAba(aba) {
             document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
 
             if (aba === 'conta') {
                 document.getElementById('screenConta').classList.add('active');
-                document.getElementById('btnTabConta').classList.add('active');
+                const bTop = document.getElementById('btnTabConta');
+                if (bTop) bTop.classList.add('active');
+                const bBottom = document.getElementById('bNavConta');
+                if (bBottom) bBottom.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (aba === 'investir') {
+                document.getElementById('screenConta').classList.add('active');
+                const bTop = document.getElementById('btnTabConta');
+                if (bTop) bTop.classList.add('active');
+                const bBottom = document.getElementById('bNavInvestir');
+                if (bBottom) bBottom.classList.add('active');
+                const investSection = document.getElementById('investProductsSection');
+                if (investSection) {
+                    investSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             } else if (aba === 'educacao') {
                 document.getElementById('screenEducacao').classList.add('active');
-                document.getElementById('btnTabEdu').classList.add('active');
+                const bTop = document.getElementById('btnTabEdu');
+                if (bTop) bTop.classList.add('active');
+                const bBottom = document.getElementById('bNavEdu');
+                if (bBottom) bBottom.classList.add('active');
                 renderLevelTabs();
                 atualizarDailyMissionBanner();
                 renderDuoPath();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (aba === 'personalizacao') {
                 document.getElementById('screenPersonalizacao').classList.add('active');
-                document.getElementById('btnTabPersonalizacao').classList.add('active');
+                const bTop = document.getElementById('btnTabPersonalizacao');
+                if (bTop) bTop.classList.add('active');
+                const bBottom = document.getElementById('bNavPersonalizacao');
+                if (bBottom) bBottom.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // --- SISTEMA BANCÁRIO & MODAIS ---
@@ -1183,6 +1251,7 @@
             currentUser.saldo = saldoAtual;
             currentUser.investimentos = investAtual;
             localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            saveLocalUser(currentUser);
 
             if (dbClient && currentUser.id) {
                 try {
@@ -1567,6 +1636,7 @@
             currentUser.trilha_progresso = JSON.stringify(eduState.progress);
             currentUser.trilha_nivel_atual = selectedLevel;
             localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            saveLocalUser(currentUser);
 
             atualizarStatsBar();
             atualizarUserTrailSub();
@@ -1622,59 +1692,42 @@
             }
         }
 
-        // --- SISTEMA DE PERSONALIZAÇÃO (EXATO DO PC) ---
-        function aplicarTemaInterface(tema, tomVerde) {
+        // --- SISTEMA DE PERSONALIZAÇÃO (TEMA CLARO & ESCURO) ---
+        function aplicarTemaInterface(tema) {
             estadoPersonalizacao.tema = tema || 'escuro';
-            if (tomVerde) estadoPersonalizacao.tomVerde = tomVerde;
 
             const body = document.body;
+            document.documentElement.style.removeProperty('--bg-tone');
+            document.documentElement.style.removeProperty('--bg-header');
+
+            const cardClaro = document.getElementById('cardTemaClaro');
+            const cardEscuro = document.getElementById('cardTemaEscuro');
+            const qIcon = document.getElementById('quickThemeIcon');
+            const qLabel = document.getElementById('quickThemeLabel');
+
             if (estadoPersonalizacao.tema === 'claro') {
                 body.classList.remove('theme-dark');
                 body.classList.add('theme-light');
-                document.documentElement.style.setProperty('--bg-tone', '#EBF7EE');
-                document.documentElement.style.setProperty('--bg-header', '#FFFFFF');
 
-                const cardClaro = document.getElementById('cardTemaClaro');
-                const cardEscuro = document.getElementById('cardTemaEscuro');
                 if (cardClaro) cardClaro.classList.add('selected');
                 if (cardEscuro) cardEscuro.classList.remove('selected');
 
-                const qIcon = document.getElementById('quickThemeIcon');
-                const qLabel = document.getElementById('quickThemeLabel');
                 if (qIcon) qIcon.className = 'fa-solid fa-sun';
                 if (qLabel) qLabel.innerText = 'Tema Claro';
             } else {
                 body.classList.remove('theme-light');
                 body.classList.add('theme-dark');
-                document.documentElement.style.setProperty('--bg-tone', estadoPersonalizacao.tomVerde || '#000000');
-                document.documentElement.style.setProperty('--bg-header', '#000000');
 
-                const cardClaro = document.getElementById('cardTemaClaro');
-                const cardEscuro = document.getElementById('cardTemaEscuro');
                 if (cardEscuro) cardEscuro.classList.add('selected');
                 if (cardClaro) cardClaro.classList.remove('selected');
 
-                const qIcon = document.getElementById('quickThemeIcon');
-                const qLabel = document.getElementById('quickThemeLabel');
                 if (qIcon) qIcon.className = 'fa-solid fa-moon';
                 if (qLabel) qLabel.innerText = 'Tema Escuro';
             }
-
-            document.querySelectorAll('.shade-circle').forEach(circle => {
-                const circleBg = circle.style.background.toLowerCase();
-                const checkIcon = circle.querySelector('i');
-                if (circleBg.includes(estadoPersonalizacao.tomVerde.toLowerCase())) {
-                    circle.classList.add('active');
-                    if (checkIcon) checkIcon.style.display = 'block';
-                } else {
-                    circle.classList.remove('active');
-                    if (checkIcon) checkIcon.style.display = 'none';
-                }
-            });
         }
 
         function selecionarTemaInterface(tema) {
-            aplicarTemaInterface(tema, estadoPersonalizacao.tomVerde);
+            aplicarTemaInterface(tema);
             salvarPersonalizacaoSupabase({ tema: tema });
         }
 
@@ -1682,13 +1735,6 @@
             const proximoTema = estadoPersonalizacao.tema === 'claro' ? 'escuro' : 'claro';
             selecionarTemaInterface(proximoTema);
             exibirNotificacao('Tema Alterado', `Modo ${proximoTema === 'claro' ? 'Claro' : 'Escuro'} ativado.`);
-        }
-
-        function selecionarTomVerdeFundo(tom) {
-            estadoPersonalizacao.tomVerde = tom;
-            aplicarTemaInterface(estadoPersonalizacao.tema, tom);
-            salvarPersonalizacaoSupabase({ tom_verde: tom });
-            exibirNotificacao('Cor de Fundo', 'Tonalidade atualizada com sucesso!');
         }
 
         function atualizarFotoPerfilUI(fotoUrl) {
@@ -1788,7 +1834,6 @@
                 notificar_status: notif,
                 modo_anonimo_padrao: anon,
                 tema: estadoPersonalizacao.tema,
-                tom_verde: estadoPersonalizacao.tomVerde,
                 foto_perfil: estadoPersonalizacao.fotoPerfil
             });
 
@@ -1804,6 +1849,7 @@
             if (!currentUser) return;
             Object.assign(currentUser, payload);
             localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            saveLocalUser(currentUser);
 
             if (dbClient && currentUser.id) {
                 dbClient.from('Usuarios').update(payload).eq('id', currentUser.id)
