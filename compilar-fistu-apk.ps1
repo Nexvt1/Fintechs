@@ -5,7 +5,36 @@
 
 $ErrorActionPreference = "Stop"
 
-$SdkDir = Join-Path $env:LOCALAPPDATA "Programs\NexOS-Android-SDK"
+# Auto-detect Android SDK
+$SdkDir = if (Test-Path "$env:LOCALAPPDATA\Android\Sdk") {
+    "$env:LOCALAPPDATA\Android\Sdk"
+} elseif (Test-Path "$env:LOCALAPPDATA\Programs\NexOS-Android-SDK") {
+    "$env:LOCALAPPDATA\Programs\NexOS-Android-SDK"
+} elseif ($env:ANDROID_HOME -and (Test-Path $env:ANDROID_HOME)) {
+    $env:ANDROID_HOME
+} else {
+    throw "Android SDK não encontrado no sistema."
+}
+
+# Auto-detect JDK
+$JavaBin = if (Test-Path "C:\Program Files\Java\jdk-23\bin\javac.exe") {
+    "C:\Program Files\Java\jdk-23\bin"
+} elseif ($env:JAVA_HOME -and (Test-Path "$env:JAVA_HOME\bin\javac.exe")) {
+    "$env:JAVA_HOME\bin"
+} else {
+    $foundJavac = Get-ChildItem -Path "C:\Program Files\Java" -Filter "javac.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($foundJavac) { $foundJavac.DirectoryName } else { throw "JDK (javac.exe) não encontrado em C:\Program Files\Java." }
+}
+
+$env:JAVA_HOME = Split-Path -Parent $JavaBin
+$env:PATH = "$JavaBin;$env:PATH"
+
+# Auto-detect Android Build-Tools
+$BtDir = Join-Path $SdkDir "build-tools"
+$BtFolders = Get-ChildItem -LiteralPath $BtDir -Directory | Sort-Object Name -Descending
+if (-not $BtFolders) { throw "Nenhuma pasta em build-tools encontrada." }
+$BtBin = $BtFolders[0].FullName
+
 $AsciiRoot = "C:\Users\Public\Fistu-APK-Build"
 $WorkDir = Join-Path $AsciiRoot "project"
 $DownloadsDir = Join-Path $env:USERPROFILE "Downloads"
@@ -15,26 +44,18 @@ $OutApkProject = Join-Path $ProjectDir "Fistu.apk"
 
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host " [FISTU APK BUILDER] Iniciando compilacao do APK..." -ForegroundColor Cyan
+Write-Host " SDK Android      : $SdkDir" -ForegroundColor Cyan
+Write-Host " Build-Tools      : $BtBin" -ForegroundColor Cyan
+Write-Host " Java JDK         : $JavaBin" -ForegroundColor Cyan
 Write-Host " Destino Principal: $OutApkDownloads" -ForegroundColor Yellow
 Write-Host "======================================================================" -ForegroundColor Cyan
-
-# 1. Configurar OpenJDK 17
-$JdkDir = Join-Path $SdkDir "jdk"
-$JavacExe = Get-ChildItem -LiteralPath $JdkDir -Filter "javac.exe" -Recurse | Select-Object -First 1
-$JavaBin = $JavacExe.DirectoryName
-$env:JAVA_HOME = Split-Path -Parent $JavaBin
-$env:PATH = "$JavaBin;$env:PATH"
-
-# 2. Configurar Android Build-Tools 34
-$BtDir = Join-Path $SdkDir "build-tools"
-$Aapt2Exe = Get-ChildItem -LiteralPath $BtDir -Filter "aapt2.exe" -Recurse | Select-Object -First 1
-$BtBin = $Aapt2Exe.DirectoryName
 
 # 3. Android.jar
 $AsciiAndroidJar = Join-Path $AsciiRoot "android.jar"
 if (-not (Test-Path -LiteralPath $AsciiAndroidJar)) {
-    $PlatDir = Join-Path $SdkDir "platform"
+    $PlatDir = Join-Path $SdkDir "platforms"
     $AndroidJarOrig = Get-ChildItem -LiteralPath $PlatDir -Filter "android.jar" -Recurse | Select-Object -First 1
+    if (-not $AndroidJarOrig) { throw "android.jar não encontrado em $PlatDir" }
     New-Item -ItemType Directory -Path $AsciiRoot -Force | Out-Null
     Copy-Item -LiteralPath $AndroidJarOrig.FullName -Destination $AsciiAndroidJar -Force
 }
