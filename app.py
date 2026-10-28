@@ -34,9 +34,7 @@ instalar_dependencias()
 # --- IMPORTS DO PROJETO ---
 import os
 import json
-import uuid
 from datetime import datetime, timedelta
-from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -115,45 +113,9 @@ def add_header(response):
     response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     return response
 
-# --- CONFIGURAÇÃO DE UPLOAD DE ARQUIVOS ---
-UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # Limite de 50MB
-
 # --- INICIALIZAÇÃO DAS TABELAS NO SUPABASE ---
 def init_db():
     with app.app_context():
-        # Tabela de relatos
-        db.session.execute(text('''
-            CREATE TABLE IF NOT EXISTS relatos (
-                id SERIAL PRIMARY KEY,
-                protocolo TEXT UNIQUE NOT NULL,
-                mensagem TEXT NOT NULL,
-                categoria TEXT DEFAULT 'Geral',
-                status TEXT DEFAULT 'Em análise',
-                empregado TEXT,
-                empresa_fato TEXT,
-                diretoria TEXT,
-                filial TEXT,
-                cidade TEXT,
-                area_setor TEXT,
-                evidencias TEXT,
-                chefia_ciente TEXT,
-                chefia_envolvida TEXT,
-                tentativa_ocultar TEXT,
-                testemunhas TEXT,
-                valor_financeiro TEXT,
-                sugestao_solucao TEXT,
-                anexos TEXT,
-                identificacao TEXT,
-                relator_nome TEXT,
-                relator_email TEXT,
-                relator_celular TEXT,
-                criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        '''))
-        
         # Tabela de Usuários atualizada para coincidir com o Supabase
         db.session.execute(text('''
             CREATE TABLE IF NOT EXISTS "Usuarios" (
@@ -214,18 +176,6 @@ def init_db():
         except Exception:
             db.session.rollback()
 
-        db.session.execute(text('''
-            CREATE TABLE IF NOT EXISTS mensagens_chat (
-                id SERIAL PRIMARY KEY,
-                usuario_email TEXT NOT NULL,
-                usuario_nome TEXT,
-                mensagem TEXT NOT NULL,
-                criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        '''))
-        
-        db.session.commit()
-
 init_db()
 
 # --- CONTEXT PROCESSOR E ENDPOINTS DE CONFIGURAÇÃO DO SUPABASE ---
@@ -245,52 +195,8 @@ def api_supabase_config():
         'supabase_anon_key': app.config.get('SUPABASE_ANON_KEY')
     })
 
-# --- ROTAS DE CONFIGURAÇÕES DE USUÁRIO ---
-@app.route('/configuracoes')
-def configuracoes_aluno():
-    user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('login'))
-
-    usuario = db.session.execute(
-        text('SELECT modo_anonimo_padrao, notificar_status, tema FROM "Usuarios" WHERE id = :id'),
-        {'id': user_id}
-    ).mappings().fetchone()
-
-    return render_template('configuracoes_aluno.html', usuario=usuario)
-
-@app.route('/salvar-configuracoes-aluno', methods=['POST'])
-def salvar_configuracoes_aluno():
-    user_id = session.get('user_id')
-    if not user_id:
-        return redirect(url_for('login'))
-
-    anonimo = True if request.form.get('modo_anonimo_padrao') else False
-    notificar = True if request.form.get('notificar_status') else False
-    tema = request.form.get('tema', 'claro')
-
-    db.session.execute(
-        text('''
-            UPDATE "Usuarios" 
-            SET modo_anonimo_padrao = :anonimo, notificar_status = :notificar, tema = :tema
-            WHERE id = :id
-        '''),
-        {'anonimo': anonimo, 'notificar': notificar, 'tema': tema, 'id': user_id}
-    )
-    db.session.commit()
-
-    return redirect(url_for('configuracoes_aluno'))
-
 # --- ROTAS DE INTERFACE (WEB) ---
 
-@app.route('/card/bibliotecas')
-def card_bibliotecas():
-    return render_template('cards_templates/bibliotecas_conhecimento.html')
-
-@app.route('/card/sobre')
-def card_sobre():
-    return render_template('cards_templates/sobre_nós.html')
- 
 @app.route('/')
 def root():
     # Se o utilizador não estiver autenticado na sessão, vai para o login
@@ -791,73 +697,6 @@ def api_admin_usuario_trilha(user_target_id):
 def index():
     return redirect(url_for('root'))
 
-@app.route('/cadastro')
-def tela_cadastro():
-    return render_template('cadastro.html')
-
-@app.route('/conta')
-def conta():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-    
-    total_relatos = db.session.execute(text("SELECT COUNT(*) FROM relatos")).scalar()
-
-    return render_template('minhaconta.html', total_relatos=total_relatos)
-
-@app.route('/relatos')
-def relatos():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-        
-    relatos_db = db.session.execute(text("SELECT * FROM relatos ORDER BY id DESC")).mappings().fetchall()
-    
-    return render_template('Index.html', relatos=relatos_db)
-
-@app.route('/novo-relato')
-def novo_relato():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-    return render_template('novo_relato.html')
-
-@app.route('/tipo-chamado')
-def tipo_chamado():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-    return redirect(url_for('novo_relato', etapa='tipo'))
-
-@app.route('/escolher-empresa')
-def escolher_empresa():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-    return redirect(url_for('novo_relato'))
-
-@app.route('/fazer-relato')
-def fazer_relato():
-    if 'usuario_email' not in session:
-        return redirect(url_for('login'))
-    return render_template('tipo_registro.html')
-
-@app.route('/protocolo')
-def consultar_protocolo():
-    codigo_protocolo = request.args.get('codigo', '').strip()
-    relato_encontrado = None
-
-    if codigo_protocolo:
-        relato_encontrado = db.session.execute(
-            text("""
-                SELECT protocolo, criado_em, categoria, status, mensagem, sugestao_solucao
-                FROM relatos 
-                WHERE protocolo = :codigo
-            """),
-            {'codigo': codigo_protocolo}
-        ).mappings().fetchone()
-
-    return render_template(
-        'consultar_protocolo.html',
-        protocolo=codigo_protocolo,
-        relato=relato_encontrado,
-    )
-
 # --- ROTAS DE AUTENTICAÇÃO TRADICIONAL ---
 @app.route('/api/cadastro', methods=['POST'])
 def cadastro():
@@ -944,173 +783,6 @@ def api_login():
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
-# --- ROTA DE ENVIO DE RELATO ---
-@app.route('/enviar', methods=['POST'])
-def enviar():
-    try:
-        dados = request.form if request.form else (request.get_json() or {})
-
-        relato = dados.get('relato') or dados.get('mensagem')
-        if not relato:
-            if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify({'erro': 'O relato não pode estar vazio.'}), 400
-            flash('O relato não pode estar vazio.')
-            return redirect(url_for('novo_relato'))
-
-        categoria = dados.get('categoria', 'Geral')
-        empregado = dados.get('empregado')
-        empresa_fato = dados.get('empresa_fato')
-        diretoria = dados.get('diretoria')
-        filial = dados.get('filial')
-        cidade = dados.get('cidade')
-        area_setor = dados.get('area_setor')
-        evidencias = dados.get('evidencias')
-        chefia_ciente = dados.get('chefia_ciente')
-        chefia_envolvida = dados.get('chefia_envolvida')
-        tentativa_ocultar = dados.get('tentativa_ocultar')
-        testemunhas = dados.get('testemunhas')
-        sugestao_solucao = dados.get('sugestao_solucao')
-
-        identificacao = dados.get('identificacao', 'nao')
-        if identificacao == 'sim':
-            relator_nome = dados.get('nome_identificado') or dados.get('nome_relator')
-            relator_email = dados.get('email_identificado')
-            relator_celular = dados.get('celular_identificado')
-        else:
-            relator_nome = 'Anônimo'
-            relator_email = dados.get('email_relator')
-            relator_celular = dados.get('celular_relator')
-
-        arquivos_salvos = []
-        if 'anexos' in request.files:
-            arquivos = request.files.getlist('anexos')
-            for file in arquivos:
-                if file and file.filename != '':
-                    filename = secure_filename(file.filename)
-                    caminho_salvar = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(caminho_salvar)
-                    arquivos_salvos.append(filename)
-
-        anexos_str = ",".join(arquivos_salvos) if arquivos_salvos else None
-
-        data_hoje = datetime.now().strftime('%Y%m%d')
-        codigo_hash = str(uuid.uuid4())[:4].upper()
-        protocolo_gerado = f"NEXO-{data_hoje}-{codigo_hash}"
-
-        db.session.execute(text('''
-            INSERT INTO relatos (
-                protocolo, mensagem, categoria, empregado, empresa_fato, diretoria, filial, cidade, 
-                area_setor, evidencias, chefia_ciente, chefia_envolvida, tentativa_ocultar,
-                testemunhas, sugestao_solucao, anexos, identificacao,
-                relator_nome, relator_email, relator_celular
-            ) VALUES (
-                :protocolo, :mensagem, :categoria, :empregado, :empresa_fato, :diretoria, :filial, :cidade, 
-                :area_setor, :evidencias, :chefia_ciente, :chefia_envolvida, :tentativa_ocultar,
-                :testemunhas, :sugestao_solucao, :anexos, :identificacao,
-                :relator_nome, :relator_email, :relator_celular
-            )
-        '''), {
-            'protocolo': protocolo_gerado, 'mensagem': relato, 'categoria': categoria, 
-            'empregado': empregado, 'empresa_fato': empresa_fato, 'diretoria': diretoria, 
-            'filial': filial, 'cidade': cidade, 'area_setor': area_setor, 'evidencias': evidencias, 
-            'chefia_ciente': chefia_ciente, 'chefia_envolvida': chefia_envolvida, 
-            'tentativa_ocultar': tentativa_ocultar, 'testemunhas': testemunhas, 
-            'sugestao_solucao': sugestao_solucao, 'anexos': anexos_str, 'identificacao': identificacao,
-            'relator_nome': relator_nome, 'relator_email': relator_email, 'relator_celular': relator_celular
-        })
-        db.session.commit()
-
-        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({
-                'sucesso': True,
-                'protocolo': protocolo_gerado,
-                'redirect_url': url_for('consultar_protocolo', codigo=protocolo_gerado)
-            }), 200
-
-        return redirect(url_for('consultar_protocolo', codigo=protocolo_gerado))
-
-    except Exception as e:
-        db.session.rollback()
-        print("Erro ao enviar relato:", str(e))
-        if request.is_json or request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'erro': f'Erro no servidor: {str(e)}'}), 500
-        return f"Erro no servidor ao gravar o relato: {str(e)}", 500
-
-# --- APIS DE CONSULTA ---
-@app.route('/api/consultar_protocolo/<codigo>', methods=['GET'])
-def api_consultar_protocolo(codigo):
-    relato = db.session.execute(
-        text("SELECT protocolo, criado_em, categoria, status FROM relatos WHERE protocolo = :codigo"),
-        {'codigo': codigo}
-    ).mappings().fetchone()
-
-    if relato:
-        return jsonify({
-            'encontrado': True,
-            'protocolo': relato['protocolo'],
-            'data': relato['criado_em'],
-            'categoria': relato['categoria'],
-            'status': relato['status']
-        })
-    return jsonify({'encontrado': False, 'mensagem': 'Protocolo não encontrado.'}), 404
-
-@app.route('/api/relato/<int:relato_id>', methods=['GET'])
-def obter_detalhes_relato(relato_id):
-    if 'usuario_email' not in session:
-        return jsonify({'erro': 'Não autorizado'}), 401
-
-    relato = db.session.execute(
-        text("SELECT * FROM relatos WHERE id = :id"),
-        {'id': relato_id}
-    ).mappings().fetchone()
-
-    if relato:
-        return jsonify({
-            'sucesso': True,
-            'relato': dict(relato)
-        })
-    return jsonify({'sucesso': False, 'mensagem': 'Relato não encontrado'}), 404
-
-# --- ROTAS DO CHAT ---
-@app.route('/api/chat/mensagens', methods=['GET'])
-def buscar_mensagens_chat():
-    if 'usuario_email' not in session:
-        return jsonify({'erro': 'Não autorizado'}), 401
-
-    mensagens = db.session.execute(text('''
-        SELECT id, usuario_email, usuario_nome, mensagem, 
-               TO_CHAR(criado_em, 'DD/MM/YYYY HH24:MI') as data_formatada 
-        FROM mensagens_chat 
-        ORDER BY id ASC
-    ''')).mappings().fetchall()
-
-    return jsonify({'sucesso': True, 'mensagens': [dict(m) for m in mensagens]})
-
-@app.route('/api/chat/enviar', methods=['POST'])
-def enviar_mensagem_chat():
-    if 'usuario_email' not in session:
-        return jsonify({'erro': 'Não autorizado'}), 401
-
-    dados = request.get_json() or {}
-    texto = dados.get('mensagem', '').strip()
-
-    if not texto:
-        return jsonify({'erro': 'A mensagem não pode estar vazia.'}), 400
-
-    email = session.get('usuario_email')
-    nome = session.get('usuario_nome', 'Usuário')
-
-    db.session.execute(
-        text('''
-            INSERT INTO mensagens_chat (usuario_email, usuario_nome, mensagem)
-            VALUES (:email, :nome, :mensagem)
-        '''),
-        {'email': email, 'nome': nome, 'mensagem': texto}
-    )
-    db.session.commit()
-
-    return jsonify({'sucesso': True, 'mensagem': 'Mensagem enviada!'}), 201
 
 if __name__ == '__main__':
     porta = int(os.environ.get('PORT', 5050))

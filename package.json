@@ -4,7 +4,7 @@
   "private": true,
   "description": "Versao Android do aplicativo Fintech Evolution Pro",
   "scripts": {
-    "copy-web": "powershell -NoProfile -Command \"Copy-Item -LiteralPath 'C:\\Users\\joao.toledo\\OneDrive - SENAC RIO\\Documentos\\Trabalhos\\LET\\app.html' -Destination 'www\\index.html' -Force; Copy-Item -LiteralPath 'www\\index.html' -Destination 'android\\app\\src\\main\\assets\\public\\index.html' -Force\"",
+    "copy-web": "npx cap copy android",
     "android:open": "npx cap open android",
     "android:build": "cd android && gradlew.bat assembleDebug"
   },
