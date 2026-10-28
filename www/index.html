@@ -102,7 +102,11 @@
             <div class="nav-tabs-pill">
                 <button class="nav-tab-btn active" id="btnTabConta" onclick="mudarAba('conta')">
                     <i class="fa-solid fa-wallet"></i>
-                    <span>Conta & Investimentos</span>
+                    <span>Conta</span>
+                </button>
+                <button class="nav-tab-btn" id="btnTabInvestir" onclick="mudarAba('investir')">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Investimentos</span>
                 </button>
                 <button class="nav-tab-btn" id="btnTabEdu" onclick="mudarAba('educacao')">
                     <i class="fa-solid fa-graduation-cap"></i>
@@ -314,6 +318,55 @@
         <!-- ========================================================
              TELA 2: TRILHA DE EDUCAÇÃO (DUOLINGO STYLE)
              ======================================================== -->
+        
+        <!-- ========================================================
+             TELA DE INVESTIMENTOS: CÍRCULO INTERATIVO & PAINEL SUPERIOR
+             ======================================================== -->
+        <div class="screen-view" id="screenInvestimentos">
+            <div class="invest-screen-container">
+                
+                <!-- HEADER DA ABA DE INVESTIMENTOS -->
+                <div class="invest-header-bar">
+                    <div>
+                        <h2><i class="fa-solid fa-chart-line" style="color: var(--primary-green);"></i> Hub de Investimentos</h2>
+                        <p>Selecione qualquer opção no círculo abaixo: ela sai da órbita e projeta seus dados completos no painel acima.</p>
+                    </div>
+                    <div class="invest-balance-badge">
+                        <span class="badge-label">TOTAL INVESTIDO</span>
+                        <span class="badge-val" id="investScreenTotal">R$ 3.200,00</span>
+                    </div>
+                </div>
+
+                <!-- PAINEL SUPERIOR: FORMA RETANGULAR COM DADOS E DESCRIÇÃO -->
+                <div class="invest-dock-wrapper" id="investDockWrapper">
+                    <div class="invest-rectangular-card" id="investSelectedCard">
+                        <!-- Conteúdo do ativo preenchido dinamicamente via JS -->
+                    </div>
+                </div>
+
+                <!-- SEÇÃO INFERIOR: CÍRCULO ORBITAL COM AS OPÇÕES -->
+                <div class="invest-circle-section">
+                    <div class="invest-circle-instructions">
+                        <i class="fa-solid fa-hand-pointer" style="color: var(--primary-green);"></i>
+                        <span>Toque em uma opção circular para projetar seus detalhes acima</span>
+                    </div>
+
+                    <div class="invest-radial-wrapper" id="investRadialWrapper">
+                        <div class="invest-orbit-track"></div>
+                        <div class="invest-orbit-center" id="investOrbitCenter">
+                            <div class="center-radar-pulse"></div>
+                            <i class="fa-solid fa-vault"></i>
+                            <span>FISTU ASSETS</span>
+                        </div>
+                        <div class="invest-orbit-nodes-container" id="investOrbitalRing">
+                            <!-- Os 6 botões circulares gerados dinamicamente via JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
         <div class="screen-view" id="screenEducacao">
             <div class="edu-screen-wrapper">
 
@@ -626,6 +679,8 @@
                     <option value="Tesouro IPCA+ 2029">Tesouro IPCA+ 2029 (IPCA + 6,2%)</option>
                     <option value="CDB Turbo Fistu">CDB Turbo Fistu (115% do CDI)</option>
                     <option value="Fundo Imobiliário FII">Fundo Imobiliário FII (Dividendos)</option>
+                    <option value="LCI Sustentável Verde">LCI Sustentável Verde (96% CDI - Isento IR)</option>
+                    <option value="Ações Dividendos Top">Ações Dividendos Top (Dividendos B3)</option>
                 </select>
             </div>
 
@@ -1143,7 +1198,7 @@
             exibirNotificacao('Bem-vindo ao Fistu!', `Sessão ativa como ${user.nome || 'Usuário'}.`);
         }
 
-        // --- NAVEGAÇÃO DE ABAS (PC & APK BOTTOM NAV) ---
+                // --- NAVEGAÇÃO DE ABAS (PC & APK BOTTOM NAV) ---
         function mudarAba(aba) {
             document.querySelectorAll('.screen-view').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1156,16 +1211,15 @@
                 const bBottom = document.getElementById('bNavConta');
                 if (bBottom) bBottom.classList.add('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (aba === 'investir') {
-                document.getElementById('screenConta').classList.add('active');
-                const bTop = document.getElementById('btnTabConta');
+            } else if (aba === 'investir' || aba === 'investimentos') {
+                const sInvest = document.getElementById('screenInvestimentos');
+                if (sInvest) sInvest.classList.add('active');
+                const bTop = document.getElementById('btnTabInvestir');
                 if (bTop) bTop.classList.add('active');
                 const bBottom = document.getElementById('bNavInvestir');
                 if (bBottom) bBottom.classList.add('active');
-                const investSection = document.getElementById('investProductsSection');
-                if (investSection) {
-                    investSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                inicializarAbaInvestimentos();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else if (aba === 'educacao') {
                 document.getElementById('screenEducacao').classList.add('active');
                 const bTop = document.getElementById('btnTabEdu');
@@ -1908,6 +1962,249 @@
                 }
             } catch(e) {}
         });
+    
+        // ========================================================
+        // CATÁLOGO E LÓGICA DO CÍRCULO INTERATIVO DE INVESTIMENTOS
+        // ========================================================
+        const catalogoInvestimentos = [
+            {
+                id: 'caixinha',
+                nome: 'Super Caixinha CDI',
+                categoria: 'Reserva de Emergência',
+                icone: 'fa-solid fa-box-archive',
+                cor: '#10B981',
+                rentabilidade: '100% do CDI',
+                rendimentoEstimado: '+13,4% a.a.',
+                aplicacaoMinima: 'R$ 1,00',
+                liquidez: 'Imediata (D+0)',
+                risco: 'Muito Baixo (FGC)',
+                descricao: 'O investimento ideal para sua reserva de emergência e metas do dia a dia. Conta com rentabilidade automática diária superior à poupança e resgate instantâneo a qualquer hora, inclusive aos fins de semana e feriados.'
+            },
+            {
+                id: 'tesouro',
+                nome: 'Tesouro IPCA+ 2029',
+                categoria: 'Tesouro Direto',
+                icone: 'fa-solid fa-landmark',
+                cor: '#3B82F6',
+                rentabilidade: 'IPCA + 6,25% a.a.',
+                rendimentoEstimado: 'Inflação + 6,25% real',
+                aplicacaoMinima: 'R$ 30,00',
+                liquidez: 'Diária (Recompra Tesouro)',
+                risco: 'Soberano (Governo Federal)',
+                descricao: 'Proteção absoluta contra o aumento da inflação. Ao investir neste título público federal, seu patrimônio rende acima do custo de vida apurado pelo IBGE, garantindo preservação e ganho de poder aquisitivo real até 2029.'
+            },
+            {
+                id: 'cdb',
+                nome: 'CDB Turbo Fistu',
+                categoria: 'Renda Fixa Bancária',
+                icone: 'fa-solid fa-coins',
+                cor: '#F59E0B',
+                rentabilidade: '115% do CDI',
+                rendimentoEstimado: '+15,4% a.a.',
+                aplicacaoMinima: 'R$ 100,00',
+                liquidez: 'No Vencimento (12 meses)',
+                risco: 'Baixo (FGC até R$ 250 mil)',
+                descricao: 'Rentabilidade turbinada para quem busca rendimento acima da média de mercado em prazo fixo de 1 ano. Excelente para metas de curto a médio prazo com garantia do Fundo Garantidor de Créditos.'
+            },
+            {
+                id: 'fii',
+                nome: 'Fundo Imobiliário FII',
+                categoria: 'Fundos Imobiliários',
+                icone: 'fa-solid fa-building',
+                cor: '#8B5CF6',
+                rentabilidade: 'Dividendos Mensais',
+                rendimentoEstimado: '+11,8% a.a. isento',
+                aplicacaoMinima: 'R$ 10,00 (1 cota)',
+                liquidez: 'D+2 (Mercado B3)',
+                risco: 'Moderado (Renda Variável)',
+                descricao: 'Receba renda passiva mensal creditada direto no seu saldo, 100% isenta de Imposto de Renda. Invista nas cotas dos maiores galpões logísticos e edifícios corporativos triple A do país.'
+            },
+            {
+                id: 'lci',
+                nome: 'LCI Sustentável Verde',
+                categoria: 'Crédito Imobiliário',
+                icone: 'fa-solid fa-leaf',
+                cor: '#059669',
+                rentabilidade: '96% do CDI (Isento)',
+                rendimentoEstimado: 'Equivale a 118% do CDI',
+                aplicacaoMinima: 'R$ 50,00',
+                liquidez: 'Após 9 meses',
+                risco: 'Muito Baixo (FGC)',
+                descricao: 'Rentabilidade líquida diferenciada por ter isenção total de IR para pessoas físicas. Seus recursos financiam habitações sustentáveis com certificação de eficiência ecológica e energética.'
+            },
+            {
+                id: 'acoes',
+                nome: 'Ações Dividendos Top',
+                categoria: 'Renda Variável',
+                icone: 'fa-solid fa-arrow-trend-up',
+                cor: '#06B6D4',
+                rentabilidade: 'Dividend Yield 9,4%',
+                rendimentoEstimado: 'DY + Ganho de Capital',
+                aplicacaoMinima: 'R$ 20,00',
+                liquidez: 'D+2 (Pregão B3)',
+                risco: 'Moderado / Alto (Ações)',
+                descricao: 'Torne-se sócio das maiores empresas geradoras de caixa e pagadoras de dividendos perenes do Brasil nos setores de energia elétrica, finanças e saneamento com potencial de valorização.'
+            }
+        ];
+
+        let ativoSelecionadoId = 'caixinha';
+
+        function inicializarAbaInvestimentos() {
+            renderOrbitalRing();
+            selecionarAtivoRadial(ativoSelecionadoId || 'caixinha', false);
+            atualizarTotalInvestidoNaTela();
+            setTimeout(posicionarNodesRadiais, 50);
+        }
+
+        function atualizarTotalInvestidoNaTela() {
+            const el = document.getElementById('investScreenTotal');
+            if (el) el.innerText = formatarMoeda(investAtual);
+        }
+
+        function renderOrbitalRing() {
+            const ring = document.getElementById('investOrbitalRing');
+            if (!ring) return;
+            ring.innerHTML = '';
+
+            catalogoInvestimentos.forEach((ativo) => {
+                const node = document.createElement('div');
+                node.className = `invest-orbit-node ${ativo.id === ativoSelecionadoId ? 'active-orbit-node' : ''}`;
+                node.id = `orbitNode_${ativo.id}`;
+                node.title = `${ativo.nome} - Clique para projetar no painel retangular`;
+                node.style.setProperty('--accent-color', ativo.cor);
+                node.onclick = (e) => {
+                    e.stopPropagation();
+                    selecionarAtivoRadial(ativo.id, true);
+                };
+
+                node.innerHTML = `
+                    <div class="orbit-node-inner">
+                        <i class="${ativo.icone}" style="color: ${ativo.cor};"></i>
+                        <span class="orbit-node-tag">${ativo.rentabilidade.split(' ')[0]}</span>
+                    </div>
+                    <span class="orbit-node-label">${ativo.nome.split(' ')[0]}</span>
+                `;
+                ring.appendChild(node);
+            });
+
+            posicionarNodesRadiais();
+        }
+
+        function posicionarNodesRadiais() {
+            const container = document.getElementById('investRadialWrapper');
+            if (!container) return;
+            const nodes = container.querySelectorAll('.invest-orbit-node');
+            const total = nodes.length;
+            if (total === 0) return;
+
+            const rect = container.getBoundingClientRect();
+            const width = rect.width || 340;
+            const height = rect.height || 340;
+            const radius = Math.min(width, height) / 2 - 42;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            nodes.forEach((node, index) => {
+                const angle = (index * (360 / total) - 90) * (Math.PI / 180);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (document.getElementById('screenInvestimentos')?.classList.contains('active')) {
+                posicionarNodesRadiais();
+            }
+        });
+
+        function selecionarAtivoRadial(id, animar = true) {
+            const ativo = catalogoInvestimentos.find(a => a.id === id);
+            if (!ativo) return;
+            ativoSelecionadoId = id;
+
+            document.querySelectorAll('.invest-orbit-node').forEach(node => {
+                node.classList.remove('active-orbit-node');
+            });
+            const currentNode = document.getElementById(`orbitNode_${id}`);
+            if (currentNode) currentNode.classList.add('active-orbit-node');
+
+            const card = document.getElementById('investSelectedCard');
+            if (!card) return;
+
+            if (animar) {
+                card.classList.remove('card-dock-enter');
+                void card.offsetWidth;
+                card.classList.add('card-dock-enter');
+            }
+
+            card.style.borderColor = ativo.cor;
+            card.innerHTML = `
+                <div class="card-dock-header">
+                    <div class="dock-asset-info">
+                        <div class="dock-asset-icon" style="background: ${ativo.cor}18; color: ${ativo.cor}; border: 2px solid ${ativo.cor};">
+                            <i class="${ativo.icone}"></i>
+                        </div>
+                        <div>
+                            <div class="dock-asset-badges">
+                                <span class="dock-badge-tag">${ativo.categoria}</span>
+                                <span class="dock-badge-status" style="background: ${ativo.cor}22; color: ${ativo.cor};"><i class="fa-solid fa-circle-check"></i> Projetado do Círculo</span>
+                            </div>
+                            <h3 class="dock-asset-name">${ativo.nome}</h3>
+                        </div>
+                    </div>
+                    <div class="dock-yield-badge" style="border: 1.5px solid ${ativo.cor}; color: ${ativo.cor}; background: ${ativo.cor}12;">
+                        <span class="yield-label">Rentabilidade</span>
+                        <span class="yield-value">${ativo.rentabilidade}</span>
+                    </div>
+                </div>
+
+                <div class="dock-metrics-grid">
+                    <div class="metric-item">
+                        <span class="metric-label"><i class="fa-solid fa-arrow-trend-up"></i> Rendimento Líquido</span>
+                        <strong class="metric-val" style="color: ${ativo.cor};">${ativo.rendimentoEstimado}</strong>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label"><i class="fa-solid fa-hand-holding-dollar"></i> Aplicação Mínima</span>
+                        <strong class="metric-val">${ativo.aplicacaoMinima}</strong>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label"><i class="fa-solid fa-clock-rotate-left"></i> Resgate / Liquidez</span>
+                        <strong class="metric-val">${ativo.liquidez}</strong>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label"><i class="fa-solid fa-shield-halved"></i> Garantia & Risco</span>
+                        <strong class="metric-val">${ativo.risco}</strong>
+                    </div>
+                </div>
+
+                <div class="dock-desc-box">
+                    <h4><i class="fa-solid fa-circle-info" style="color: ${ativo.cor};"></i> Sobre este investimento</h4>
+                    <p>${ativo.descricao}</p>
+                </div>
+
+                <div class="dock-actions-row">
+                    <button class="btn-dock-apply" onclick="abrirModalInvestir('${ativo.nome}')" style="background: ${ativo.cor};">
+                        <i class="fa-solid fa-circle-plus"></i> INVESTIR NESTE ATIVO
+                    </button>
+                    <button class="btn-dock-simular" onclick="simularRentabilidade('${ativo.id}')">
+                        <i class="fa-solid fa-calculator"></i> SIMULAR R$ 1.000
+                    </button>
+                </div>
+            `;
+        }
+
+        function simularRentabilidade(id) {
+            const ativo = catalogoInvestimentos.find(a => a.id === id);
+            if (!ativo) return;
+            exibirNotificacao(
+                `Simulação: ${ativo.nome}`,
+                `R$ 1.000 aplicados hoje renderiam aprox. R$ 1.134,00 em 12 meses (${ativo.rentabilidade}).`,
+                false
+            );
+        }
+
     </script>
 </body>
 </html>
