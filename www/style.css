@@ -4284,3 +4284,90 @@ body:not(.theme-light) .edu-callout-left p {
         padding: 2px 10px 2px 4px !important;
     }
 }
+
+
+/* ========================================================
+   HEADER UNIFICADO DA TRILHA DE EDUCAÇÃO COM STATUS INTEGRADO
+   ======================================================== */
+.edu-unified-header-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    margin: 0 0 20px 0 !important;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.edu-header-user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.edu-unified-header-card .duo-stats-bar {
+    width: 100% !important;
+    margin: 0 !important;
+    padding-top: 16px !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+body.theme-light .edu-unified-header-card {
+    background: #FFFFFF !important;
+    border-color: rgba(18, 55, 42, 0.14) !important;
+    box-shadow: 0 8px 24px rgba(18, 55, 42, 0.08) !important;
+}
+
+body.theme-light .edu-unified-header-card .page-header-text h2 {
+    color: #000000 !important;
+}
+
+body.theme-light .edu-unified-header-card .page-header-text p {
+    color: #111827 !important;
+}
+
+body.theme-light .edu-unified-header-card .duo-stats-bar {
+    border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+body.theme-light .edu-unified-header-card .stat-badge {
+    background: #F8FCF9 !important;
+    border: 1px solid rgba(18, 55, 42, 0.12) !important;
+}
+
+body.theme-light .edu-unified-header-card .stat-num {
+    color: #000000 !important;
+}
+
+body.theme-light .edu-unified-header-card .stat-sub {
+    color: #374151 !important;
+}
+
+/* ========================================================
+   COR DO BANNER DE TESTES ADMIN NO PLANO BRANCO
+   ======================================================== */
+body.theme-light .admin-test-banner {
+    background: #FEF3C7 !important;
+    border: 1.5px solid #B45309 !important;
+    color: #78350F !important;
+    box-shadow: 0 4px 14px rgba(180, 83, 9, 0.12) !important;
+}
+
+body.theme-light .admin-test-banner strong {
+    color: #451A03 !important;
+}
+
+body.theme-light .admin-test-banner i {
+    color: #B45309 !important;
+}

@@ -315,30 +315,29 @@
         <div class="screen-view" id="screenEducacao">
             <div class="edu-screen-wrapper">
 
-                <!-- HEADER PADRONIZADO DA TRILHA (PADRÃO UNIFICADO DE TODAS AS TELAS) -->
-                <div class="page-standard-header edu-header-bar">
-                    <div class="page-header-user-row">
-                        <div class="edu-trail-avatar-badge">
-                            <i class="fa-solid fa-graduation-cap"></i>
+                <!-- HEADER UNIFICADO DA TRILHA DE EDUCAÇÃO COM STATUS INTEGRADO -->
+                <div class="edu-unified-header-card">
+                    <!-- LINHA SUPERIOR: DADOS DO USUÁRIO E DA CONTA -->
+                    <div class="edu-header-user-row">
+                        <div class="page-header-user-row">
+                            <div class="edu-trail-avatar-badge">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="page-header-text">
+                                <h2><span id="userTrailName">Cliente Fistu</span> • Trilha Educativa</h2>
+                                <p id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas (0 XP)</p>
+                            </div>
                         </div>
-                        <div class="page-header-text">
-                            <h2><span id="userTrailName">Cliente Fistu</span> • Trilha Educativa</h2>
-                            <p id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas (0 XP)</p>
+                        <div class="page-header-badges">
+                            <div class="badge-fistu-metric">
+                                <span class="metric-mini-label">CONTA FISTU</span>
+                                <strong class="metric-mini-val" id="userTrailAccountPill">Conta #1</strong>
+                            </div>
                         </div>
                     </div>
-                    <div class="page-header-badges">
-                        <div class="badge-fistu-metric">
-                            <span class="metric-mini-label">CONTA FISTU</span>
-                            <strong class="metric-mini-val" id="userTrailAccountPill">Conta #1</strong>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- CONTEÚDO DA TRILHA NA TELA INTEIRA (1100px FULL CANVAS) -->
-                <div class="edu-fullwidth-canvas">
-
-                    <!-- BARRA DE STATUS DO TOPO EM TELA CHEIA (XP, OFENSIVA, FINCOINS, VIDAS) -->
-                    <div class="duo-stats-bar">
+                    <!-- LINHA INFERIOR INTEGRADA: AS 4 MÉTRICAS (XP, OFENSIVA, FISTUCOINS, VIDAS) -->
+                    <div class="duo-stats-bar" style="margin: 0; border: none; background: transparent; padding: 0;">
                         <div class="stat-badge stat-flag" title="Nível / Pontos">
                             <span style="font-size: 1.3rem;">🏆</span>
                             <div>
@@ -346,6 +345,32 @@
                                 <small class="stat-sub">XP Total</small>
                             </div>
                         </div>
+                        <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
+                            <span style="font-size: 1.3rem;">🔥</span>
+                            <div>
+                                <span class="stat-num" id="eduStreak">1</span>
+                                <small class="stat-sub">Dias Seguidos</small>
+                            </div>
+                        </div>
+                        <div class="stat-badge stat-gems" title="FistuCoins acumuladas">
+                            <span style="font-size: 1.3rem;">💎</span>
+                            <div>
+                                <span class="stat-num" id="eduCoins">0</span>
+                                <small class="stat-sub">FistuCoins</small>
+                            </div>
+                        </div>
+                        <div class="stat-badge stat-hearts" title="Vidas disponíveis">
+                            <span style="font-size: 1.3rem;">❤️</span>
+                            <div>
+                                <span class="stat-num" id="eduHearts">5</span>
+                                <small class="stat-sub">Vidas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTEÚDO DA TRILHA NA TELA INTEIRA (FULL CANVAS) -->
+                <div class="edu-fullwidth-canvas">
                         <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
                             <span style="font-size: 1.3rem;">🔥</span>
                             <div>
