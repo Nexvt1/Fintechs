@@ -3554,3 +3554,196 @@ body.theme-light .p-val-meta {
     box-sizing: border-box !important;
     border-radius: 18px !important;
 }
+
+
+/* ========================================================
+   CARD MASTER UNIFICADO (SALDO EM CONTA + TOTAL INVESTIDO)
+   ======================================================== */
+.bank-unified-card {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 26px 28px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* NO PLANO BRANCO (TEMA CLARO): TEXTO E SALDOS 100% PRETOS */
+body.theme-light .bank-unified-card {
+    background: #FFFFFF !important;
+    border-color: rgba(18, 55, 42, 0.14) !important;
+    box-shadow: 0 8px 24px rgba(18, 55, 42, 0.08) !important;
+}
+
+body.theme-light .bank-unified-card .card-amount {
+    color: #000000 !important;
+}
+
+body.theme-light .bank-unified-card .card-label {
+    color: #000000 !important;
+}
+
+body.theme-light .bank-unified-card .card-subtext {
+    color: #111827 !important;
+}
+
+body.theme-light .bank-unified-card .card-subtext strong {
+    color: #000000 !important;
+}
+
+body.theme-light .bank-unified-card .btn-eye {
+    color: #000000 !important;
+}
+
+body.theme-light .bank-unified-card .badge-rate {
+    color: #047857 !important;
+}
+
+body.theme-light .bank-unified-card .btn-act-outline {
+    border-color: #000000 !important;
+    color: #000000 !important;
+}
+
+body.theme-light .bank-unified-card .btn-act-dark {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+}
+
+/* NO TEMA ESCURO: */
+body.theme-dark .bank-unified-card,
+body:not(.theme-light) .bank-unified-card {
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+}
+
+body.theme-dark .bank-unified-card .card-amount,
+body:not(.theme-light) .bank-unified-card .card-amount {
+    color: #F3FAF4;
+}
+
+body.theme-dark .bank-unified-card .card-label,
+body:not(.theme-light) .bank-unified-card .card-label {
+    color: #BFD8C2;
+}
+
+body.theme-dark .bank-unified-card .card-subtext,
+body:not(.theme-light) .bank-unified-card .card-subtext {
+    color: #94A3B8;
+}
+
+body.theme-dark .bank-unified-card .btn-eye,
+body:not(.theme-light) .bank-unified-card .btn-eye {
+    color: #BFD8C2;
+}
+
+/* GRID DAS DUAS MÉTRICAS UNIFICADAS */
+.unified-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    align-items: center;
+    gap: 32px;
+}
+
+.unified-card-divider {
+    height: 75%;
+    width: 1px;
+    background: var(--border-subtle);
+}
+
+body.theme-light .unified-card-divider {
+    background: rgba(0, 0, 0, 0.12) !important;
+}
+
+@media (max-width: 768px) {
+    .unified-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .unified-card-divider {
+        display: none;
+    }
+}
+
+.unified-metric-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* BOTÕES DE AÇÃO UNIFICADOS */
+.unified-actions-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+body.theme-light .unified-actions-row {
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+    .unified-actions-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.btn-unified-act {
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.15s, opacity 0.2s, background 0.2s;
+    border: none;
+}
+
+.btn-unified-act:hover {
+    transform: translateY(-2px);
+}
+
+.btn-act-dark {
+    background: #12372A;
+    color: #F3FAF4;
+}
+
+.btn-act-outline {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-light);
+}
+
+.btn-act-emerald {
+    background: var(--evergreen);
+    color: #FFFFFF;
+}
+
+.btn-act-emerald:hover {
+    background: #1E4633;
+}
+
+/* ========================================================
+   TEXTO DO BANNER DE EDUCAÇÃO: SEMPRE VERDE!
+   ======================================================== */
+.edu-callout-left h4 {
+    color: #10B981 !important;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+body.theme-light .edu-callout-left h4 {
+    color: #15803D !important;
+}
+
+body.theme-dark .edu-callout-left h4 {
+    color: #10B981 !important;
+}

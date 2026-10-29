@@ -99,12 +99,11 @@
                 </div>
             </div>
 
-            <!-- GRID DOS 2 CARDS DESTAQUE (SALDO EM CONTA & TOTAL INVESTIDO) -->
-            <section class="overview-grid">
-                
-                <!-- CARD SALDO EM CONTA -->
-                <div class="bank-card">
-                    <div>
+            <!-- CARD MASTER UNIFICADO (SALDO EM CONTA & TOTAL INVESTIDO) -->
+            <section class="bank-unified-card">
+                <div class="unified-metrics-grid">
+                    <!-- LADO 1: SALDO DISPONÍVEL -->
+                    <div class="unified-metric-col">
                         <div class="bank-card-top">
                             <span class="card-label card-label-green">
                                 <i class="fa-solid fa-wallet"></i> SALDO EM CONTA
@@ -113,27 +112,17 @@
                                 <i class="fa-solid fa-eye" id="eyeIcon"></i>
                             </button>
                         </div>
-
                         <div class="card-amount" id="displaySaldo">
                             R$ {{ "%.2f"|format(usuario.saldo or 1500.0) }}
                         </div>
-
-                        <p class="card-subtext">Disponível para Pix, compras e aplicações</p>
+                        <p class="card-subtext">Disponível para Pix, compras e pagamentos</p>
                     </div>
 
-                    <div class="card-buttons-row">
-                        <button class="btn-filled-dark" onclick="abrirModalPix()">
-                            <i class="fa-brands fa-pix"></i> Área Pix
-                        </button>
-                        <button class="btn-outline-dark" onclick="abrirModalDeposito()">
-                            <i class="fa-solid fa-plus"></i> Depositar
-                        </button>
-                    </div>
-                </div>
+                    <!-- DIVISOR VERTICAL NO PC -->
+                    <div class="unified-card-divider"></div>
 
-                <!-- CARD TOTAL INVESTIDO -->
-                <div class="bank-card">
-                    <div>
+                    <!-- LADO 2: TOTAL INVESTIDO -->
+                    <div class="unified-metric-col">
                         <div class="bank-card-top">
                             <span class="card-label card-label-invest">
                                 <i class="fa-solid fa-chart-line"></i> TOTAL INVESTIDO
@@ -142,24 +131,28 @@
                                 <i class="fa-solid fa-arrow-trend-up"></i> +13,4% a.a. CDI
                             </span>
                         </div>
-
                         <div class="card-amount" id="displayInvestimentos">
                             R$ {{ "%.2f"|format(usuario.investimentos or 3200.0) }}
                         </div>
-
-                        <p class="card-subtext">Rendimento este mês: <strong>+R$ 41,20 (+1,29%)</strong></p>
-                    </div>
-
-                    <div class="card-buttons-row">
-                        <button class="btn-filled-emerald" onclick="abrirModalInvestir()">
-                            <i class="fa-solid fa-chart-pie"></i> Novo Aporte
-                        </button>
-                        <button class="btn-outline-dark" onclick="abrirModalResgate()">
-                            Resgatar
-                        </button>
+                        <p class="card-subtext">Rendimento estimado: <strong>+100% do CDI com liquidez diária</strong></p>
                     </div>
                 </div>
 
+                <!-- LINHA DE AÇÕES RÁPIDAS UNIFICADA -->
+                <div class="unified-actions-row">
+                    <button class="btn-unified-act btn-act-dark" onclick="abrirModalPix()">
+                        <i class="fa-brands fa-pix"></i> Área Pix
+                    </button>
+                    <button class="btn-unified-act btn-act-outline" onclick="abrirModalDeposito()">
+                        <i class="fa-solid fa-plus"></i> Depositar
+                    </button>
+                    <button class="btn-unified-act btn-act-emerald" onclick="abrirModalInvestir()">
+                        <i class="fa-solid fa-chart-pie"></i> Novo Aporte
+                    </button>
+                    <button class="btn-unified-act btn-act-outline" onclick="abrirModalResgate()">
+                        <i class="fa-solid fa-arrow-down-left-and-up-right-to-center"></i> Resgatar
+                    </button>
+                </div>
             </section>
 
             <!-- BANNER DE ENTRADA PARA A EDUCAÇÃO / DUOLINGO -->
