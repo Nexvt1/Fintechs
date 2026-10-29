@@ -79,7 +79,7 @@
         <main class="bank-container">
             
             <!-- SAUDAÇÃO COM FOTO E CONTROLE RÁPIDO -->
-            <div class="page-standard-header greeting-bar">
+            <div class="page-standard-header greeting-bar" style="width: 100%; max-width: 100%;">
                 <div class="greeting-with-avatar">
                     <div class="greeting-avatar-large" onclick="mudarAba('personalizacao')" title="Clique para trocar sua foto ou tema">
                         <img id="greetingAvatarImg" src="{{ usuario.foto_perfil or '' }}" alt="Avatar" class="{{ '' if usuario.foto_perfil else 'hidden' }}">
@@ -97,9 +97,6 @@
                         <i class="fa-solid fa-moon" id="quickThemeIcon"></i>
                         <span id="quickThemeLabel">Tema Escuro</span>
                     </button>
-                    <div class="badge-supabase">
-                        <i class="fa-solid fa-shield-halved"></i> Conexão Segura Supabase
-                    </div>
                 </div>
             </div>
 
@@ -178,70 +175,6 @@
                 <button class="btn-open-edu" onclick="mudarAba('educacao')">
                     <i class="fa-solid fa-play"></i> Continuar Trilha (Ofensiva 🔥 <span id="bannerStreak">1</span>)
                 </button>
-            </section>
-
-            <!-- SEÇÃO: OPÇÕES DE INVESTIMENTO (4 CARDS COMO NO SCREENSHOT) -->
-            <section>
-                <div class="section-title-row">
-                    <h3><i class="fa-solid fa-vault"></i> Opções de Investimento</h3>
-                    <span>Renda Fixa & Reserva</span>
-                </div>
-
-                <div class="products-grid" style="margin-top: 14px;">
-                    
-                    <!-- PRODUTO 1: SUPER CAIXINHA CDI -->
-                    <div class="product-item-card">
-                        <div>
-                            <div class="product-icon-box"><i class="fa-solid fa-box-archive"></i></div>
-                            <div class="product-name">Super Caixinha CDI</div>
-                            <div class="product-percentage">100% CDI</div>
-                            <p class="product-info-text">Liquidez imediata e rendimento diário. O porto seguro para sua reserva de emergência.</p>
-                        </div>
-                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Super Caixinha CDI')">
-                            Investir na Caixinha
-                        </button>
-                    </div>
-
-                    <!-- PRODUTO 2: TESOURO IPCA+ 2029 -->
-                    <div class="product-item-card">
-                        <div>
-                            <div class="product-icon-box"><i class="fa-solid fa-landmark"></i></div>
-                            <div class="product-name">Tesouro IPCA+ 2029</div>
-                            <div class="product-percentage">IPCA + 6,2% a.a.</div>
-                            <p class="product-info-text">Proteção total contra a inflação e garantia soberana do Tesouro Nacional.</p>
-                        </div>
-                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Tesouro IPCA+ 2029')">
-                            Investir em IPCA+
-                        </button>
-                    </div>
-
-                    <!-- PRODUTO 3: CDB TURBO FISTU -->
-                    <div class="product-item-card">
-                        <div>
-                            <div class="product-icon-box"><i class="fa-solid fa-coins"></i></div>
-                            <div class="product-name">CDB Turbo Fistu</div>
-                            <div class="product-percentage">115% do CDI</div>
-                            <p class="product-info-text">Rendimento turbinado com prazo fixo de 12 meses e garantia do FGC até R$ 250 mil.</p>
-                        </div>
-                        <button class="btn-apply-mint" onclick="abrirModalInvestir('CDB Turbo Fistu')">
-                            Investir no CDB
-                        </button>
-                    </div>
-
-                    <!-- PRODUTO 4: FUNDO IMOBILIÁRIO FII -->
-                    <div class="product-item-card">
-                        <div>
-                            <div class="product-icon-box"><i class="fa-solid fa-building"></i></div>
-                            <div class="product-name">Fundo Imobiliário FII</div>
-                            <div class="product-percentage">Dividendos Mensais</div>
-                            <p class="product-info-text">Renda passiva isenta de Imposto de Renda com galpões e lajes corporativas triple A.</p>
-                        </div>
-                        <button class="btn-apply-mint" onclick="abrirModalInvestir('Fundo Imobiliário FII')">
-                            Investir no FII
-                        </button>
-                    </div>
-
-                </div>
             </section>
 
         </main>

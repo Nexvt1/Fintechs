@@ -132,10 +132,6 @@
                     <i class="fa-solid fa-shield-halved"></i> Painel Admin
                 </button>
 
-                <button class="header-btn" onclick="alternarVisibilidadeSaldo()" title="Ocultar/Exibir Saldo">
-                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
-                </button>
-
                 <button class="btn-logout" onclick="fazerLogout()" title="Encerrar sessão">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair
                 </button>
@@ -149,7 +145,7 @@
             <main class="bank-container">
                 
                 <!-- SAUDAÇÃO COM FOTO E CONTROLE RÁPIDO -->
-                <div class="page-standard-header greeting-bar">
+                <div class="page-standard-header greeting-bar" style="width: 100%; max-width: 100%;">
                     <div class="greeting-with-avatar">
                         <div class="greeting-avatar-large" onclick="mudarAba('personalizacao')" title="Clique para trocar sua foto ou tema">
                             <img id="greetingAvatarImg" src="" alt="Avatar" class="hidden">
@@ -167,9 +163,6 @@
                             <i class="fa-solid fa-moon" id="quickThemeIcon"></i>
                             <span id="quickThemeLabel">Tema Escuro</span>
                         </button>
-                        <div class="badge-supabase">
-                            <i class="fa-solid fa-shield-halved"></i> Conexão Segura Supabase
-                        </div>
                     </div>
                 </div>
 
@@ -250,68 +243,6 @@
                     </button>
                 </section>
 
-                <!-- SEÇÃO: OPÇÕES DE INVESTIMENTO (4 CARDS) -->
-                <section id="investProductsSection">
-                    <div class="section-title-row">
-                        <h3><i class="fa-solid fa-vault"></i> Opções de Investimento</h3>
-                        <span>Renda Fixa & Reserva</span>
-                    </div>
-
-                    <div class="products-grid" style="margin-top: 14px;">
-                        <!-- PRODUTO 1: SUPER CAIXINHA CDI -->
-                        <div class="product-item-card">
-                            <div>
-                                <div class="product-icon-box"><i class="fa-solid fa-box-archive"></i></div>
-                                <div class="product-name">Super Caixinha CDI</div>
-                                <div class="product-percentage">100% CDI</div>
-                                <p class="product-info-text">Liquidez imediata e rendimento diário. O porto seguro para sua reserva de emergência.</p>
-                            </div>
-                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Super Caixinha CDI')">
-                                Investir na Caixinha
-                            </button>
-                        </div>
-
-                        <!-- PRODUTO 2: TESOURO IPCA+ 2029 -->
-                        <div class="product-item-card">
-                            <div>
-                                <div class="product-icon-box"><i class="fa-solid fa-landmark"></i></div>
-                                <div class="product-name">Tesouro IPCA+ 2029</div>
-                                <div class="product-percentage">IPCA + 6,2% a.a.</div>
-                                <p class="product-info-text">Proteção total contra a inflação e garantia soberana do Tesouro Nacional.</p>
-                            </div>
-                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Tesouro IPCA+ 2029')">
-                                Investir em IPCA+
-                            </button>
-                        </div>
-
-                        <!-- PRODUTO 3: CDB TURBO FISTU -->
-                        <div class="product-item-card">
-                            <div>
-                                <div class="product-icon-box"><i class="fa-solid fa-coins"></i></div>
-                                <div class="product-name">CDB Turbo Fistu</div>
-                                <div class="product-percentage">115% do CDI</div>
-                                <p class="product-info-text">Rendimento turbinado com prazo fixo de 12 meses e garantia do FGC até R$ 250 mil.</p>
-                            </div>
-                            <button class="btn-apply-mint" onclick="abrirModalInvestir('CDB Turbo Fistu')">
-                                Investir no CDB
-                            </button>
-                        </div>
-
-                        <!-- PRODUTO 4: FUNDO IMOBILIÁRIO FII -->
-                        <div class="product-item-card">
-                            <div>
-                                <div class="product-icon-box"><i class="fa-solid fa-building"></i></div>
-                                <div class="product-name">Fundo Imobiliário FII</div>
-                                <div class="product-percentage">Dividendos Mensais</div>
-                                <p class="product-info-text">Renda passiva isenta de Imposto de Renda com galpões e lajes corporativas triple A.</p>
-                            </div>
-                            <button class="btn-apply-mint" onclick="abrirModalInvestir('Fundo Imobiliário FII')">
-                                Investir no FII
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
             </main>
         </div>
 
@@ -325,11 +256,10 @@
         <div class="screen-view" id="screenInvestimentos">
             <div class="invest-screen-container">
                 
-                <!-- HEADER DA ABA DE INVESTIMENTOS -->
-                <div class="page-standard-header invest-header-bar">
+                <!-- HEADER DA ABA DE INVESTIMENTOS (DE PONTA A PONTA, LIMPO E SEM TEXTO EXCESSIVO) -->
+                <div class="page-standard-header invest-header-bar" style="width: 100%; max-width: 100%;">
                     <div>
                         <h2><i class="fa-solid fa-chart-line" style="color: var(--primary-green);"></i> Hub de Investimentos</h2>
-                        <p>Selecione qualquer opção no círculo abaixo: ela sai da órbita e projeta seus dados completos no painel acima.</p>
                     </div>
                     <div class="invest-balance-badge">
                         <span class="badge-label">TOTAL INVESTIDO</span>
@@ -337,30 +267,53 @@
                     </div>
                 </div>
 
-                <!-- PAINEL SUPERIOR: FORMA RETANGULAR COM DADOS E DESCRIÇÃO -->
-                <div class="invest-dock-wrapper" id="investDockWrapper">
-                    <div class="invest-rectangular-card" id="investSelectedCard">
-                        <!-- Conteúdo do ativo preenchido dinamicamente via JS -->
+                <!-- PALCO PRINCIPAL (NO PC: CÍRCULO À ESQUERDA, DESCRIÇÃO À DIREITA) -->
+                <div class="invest-pc-split-stage">
+                    <!-- LADO ESQUERDO: CÍRCULO ORBITAL DE OPÇÕES DE INVESTIMENTO -->
+                    <div class="invest-stage-left">
+                        <div class="invest-radial-wrapper" id="investRadialWrapper">
+                            <div class="invest-orbit-track"></div>
+                            <div class="invest-orbit-center" id="investOrbitCenter">
+                                <div class="center-radar-pulse"></div>
+                                <i class="fa-solid fa-vault"></i>
+                                <span>FISTU ASSETS</span>
+                            </div>
+                            <div class="invest-orbit-nodes-container" id="investOrbitalRing">
+                                <!-- Os 6 botões circulares gerados dinamicamente via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LADO DIREITO: FORMA RETANGULAR COM DADOS E DESCRIÇÃO DO ATIVO SELECIONADO -->
+                    <div class="invest-stage-right">
+                        <div class="invest-dock-wrapper" id="investDockWrapper">
+                            <div class="invest-rectangular-card" id="investSelectedCard">
+                                <!-- Preenchido dinamicamente via JS com o ativo selecionado -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SEÇÃO INFERIOR: CÍRCULO ORBITAL COM AS OPÇÕES -->
-                <div class="invest-circle-section">
-                    <div class="invest-circle-instructions">
-                        <i class="fa-solid fa-hand-pointer" style="color: var(--primary-green);"></i>
-                        <span>Toque em uma opção circular para projetar seus detalhes acima</span>
+                <!-- MAIS ABAIXO: DESCRIÇÃO E CARTEIRA DOS SEUS INVESTIMENTOS -->
+                <div class="user-portfolio-section" id="userPortfolioSection">
+                    <div class="portfolio-header-row">
+                        <div>
+                            <h3><i class="fa-solid fa-wallet" style="color: var(--evergreen);"></i> Seus Investimentos Atuais</h3>
+                            <p>Detalhamento da sua custódia e rendimentos acumulados na Fistu</p>
+                        </div>
+                        <div class="portfolio-actions-quick">
+                            <button class="btn-portfolio-action btn-porte-add" onclick="abrirModalInvestir()">
+                                <i class="fa-solid fa-plus"></i> Novo Aporte
+                            </button>
+                            <button class="btn-portfolio-action btn-porte-sub" onclick="abrirModalResgate()">
+                                <i class="fa-solid fa-arrow-down-left-and-up-right-to-center"></i> Resgatar
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="invest-radial-wrapper" id="investRadialWrapper">
-                        <div class="invest-orbit-track"></div>
-                        <div class="invest-orbit-center" id="investOrbitCenter">
-                            <div class="center-radar-pulse"></div>
-                            <i class="fa-solid fa-vault"></i>
-                            <span>FISTU ASSETS</span>
-                        </div>
-                        <div class="invest-orbit-nodes-container" id="investOrbitalRing">
-                            <!-- Os 6 botões circulares gerados dinamicamente via JS -->
-                        </div>
+                    <!-- GRID DOS ATIVOS NA CARTEIRA DO USUÁRIO -->
+                    <div class="portfolio-holdings-grid" id="portfolioHoldingsGrid">
+                        <!-- Gerado via JS dinâmico conforme investAtual do usuário -->
                     </div>
                 </div>
 
@@ -1315,6 +1268,8 @@ div>
             if (adminBanner) adminBanner.style.display = isAdmin ? 'flex' : 'none';
 
             atualizarDisplaysSaldo();
+            atualizarTotalInvestidoNaTela();
+            renderizarCarteiraInvestimentos();
             atualizarStatsBar();
             renderLevelTabs();
             atualizarDailyMissionBanner();
@@ -1499,6 +1454,8 @@ div>
             saldoAtual -= val;
             investAtual += val;
             atualizarDisplaysSaldo();
+            atualizarTotalInvestidoNaTela();
+            renderizarCarteiraInvestimentos();
             fecharModais();
             exibirNotificacao('Aporte Concluído!', `Aplicado ${formatarMoeda(val)} em ${prod}.`);
             await sincronizarSaldoSupabase();
@@ -1517,6 +1474,8 @@ div>
             investAtual -= val;
             saldoAtual += val;
             atualizarDisplaysSaldo();
+            atualizarTotalInvestidoNaTela();
+            renderizarCarteiraInvestimentos();
             fecharModais();
             exibirNotificacao('Resgate Realizado!', `Transferido ${formatarMoeda(val)} para seu saldo em conta.`);
             await sincronizarSaldoSupabase();
@@ -2183,10 +2142,101 @@ div>
 
         let ativoSelecionadoId = 'caixinha';
 
+        
+        // --- RENDERIZAÇÃO DA DESCRIÇÃO DOS SEUS INVESTIMENTOS (CARTEIRA ATUAL) ---
+        function renderizarCarteiraInvestimentos() {
+            const grid = document.getElementById('portfolioHoldingsGrid');
+            if (!grid) return;
+
+            const totalInvest = parseFloat(investAtual || 0);
+            const caixinhaVal = totalInvest * 0.40;
+            const cdbVal = totalInvest * 0.30;
+            const fiiVal = totalInvest * 0.20;
+            const ipcaVal = totalInvest * 0.10;
+
+            const holdings = [
+                {
+                    nome: 'Super Caixinha CDI',
+                    categoria: 'Renda Fixa / Emergência',
+                    taxa: '100% do CDI',
+                    valor: caixinhaVal,
+                    rendimentoMes: caixinhaVal * 0.009,
+                    icone: 'fa-solid fa-box-archive',
+                    cor: '#10B981',
+                    liquidez: 'D+0 (Imediata)'
+                },
+                {
+                    nome: 'CDB Turbo Fistu',
+                    categoria: 'CDB Pós-fixado',
+                    taxa: '115% do CDI',
+                    valor: cdbVal,
+                    rendimentoMes: cdbVal * 0.0105,
+                    icone: 'fa-solid fa-coins',
+                    cor: '#F59E0B',
+                    liquidez: 'D+360 (No vencimento)'
+                },
+                {
+                    nome: 'Fundo Imobiliário FII',
+                    categoria: 'Renda Variável / Real Estate',
+                    taxa: '0,92% a.m. (Isento IR)',
+                    valor: fiiVal,
+                    rendimentoMes: fiiVal * 0.0092,
+                    icone: 'fa-solid fa-building',
+                    cor: '#8B5CF6',
+                    liquidez: 'D+2 (Mercado Secundário)'
+                },
+                {
+                    nome: 'Tesouro IPCA+ 2029',
+                    categoria: 'Títulos Públicos Federais',
+                    taxa: 'IPCA + 6,2% a.a.',
+                    valor: ipcaVal,
+                    rendimentoMes: ipcaVal * 0.0085,
+                    icone: 'fa-solid fa-landmark',
+                    cor: '#3B82F6',
+                    liquidez: 'D+1 (Tesouro Direto)'
+                }
+            ];
+
+            grid.innerHTML = holdings.map(item => `
+                <div class="portfolio-item-card" style="border-left: 4px solid ${item.cor};">
+                    <div class="portfolio-item-top">
+                        <div class="item-title-group">
+                            <div class="item-icon-pill" style="background: ${item.cor}20; color: ${item.cor};">
+                                <i class="${item.icone}"></i>
+                            </div>
+                            <div>
+                                <div class="item-name">${item.nome}</div>
+                                <div class="item-cat">${item.categoria}</div>
+                            </div>
+                        </div>
+                        <div class="item-tag-rate" style="color: ${item.cor}; background: ${item.cor}15;">
+                            ${item.taxa}
+                        </div>
+                    </div>
+
+                    <div class="portfolio-item-values">
+                        <div class="p-val-block">
+                            <span class="p-val-label">Saldo Aplicado</span>
+                            <strong class="p-val-amount">${formatarMoeda(item.valor)}</strong>
+                        </div>
+                        <div class="p-val-block">
+                            <span class="p-val-label">Rendimento Estimado / Mês</span>
+                            <strong class="p-val-profit">+${formatarMoeda(item.rendimentoMes)}</strong>
+                        </div>
+                        <div class="p-val-block">
+                            <span class="p-val-label">Liquidez</span>
+                            <span class="p-val-meta">${item.liquidez}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    
         function inicializarAbaInvestimentos() {
             renderOrbitalRing();
             selecionarAtivoRadial(ativoSelecionadoId || 'caixinha', false);
             atualizarTotalInvestidoNaTela();
+            renderizarCarteiraInvestimentos();
             setTimeout(posicionarNodesRadiais, 50);
         }
 
@@ -2545,6 +2595,7 @@ div>
                 localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
             }
             atualizarDisplaysSaldo();
+            atualizarTotalInvestidoNaTela();
             renderizarCarteiraInvestimentos();
             atualizarAdminKpis();
             renderizarTabelaUsuariosAdmin();

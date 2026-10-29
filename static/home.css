@@ -3279,3 +3279,282 @@ body.theme-light .admin-users-table th {
 .btn-table-edit:hover {
     background: #1E4633;
 }
+
+
+/* ========================================================
+   AJUSTES SOLICITADOS: PALCO DE INVESTIMENTOS NO PC
+   ======================================================== */
+.invest-screen-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 24px 60px 24px !important;
+    box-sizing: border-box !important;
+}
+
+/* PALCO DIVIDIDO DE INVESTIMENTOS: CÍRCULO À ESQUERDA NO PC */
+.invest-pc-split-stage {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    width: 100%;
+}
+
+.invest-stage-left {
+    flex: 0 0 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.invest-stage-right {
+    flex: 1;
+    min-width: 0;
+}
+
+/* No mobile: as mudanças na posição do círculo são SÓ PARA O PC! */
+@media (max-width: 899px) {
+    .invest-pc-split-stage {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
+    }
+    .invest-stage-left {
+        flex: unset !important;
+        width: 100% !important;
+    }
+    .invest-stage-right {
+        width: 100% !important;
+    }
+}
+
+/* DESCRIÇÃO DOS SEUS INVESTIMENTOS (CARTEIRA ATUAL MAIS ABAIXO) */
+.user-portfolio-section {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+body.theme-light .user-portfolio-section {
+    background: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(18, 55, 42, 0.08);
+}
+
+.portfolio-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.portfolio-header-row h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--heading-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.portfolio-header-row p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+}
+
+.portfolio-actions-quick {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-portfolio-action {
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.15s, opacity 0.2s;
+}
+
+.btn-porte-add {
+    background: var(--evergreen);
+    color: #FFFFFF;
+}
+
+.btn-porte-add:hover {
+    background: #1E4633;
+    transform: translateY(-2px);
+}
+
+.btn-porte-sub {
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-light);
+}
+
+body.theme-light .btn-porte-sub {
+    color: #12372A;
+    background: #F3FAF4;
+}
+
+.btn-porte-sub:hover {
+    transform: translateY(-2px);
+}
+
+.portfolio-holdings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .portfolio-holdings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.portfolio-item-card {
+    background: var(--card-item-bg);
+    border: 1px solid var(--card-item-border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.portfolio-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+body.theme-light .portfolio-item-card {
+    background: #F8FCF9;
+}
+
+.portfolio-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.item-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-icon-pill {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 1.25rem;
+}
+
+.item-name {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--heading-color);
+}
+
+.item-cat {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.item-tag-rate {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.portfolio-item-values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--card-item-border);
+}
+
+@media (max-width: 480px) {
+    .portfolio-item-values {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.p-val-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.p-val-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.p-val-amount {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--heading-color);
+}
+
+.p-val-profit {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #10B981;
+}
+
+.p-val-meta {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+body.theme-light .p-val-meta {
+    color: #12372A;
+}
+
+/* ========================================================
+   INFORMAÇÕES DO USUÁRIO DE PONTA A PONTA DA TELA
+   ======================================================== */
+.bank-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 24px 40px 24px !important;
+    box-sizing: border-box !important;
+}
+
+.page-standard-header,
+.greeting-bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 20px 0 !important;
+    box-sizing: border-box !important;
+    border-radius: 18px !important;
+}
