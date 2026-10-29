@@ -123,26 +123,22 @@
             transform: scale(1.03);
         }
 
-        body.theme-dark .brand-logo-img.logo-dark,
-        body:not(.theme-light) .brand-logo-img.logo-dark {
-            display: none !important;
-        }
-        body.theme-dark .brand-logo-img.logo-white,
-        body:not(.theme-light) .brand-logo-img.logo-white {
+        /* LOGO DO HEADER: SEMPRE BRANCA EM AMBOS OS TEMAS */
+        .brand-logo-img.logo-white,
+        .fistu-header .brand-logo-img.logo-white,
+        body.theme-light .fistu-header .brand-logo-img.logo-white,
+        body.theme-dark .fistu-header .brand-logo-img.logo-white,
+        .header-brand .logo-white {
             display: block !important;
+            filter: brightness(1) invert(0) !important;
+            opacity: 1 !important;
         }
 
-        body.theme-light .brand-logo-img.logo-white {
-            display: none !important;
-        }
-        body.theme-light .brand-logo-img.logo-dark {
-            display: block !important;
-        }
-
-        .fistu-header .brand-logo-img.logo-white {
-            display: block !important;
-        }
-        .fistu-header .brand-logo-img.logo-dark {
+        .brand-logo-img.logo-dark,
+        .fistu-header .brand-logo-img.logo-dark,
+        body.theme-light .fistu-header .brand-logo-img.logo-dark,
+        body.theme-dark .fistu-header .brand-logo-img.logo-dark,
+        .header-brand .logo-dark {
             display: none !important;
         }
 
