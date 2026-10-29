@@ -4029,3 +4029,73 @@ body.theme-light .edu-callout-left h4 {
 body.theme-dark .edu-callout-left h4 {
     color: #10B981 !important;
 }
+
+
+/* ========================================================
+   PADRONIZAÇÃO UNIFICADA E DE PONTA A PONTA DA TELA (100% WIDTH)
+   ======================================================== */
+.bank-container,
+.invest-screen-container,
+.edu-screen-wrapper,
+.personalizacao-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 24px 60px 24px !important;
+    box-sizing: border-box !important;
+}
+
+.page-standard-header,
+.greeting-bar,
+.bank-unified-card,
+.edu-callout-banner,
+.user-portfolio-section,
+.edu-fullwidth-canvas,
+.duo-stats-bar,
+.level-tabs-bar,
+.daily-mission-banner,
+.admin-test-banner {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* BANNER DE CHAMADA DA EDUCAÇÃO: UNIFICADO COM O RESTO DO APP */
+.edu-callout-banner {
+    border-radius: 20px !important;
+    padding: 24px 28px !important;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+body.theme-light .edu-callout-banner {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(18, 55, 42, 0.14) !important;
+    box-shadow: 0 8px 24px rgba(18, 55, 42, 0.08) !important;
+}
+
+body.theme-light .edu-callout-left h4 {
+    color: #15803D !important;
+}
+
+body.theme-light .edu-callout-left p {
+    color: #111827 !important;
+    font-weight: 500 !important;
+}
+
+body.theme-dark .edu-callout-banner,
+body:not(.theme-light) .edu-callout-banner {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    box-shadow: var(--shadow-card) !important;
+}
+
+body.theme-dark .edu-callout-left h4,
+body:not(.theme-light) .edu-callout-left h4 {
+    color: #10B981 !important;
+}
+
+body.theme-dark .edu-callout-left p,
+body:not(.theme-light) .edu-callout-left p {
+    color: #BFD8C2 !important;
+}

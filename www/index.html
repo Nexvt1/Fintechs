@@ -227,7 +227,7 @@
                         <span class="edu-callout-icon">🦉</span>
                         <div>
                             <h4>Aprenda e Ganhe Dinheiro Real na Conta</h4>
-                            <p>Complete as fases da trilha no estilo Duolingo, responda aos quizzes e resgate FinCoins em saldo!</p>
+                            <p>Complete as fases da trilha no estilo Duolingo, responda aos quizzes e resgate FistuCoins em saldo!</p>
                         </div>
                     </div>
                     <button class="btn-open-edu" onclick="mudarAba('educacao')">
@@ -353,11 +353,11 @@
                                 <small class="stat-sub">Dias Seguidos</small>
                             </div>
                         </div>
-                        <div class="stat-badge stat-gems" title="FinCoins acumuladas">
+                        <div class="stat-badge stat-gems" title="FistuCoins acumuladas">
                             <span style="font-size: 1.3rem;">💎</span>
                             <div>
                                 <span class="stat-num" id="eduCoins">0</span>
-                                <small class="stat-sub">FinCoins</small>
+                                <small class="stat-sub">FistuCoins</small>
                             </div>
                         </div>
                         <div class="stat-badge stat-hearts" title="Vidas disponíveis">
@@ -622,7 +622,7 @@
                 <br>
                 <p><strong>💡 Regra de Ouro:</strong> Primeiro poupe, depois gaste. Mantenha de 3 a 6 meses do seu custo de vida alocado em ativos com 100% do CDI e liquidez imediata.</p>
                 <br>
-                <p><strong>💎 Recompensa:</strong> Ao concluir cada stage, você recebe <strong>20 FinCoins</strong> e um crédito de <strong>R$ 5,00</strong> no saldo da sua conta Fistu!</p>
+                <p><strong>💎 Recompensa:</strong> Ao concluir cada stage, você recebe <strong>20 FistuCoins</strong> e um crédito de <strong>R$ 5,00</strong> no saldo da sua conta Fistu!</p>
             </div>
             <button onclick="fecharModais()" style="width: 100%; padding: 12px; border-radius: 14px; background: var(--duo-green); color: white; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 var(--duo-green-dark);">
                 Entendi, vamos praticar!
@@ -760,7 +760,7 @@
                     <span class="admin-kpi-val" id="adminKpiTotalInvest">R$ 0,00</span>
                 </div>
                 <div class="admin-kpi-item">
-                    <span class="admin-kpi-label"><i class="fa-solid fa-gem"></i> FinCoins Emitidas</span>
+                    <span class="admin-kpi-label"><i class="fa-solid fa-gem"></i> FistuCoins Emitidas</span>
                     <span class="admin-kpi-val" id="adminKpiTotalCoins">0</span>
                 </div>
             </div>
@@ -795,7 +795,7 @@
                     </button>
                     <button class="btn-admin-action" onclick="adminInjetarCoins(500)">
                         <i class="fa-solid fa-gem" style="color: #38BDF8;"></i>
-                        <span>+500 FinCoins</span>
+                        <span>+500 FistuCoins</span>
                     </button>
                     <button class="btn-admin-action" onclick="adminResetarBancoLocal()">
                         <i class="fa-solid fa-trash-can" style="color: #DC2626;"></i>
@@ -1731,7 +1731,7 @@ div>
                         </p>
                         <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 20px;">
                             <div style="background: ${level.light}; color: ${level.dark}; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
-                                💎 +20 FinCoins
+                                💎 +20 FistuCoins
                             </div>
                             <div style="background: #DEF7EC; color: #03543F; padding: 8px 14px; border-radius: 14px; font-weight: 800; font-size: 0.9rem;">
                                 💵 +R$ 5,00 Saldo
@@ -2606,7 +2606,7 @@ div>
             salvarEduState();
             atualizarStatsBar();
             atualizarAdminKpis();
-            exibirNotificacao('FinCoins Creditadas! 💎', `+${qtd} FinCoins adicionadas para uso.`);
+            exibirNotificacao('FistuCoins Creditadas! 💎', `+${qtd} FistuCoins adicionadas para uso.`);
         }
 
         function adminAlternarModoAdmin() {
