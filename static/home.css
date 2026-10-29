@@ -633,7 +633,7 @@
             z-index: 400;
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-light);
-            border-radius: 0 !important;
+            
         }
 
         .stat-badge {
@@ -643,7 +643,7 @@
             font-size: 0.95rem;
             font-weight: 800;
             color: var(--text-light);
-            border-radius: 0 !important;
+            
         }
 
         .stat-badge i, .stat-badge span.icon {
@@ -663,14 +663,14 @@
             gap: 8px;
             padding: 14px 20px 8px 20px;
             background: transparent;
-            border-radius: 0 !important;
+            
         }
 
         .level-pill {
             flex: 1;
             padding: 10px 4px;
             text-align: center;
-            border-radius: 0 !important;
+            
             border: 1px solid var(--card-item-border);
             background: var(--card-item-bg);
             font-size: 0.78rem;
@@ -703,7 +703,7 @@
             margin: 12px auto 4px auto;
             background: rgba(245, 158, 11, 0.14);
             border: 1.5px solid #F59E0B;
-            border-radius: 0 !important;
+            
             padding: 12px 16px;
             font-size: 0.85rem;
             color: #FDE68A;
@@ -721,7 +721,7 @@
             margin: 10px auto 4px auto;
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 0 !important;
+            
             padding: 12px 16px;
             font-size: 0.85rem;
             color: var(--text-light);
@@ -741,7 +741,7 @@
             font-size: 0.72rem;
             font-weight: 800;
             padding: 5px 10px;
-            border-radius: 0 !important;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-light);
             text-transform: uppercase;
@@ -758,7 +758,7 @@
             width: 90%;
             max-width: 480px;
             background: var(--duo-green);
-            border-radius: 0 !important;
+            border-radius: 18px;
             padding: 18px 22px;
             margin: 16px auto;
             color: #FFFFFF;
@@ -786,7 +786,7 @@
         .btn-guidebook {
             width: 42px;
             height: 42px;
-            border-radius: 0 !important;
+            border-radius: 12px;
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.4);
             color: #FFFFFF;
@@ -825,7 +825,7 @@
         .duo-node-btn {
             width: 76px;
             height: 72px;
-            border-radius: 0 !important;
+            border-radius: 50% !important;
             background: var(--duo-green);
             box-shadow: 0 8px 0 var(--duo-green-dark), 0 12px 18px rgba(0,0,0,0.25);
             border: none;
@@ -867,7 +867,7 @@
             font-size: 0.75rem;
             font-weight: 900;
             padding: 4px 10px;
-            border-radius: 0 !important;
+            border-radius: 12px;
             white-space: nowrap;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
             animation: bounceTooltip 1.2s infinite alternate;
@@ -917,7 +917,7 @@
         .user-trail-header-card {
             width: 100%;
             background: linear-gradient(135deg, #10B981 0%, #064E3B 100%);
-            border-radius: 0 !important;
+            
             padding: 16px 20px;
             margin-bottom: 16px;
             display: flex;
@@ -939,7 +939,7 @@
         .user-trail-avatar {
             width: 48px;
             height: 48px;
-            border-radius: 0 !important;
+            
             background: rgba(255, 255, 255, 0.15);
             border: 2px solid #86EFAC;
             display: flex;
@@ -981,7 +981,7 @@
             font-weight: 800;
             background: rgba(0, 0, 0, 0.35);
             padding: 6px 12px;
-            border-radius: 0 !important;
+            
             border: 1px solid rgba(255, 255, 255, 0.25);
             color: #86EFAC;
             white-space: nowrap;
@@ -994,7 +994,7 @@
             right: 24px;
             width: 48px;
             height: 48px;
-            border-radius: 0 !important;
+            
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             color: var(--primary-green);
@@ -1036,7 +1036,7 @@
             color: var(--text-light);
             width: 92%;
             max-width: 460px;
-            border-radius: 0 !important;
+            
             padding: 26px;
             box-shadow: 0 16px 40px rgba(0,0,0,0.6);
             display: flex;
@@ -1094,7 +1094,7 @@
             background: var(--card-item-bg);
             border: 1px solid var(--card-item-border);
             border-bottom: 4px solid rgba(0,0,0,0.4);
-            border-radius: 0 !important;
+            
             padding: 14px 16px;
             font-size: 0.95rem;
             font-weight: 700;
@@ -1720,10 +1720,7 @@
             transition: all 0.2s;
         }
 
-        body.theme-light .header-profile-pill {
-            background: rgba(11, 61, 44, 0.08);
-            border-color: rgba(11, 61, 44, 0.15);
-        }
+        
 
         .header-profile-pill:hover {
             background: rgba(134, 239, 172, 0.25);
@@ -1755,9 +1752,7 @@
             color: var(--text-light);
         }
 
-        body.theme-light .header-user-fname {
-            color: #0b3d2c;
-        }
+        
 
         /* CARD WIDE DE PREFERÊNCIAS */
         .custom-card-wide {
@@ -1880,25 +1875,11 @@
         }
 
         /* ADAPTAÇÕES DE TEMA CLARO PARA ELEMENTOS GLOBAIS */
-        body.theme-light .btn-admin-pill {
-            background: #0b3d2c;
-            color: #FFFFFF;
-        }
-        body.theme-light .nav-tabs-pill {
-            background: rgba(11, 61, 44, 0.08);
-            border-color: rgba(11, 61, 44, 0.18);
-        }
-        body.theme-light .nav-tab-btn {
-            color: #2D6A4F;
-        }
-        body.theme-light .nav-tab-btn.active {
-            background: #0b3d2c;
-            color: #FFFFFF;
-        }
-        body.theme-light .btn-logout {
-            color: #0b3d2c;
-            border-color: rgba(11, 61, 44, 0.3);
-        }
+        
+        
+        
+        
+        
         body.theme-light .badge-supabase {
             background: rgba(21, 128, 61, 0.1);
             border-color: rgba(21, 128, 61, 0.3);
@@ -1907,7 +1888,7 @@
         body.theme-light .user-trail-header-card {
             width: 100%;
             background: linear-gradient(135deg, #10B981 0%, #064E3B 100%);
-            border-radius: 0 !important;
+            
             padding: 16px 20px;
             margin-bottom: 16px;
             display: flex;
@@ -1938,7 +1919,7 @@
             z-index: 400;
             border-bottom: 1px solid var(--border-subtle);
             color: var(--text-light);
-            border-radius: 0 !important;
+            
         }
         body.theme-light .stat-badge {
             display: flex;
@@ -1947,7 +1928,7 @@
             font-size: 0.95rem;
             font-weight: 800;
             color: var(--text-light);
-            border-radius: 0 !important;
+            
         }
         body.theme-light .level-tab-btn {
             background: rgba(11, 61, 44, 0.06);
@@ -1974,7 +1955,7 @@
 .modal-duo-overlay .duo-quiz-box *,
 .modal-duo-overlay .quiz-opt-btn,
 .modal-duo-overlay .quiz-dot {
-    border-radius: 0 !important;
+    
 }
 
 /* GARANTIA DE CONTRASTE EM ELEMENTOS SECUNDÁRIOS */
@@ -2647,7 +2628,7 @@ body.theme-dark .metric-mini-val {
 .edu-trail-avatar-badge {
     width: 48px;
     height: 48px;
-    border-radius: 0 !important;
+    
     background: var(--evergreen);
     color: #FFFFFF;
     display: grid;
@@ -2692,7 +2673,7 @@ body.theme-dark .metric-mini-val {
     padding: 16px 20px;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: 0 !important;
+    
     box-shadow: var(--shadow-card);
     box-sizing: border-box;
 }
@@ -2712,7 +2693,7 @@ body.theme-light .duo-stats-bar {
     color: var(--text-light);
     background: var(--card-item-bg);
     border: 1px solid var(--card-item-border);
-    border-radius: 0 !important;
+    
     padding: 12px 14px;
 }
 
@@ -2750,7 +2731,7 @@ body.theme-light .stat-badge {
     padding: 14px 10px;
     text-align: center;
     border: 1.5px solid var(--border-subtle);
-    border-radius: 0 !important;
+    
     background: var(--bg-card);
     font-size: 0.9rem;
     font-weight: 800;
@@ -2798,7 +2779,7 @@ body.theme-light .level-pill {
     width: 100%;
     background: rgba(245, 158, 11, 0.14);
     border: 1.5px solid #F59E0B;
-    border-radius: 0 !important;
+    
     padding: 14px 20px;
     font-size: 0.88rem;
     color: #FDE68A;
@@ -2813,7 +2794,7 @@ body.theme-light .level-pill {
     width: 100%;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
-    border-radius: 0 !important;
+    
     padding: 14px 20px;
     font-size: 0.88rem;
     color: var(--text-light);
@@ -2833,7 +2814,7 @@ body.theme-light .daily-mission-banner {
 .duo-section-banner {
     width: 100%;
     background: linear-gradient(135deg, var(--pine-shadow) 0%, var(--evergreen) 100%);
-    border-radius: 0 !important;
+    
     padding: 22px 28px;
     color: #FFFFFF;
     display: flex;
@@ -2866,4 +2847,435 @@ body.theme-light .daily-mission-banner {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
+}
+
+
+/* ========================================================
+   UNIFICAÇÃO DO HEADER: MESMA COR E ESTILO NOS DOIS TEMAS
+   ======================================================== */
+.fistu-header {
+    background: #12372A !important;
+    border-bottom: 1px solid rgba(191, 216, 194, 0.25) !important;
+}
+
+.fistu-header .nav-tabs-pill {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(191, 216, 194, 0.25) !important;
+    border-radius: 30px !important;
+}
+
+.fistu-header .nav-tab-btn {
+    color: #BFD8C2 !important;
+    background: transparent !important;
+    border-radius: 25px !important;
+}
+
+.fistu-header .nav-tab-btn:hover {
+    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.fistu-header .nav-tab-btn.active {
+    background: #2F6B4F !important;
+    color: #FFFFFF !important;
+    border: 1px solid #BFD8C2 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.fistu-header .header-profile-pill {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(191, 216, 194, 0.25) !important;
+    border-radius: 25px !important;
+}
+
+.fistu-header .header-mini-avatar {
+    background: #2F6B4F !important;
+    color: #FFFFFF !important;
+    border-radius: 50% !important;
+}
+
+.fistu-header .header-user-fname {
+    color: #F3FAF4 !important;
+}
+
+.fistu-header .btn-admin-pill {
+    background: #D97706 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #F59E0B !important;
+    border-radius: 20px !important;
+    padding: 7px 16px !important;
+    font-weight: 800 !important;
+    font-size: 0.8rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3) !important;
+    transition: transform 0.15s, background 0.2s !important;
+}
+
+.fistu-header .btn-admin-pill:hover {
+    background: #B45309 !important;
+    transform: translateY(-2px) !important;
+}
+
+.fistu-header .header-btn {
+    color: #BFD8C2 !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(191, 216, 194, 0.25) !important;
+    border-radius: 50% !important;
+    width: 38px !important;
+    height: 38px !important;
+    cursor: pointer !important;
+    display: grid !important;
+    place-items: center !important;
+}
+
+.fistu-header .btn-logout {
+    color: #F3FAF4 !important;
+    background: transparent !important;
+    border: 1px solid rgba(191, 216, 194, 0.35) !important;
+    border-radius: 20px !important;
+    padding: 7px 16px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.fistu-header .btn-logout:hover {
+    background: #DC2626 !important;
+    border-color: #DC2626 !important;
+    color: #FFFFFF !important;
+}
+
+/* ========================================================
+   TRILHA ARREDONDADA E PADRONIZADA COM O RESTO DO APP
+   ======================================================== */
+.duo-stats-bar {
+    border-radius: var(--radius-lg) !important;
+}
+
+.stat-badge {
+    border-radius: var(--radius-md) !important;
+}
+
+.level-tabs-bar {
+    border-radius: var(--radius-lg) !important;
+}
+
+.level-pill {
+    border-radius: var(--radius-md) !important;
+}
+
+.admin-test-banner {
+    border-radius: var(--radius-lg) !important;
+}
+
+.daily-mission-banner {
+    border-radius: var(--radius-lg) !important;
+}
+
+.daily-mission-banner .mission-tag {
+    border-radius: 12px !important;
+}
+
+.duo-section-banner {
+    border-radius: var(--radius-xl) !important;
+}
+
+.btn-guidebook {
+    border-radius: 12px !important;
+}
+
+.duo-node-btn {
+    border-radius: 50% !important;
+}
+
+.duo-tooltip-bubble {
+    border-radius: 12px !important;
+}
+
+.btn-fab-up {
+    border-radius: 50% !important;
+}
+
+.edu-trail-avatar-badge {
+    border-radius: 14px !important;
+}
+
+.duo-quiz-box {
+    border-radius: 24px !important;
+}
+
+.quiz-opt-btn {
+    border-radius: 16px !important;
+}
+
+.quiz-dot {
+    border-radius: 50% !important;
+}
+
+/* ========================================================
+   ESTILOS DO PAINEL DO ADMINISTRADOR (ADMIN DASHBOARD)
+   ======================================================== */
+.modal-admin-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.modal-admin-overlay.active {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+}
+
+.admin-panel-card {
+    background: var(--bg-card);
+    border: 1.5px solid #F59E0B;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    color: var(--text-light);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    box-sizing: border-box;
+}
+
+body.theme-light .admin-panel-card {
+    background: #FFFFFF;
+    color: #12372A;
+    box-shadow: 0 16px 48px rgba(18, 55, 42, 0.15);
+}
+
+.admin-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.admin-header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-header-title h3 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--heading-color);
+}
+
+.admin-badge-gold {
+    background: #D97706;
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.btn-close-admin {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-close-admin:hover {
+    color: #E53E3E;
+}
+
+/* GRID DE KPIS DO ADMIN */
+.admin-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+@media (max-width: 768px) {
+    .admin-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.admin-kpi-item {
+    background: var(--card-item-bg);
+    border: 1px solid var(--card-item-border);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-kpi-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-kpi-val {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--heading-color);
+}
+
+/* BOTÕES DE AÇÕES RÁPIDAS */
+.admin-actions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-actions-section h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--heading-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .admin-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.btn-admin-action {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--card-item-border);
+    background: var(--card-item-bg);
+    color: var(--text-light);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+body.theme-light .btn-admin-action {
+    color: #12372A;
+    background: #F8FCF9;
+}
+
+.btn-admin-action:hover {
+    background: var(--evergreen);
+    color: #FFFFFF;
+    border-color: var(--evergreen);
+    transform: translateY(-2px);
+}
+
+/* TABELA DE USUÁRIOS E SALDOS */
+.admin-table-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-table-section h4 {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--heading-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--card-item-border);
+    border-radius: 14px;
+}
+
+.admin-users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.admin-users-table th {
+    background: rgba(18, 55, 42, 0.4);
+    color: var(--text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    padding: 12px 14px;
+    text-align: left;
+}
+
+body.theme-light .admin-users-table th {
+    background: #E8F5EE;
+    color: #12372A;
+}
+
+.admin-users-table td {
+    padding: 12px 14px;
+    border-top: 1px solid var(--card-item-border);
+}
+
+.admin-role-badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.admin-role-badge.admin {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.admin-role-badge.usuario {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.btn-table-edit {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    background: var(--evergreen);
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-table-edit:hover {
+    background: #1E4633;
 }

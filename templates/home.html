@@ -62,11 +62,9 @@
                 <span class="header-user-fname" id="navUserFirstName">{{ (usuario.nome or 'Conta').split(' ')[0] }}</span>
             </div>
 
-            {% if usuario.tipo == 'admin' %}
-            <a href="{{ url_for('admin_dashboard') }}" class="btn-admin-pill">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-admin-pill" id="btnAdminHeader" title="Painel Administrativo">
                 <i class="fa-solid fa-shield-halved"></i> Painel Admin
             </a>
-            {% endif %}
 
             <a href="{{ url_for('logout') }}" class="btn-logout" title="Encerrar sessão">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Sair

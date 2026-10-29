@@ -128,9 +128,9 @@
                     <span class="header-user-fname" id="navUserFirstName">Usuário</span>
                 </div>
 
-                <div id="adminIndicator" class="admin-pill" style="display: none;">
-                    <i class="fa-solid fa-shield-halved"></i> Admin
-                </div>
+                <button id="adminIndicator" class="btn-admin-pill" onclick="abrirPainelAdmin()" title="Abrir Painel Administrativo Master">
+                    <i class="fa-solid fa-shield-halved"></i> Painel Admin
+                </button>
 
                 <button class="header-btn" onclick="alternarVisibilidadeSaldo()" title="Ocultar/Exibir Saldo">
                     <i class="fa-solid fa-eye" id="eyeIcon"></i>
@@ -772,7 +772,121 @@
                 <button type="button" class="btn-modal-confirm" onclick="confirmarPix()">Transferir Agora</button>
             </div>
         </div>
+    </
+
+    <!-- ========================================================
+         MODAL MASTER: PAINEL ADMINISTRATIVO (ADMIN DASHBOARD)
+         ======================================================== -->
+    <div id="modalAdminPanel" class="modal-admin-overlay" onclick="fecharPainelAdminPorFora(event)">
+        <div class="admin-panel-card" onclick="event.stopPropagation()">
+            <!-- Cabeçalho do Painel Admin -->
+            <div class="admin-panel-header">
+                <div class="admin-header-title">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(217, 119, 6, 0.18); border: 1px solid #F59E0B; display: grid; place-items: center; color: #F59E0B; font-size: 1.4rem;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <h3 style="margin: 0;">Painel de Controle Fistu</h3>
+                            <span class="admin-badge-gold">ADMIN MASTER</span>
+                        </div>
+                        <p style="margin: 3px 0 0 0; font-size: 0.8rem; color: var(--text-muted);">
+                            Gerenciamento de usuários, custódia de saldos, investimentos e liberação da trilha
+                        </p>
+                    </div>
+                </div>
+                <button class="btn-close-admin" onclick="fecharPainelAdmin()" title="Fechar painel">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- KPIs do Sistema -->
+            <div class="admin-metrics-grid">
+                <div class="admin-kpi-item">
+                    <span class="admin-kpi-label"><i class="fa-solid fa-users"></i> Usuários Registrados</span>
+                    <span class="admin-kpi-val" id="adminKpiTotalUsers">1</span>
+                </div>
+                <div class="admin-kpi-item">
+                    <span class="admin-kpi-label"><i class="fa-solid fa-vault"></i> Saldo em Custódia</span>
+                    <span class="admin-kpi-val" id="adminKpiTotalSaldo">R$ 0,00</span>
+                </div>
+                <div class="admin-kpi-item">
+                    <span class="admin-kpi-label"><i class="fa-solid fa-chart-line"></i> Total em Carteiras</span>
+                    <span class="admin-kpi-val" id="adminKpiTotalInvest">R$ 0,00</span>
+                </div>
+                <div class="admin-kpi-item">
+                    <span class="admin-kpi-label"><i class="fa-solid fa-gem"></i> FinCoins Emitidas</span>
+                    <span class="admin-kpi-val" id="adminKpiTotalCoins">0</span>
+                </div>
+            </div>
+
+            <!-- Ações Rápidas de Administração -->
+            <div class="admin-actions-section">
+                <h4><i class="fa-solid fa-bolt" style="color: #F59E0B;"></i> Ações Rápidas de Gestão & Testes</h4>
+                <div class="admin-buttons-grid">
+                    <button class="btn-admin-action" onclick="adminLiberarTrilha()">
+                        <i class="fa-solid fa-lock-open" style="color: #10B981;"></i>
+                        <span>Liberar 100% da Trilha</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminInjetarSaldo(10000)">
+                        <i class="fa-solid fa-circle-plus" style="color: #3B82F6;"></i>
+                        <span>+R$ 10.000 Saldo</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminInjetarInvestimento(25000)">
+                        <i class="fa-solid fa-arrow-trend-up" style="color: #8B5CF6;"></i>
+                        <span>+R$ 25.000 Ações</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminRestaurarVidas()">
+                        <i class="fa-solid fa-heart" style="color: #EF4444;"></i>
+                        <span>Restaurar 5 Vidas</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminAlternarModoAdmin()">
+                        <i class="fa-solid fa-user-shield" style="color: #F59E0B;"></i>
+                        <span id="btnTxtToggleAdmin">Alternar Tipo Admin</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminResetarTrilha()">
+                        <i class="fa-solid fa-rotate-left" style="color: #6B7280;"></i>
+                        <span>Resetar Trilha</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminInjetarCoins(500)">
+                        <i class="fa-solid fa-gem" style="color: #38BDF8;"></i>
+                        <span>+500 FinCoins</span>
+                    </button>
+                    <button class="btn-admin-action" onclick="adminResetarBancoLocal()">
+                        <i class="fa-solid fa-trash-can" style="color: #DC2626;"></i>
+                        <span>Resetar Cache Geral</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabela de Gerenciamento de Usuários -->
+            <div class="admin-table-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin: 0;"><i class="fa-solid fa-table-list" style="color: #F59E0B;"></i> Usuários Cadastrados no Sistema</h4>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);" id="adminUsersCountLabel">Total: 1</span>
+                </div>
+                <div class="admin-table-wrapper">
+                    <table class="admin-users-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome / Titular</th>
+                                <th>Email / Login</th>
+                                <th>Saldo</th>
+                                <th>Investimentos</th>
+                                <th>Papel</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTableBody">
+                            <!-- Inserido dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+div>
 
     <!-- ========================================================
          JAVASCRIPT: SUPABASE SDK, LÓGICA DO APP E DA TRILHA
@@ -1195,12 +1309,10 @@
             document.getElementById('prefInputEmail').value = user.email || '';
             document.getElementById('navUserFirstName').innerText = (user.nome || 'Conta').split(' ')[0];
 
-            if (isAdmin) {
-                const adminInd = document.getElementById('adminIndicator');
-                if (adminInd) adminInd.style.display = 'flex';
-                const adminBanner = document.getElementById('adminTestBanner');
-                if (adminBanner) adminBanner.style.display = 'flex';
-            }
+            const adminInd = document.getElementById('adminIndicator');
+            if (adminInd) adminInd.style.display = 'inline-flex';
+            const adminBanner = document.getElementById('adminTestBanner');
+            if (adminBanner) adminBanner.style.display = isAdmin ? 'flex' : 'none';
 
             atualizarDisplaysSaldo();
             atualizarStatsBar();
@@ -2227,6 +2339,312 @@
             );
         }
 
-    </script>
+    
+
+        // ========================================================
+        // CONTROLADOR DO PAINEL ADMINISTRATIVO (ADMIN MASTER)
+        // ========================================================
+        function abrirPainelAdmin() {
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            const modal = document.getElementById('modalAdminPanel');
+            if (modal) modal.classList.add('active');
+        }
+
+        function fecharPainelAdmin() {
+            const modal = document.getElementById('modalAdminPanel');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function fecharPainelAdminPorFora(e) {
+            if (e.target.id === 'modalAdminPanel') {
+                fecharPainelAdmin();
+            }
+        }
+
+        function atualizarAdminKpis() {
+            let users = getLocalUsers();
+            if (!users || users.length === 0) {
+                if (currentUser) users = [currentUser];
+            }
+
+            const totalUsers = Math.max(users.length, 1);
+            let totalSaldo = 0;
+            let totalInvest = 0;
+            let totalCoins = 0;
+
+            users.forEach(u => {
+                totalSaldo += parseFloat(u.saldo || 0);
+                totalInvest += parseFloat(u.investimentos || 0);
+                totalCoins += parseInt(u.trilha_coins || 0);
+            });
+
+            // Adiciona valores correntes se não constarem
+            if (currentUser && !users.find(u => u.id === currentUser.id)) {
+                totalSaldo += parseFloat(saldoAtual || 0);
+                totalInvest += parseFloat(investAtual || 0);
+                totalCoins += parseInt(eduState.coins || 0);
+            }
+
+            const elUsers = document.getElementById('adminKpiTotalUsers');
+            const elSaldo = document.getElementById('adminKpiTotalSaldo');
+            const elInvest = document.getElementById('adminKpiTotalInvest');
+            const elCoins = document.getElementById('adminKpiTotalCoins');
+            const elCountLabel = document.getElementById('adminUsersCountLabel');
+
+            if (elUsers) elUsers.innerText = totalUsers;
+            if (elSaldo) elSaldo.innerText = formatMoeda(totalSaldo);
+            if (elInvest) elInvest.innerText = formatMoeda(totalInvest);
+            if (elCoins) elCoins.innerText = totalCoins.toLocaleString('pt-BR');
+            if (elCountLabel) elCountLabel.innerText = `Total: ${totalUsers} cadastrado(s)`;
+
+            const toggleTxt = document.getElementById('btnTxtToggleAdmin');
+            if (toggleTxt) {
+                toggleTxt.innerText = isAdmin ? 'Modo: Admin (Ativo)' : 'Tornar Admin';
+            }
+        }
+
+        function renderizarTabelaUsuariosAdmin() {
+            const tbody = document.getElementById('adminUsersTableBody');
+            if (!tbody) return;
+
+            let users = getLocalUsers();
+            if (!users || users.length === 0) {
+                if (currentUser) users = [currentUser];
+            }
+
+            // Garante que o usuário atual esteja na listagem
+            if (currentUser && !users.find(u => u.id === currentUser.id)) {
+                users.unshift(currentUser);
+            }
+
+            tbody.innerHTML = '';
+            users.forEach(u => {
+                const tr = document.createElement('tr');
+                const uSaldo = (currentUser && currentUser.id === u.id) ? saldoAtual : parseFloat(u.saldo || 0);
+                const uInvest = (currentUser && currentUser.id === u.id) ? investAtual : parseFloat(u.investimentos || 0);
+                const isUserAdm = (currentUser && currentUser.id === u.id) ? isAdmin : (u.tipo === 'admin');
+
+                tr.innerHTML = `
+                    <td style="font-weight: 700; color: var(--text-muted); font-size: 0.78rem;">#${(u.id || 1).toString().slice(-6)}</td>
+                    <td><strong>${u.nome || 'Cliente Fistu'}</strong></td>
+                    <td style="color: var(--text-muted); font-size: 0.8rem;">${u.email || 'offline@fistu.com'}</td>
+                    <td style="font-weight: 800; color: #10B981;">${formatMoeda(uSaldo)}</td>
+                    <td style="font-weight: 800; color: #3B82F6;">${formatMoeda(uInvest)}</td>
+                    <td>
+                        <span class="admin-role-badge ${isUserAdm ? 'admin' : 'usuario'}">
+                            ${isUserAdm ? '👑 ADMIN' : '👤 CLIENTE'}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-table-edit" onclick="adminEditarSaldoUsuario('${u.id}')" title="Alterar Saldo">
+                                <i class="fa-solid fa-pen-to-square"></i> Saldo
+                            </button>
+                            <button class="btn-table-edit" style="background: #3A2B22;" onclick="adminAlternarPapelUsuario('${u.id}')" title="Alternar Admin/Cliente">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function adminLiberarTrilha() {
+            levelCatalog.forEach((lvl, lvlIdx) => {
+                stageCatalog.forEach((stg, stgIdx) => {
+                    eduState.progress[lvlIdx][stgIdx].completed = true;
+                });
+            });
+            eduState.xp = Math.max(eduState.xp, 1500);
+            eduState.coins = Math.max(eduState.coins, 450);
+            eduState.hearts = 5;
+            isAdmin = true;
+            if (currentUser) {
+                currentUser.tipo = 'admin';
+                currentUser.trilha_progresso = JSON.stringify(eduState.progress);
+                currentUser.trilha_xp = eduState.xp;
+                currentUser.trilha_coins = eduState.coins;
+                currentUser.trilha_hearts = eduState.hearts;
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+
+            salvarEduState();
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarStatsBar();
+            atualizarUserTrailSub();
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+
+            const adminBanner = document.getElementById('adminTestBanner');
+            if (adminBanner) adminBanner.style.display = 'flex';
+
+            exibirNotificacao('Trilha 100% Desbloqueada! 🚀', 'Todos os 4 níveis e 15 estágios estão liberados para navegação livre.');
+        }
+
+        function adminResetarTrilha() {
+            levelCatalog.forEach((lvl, lvlIdx) => {
+                stageCatalog.forEach((stg, stgIdx) => {
+                    eduState.progress[lvlIdx][stgIdx].completed = false;
+                });
+            });
+            eduState.xp = 0;
+            eduState.coins = 0;
+            eduState.hearts = 5;
+            selectedLevel = 0;
+
+            if (currentUser) {
+                currentUser.trilha_progresso = JSON.stringify(eduState.progress);
+                currentUser.trilha_xp = 0;
+                currentUser.trilha_coins = 0;
+                currentUser.trilha_hearts = 5;
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+
+            salvarEduState();
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarStatsBar();
+            atualizarUserTrailSub();
+            atualizarAdminKpis();
+
+            exibirNotificacao('Trilha Reiniciada', 'O progresso das etapas educativas foi restaurado ao marco zero.');
+        }
+
+        function adminInjetarSaldo(qtd) {
+            saldoAtual += parseFloat(qtd);
+            if (currentUser) {
+                currentUser.saldo = saldoAtual;
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+            historicoTransacoes.unshift({
+                tipo: 'entrada',
+                titulo: 'Crédito Admin Master',
+                desc: 'Aporte de custódia administrativa',
+                valor: parseFloat(qtd),
+                data: formatarDataHoraAtual()
+            });
+            salvarHistoricoLocal();
+            atualizarDisplaysSaldo();
+            renderizarExtrato();
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            exibirNotificacao('Saldo Creditado! 💰', `+${formatMoeda(qtd)} adicionados com sucesso ao seu saldo.`);
+        }
+
+        function adminInjetarInvestimento(qtd) {
+            investAtual += parseFloat(qtd);
+            if (currentUser) {
+                currentUser.investimentos = investAtual;
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+            atualizarDisplaysSaldo();
+            renderizarCarteiraInvestimentos();
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            exibirNotificacao('Carteira Expandida! 📈', `+${formatMoeda(qtd)} aplicados na carteira de investimentos.`);
+        }
+
+        function adminRestaurarVidas() {
+            eduState.hearts = 5;
+            salvarEduState();
+            atualizarStatsBar();
+            exibirNotificacao('Vidas Restauradas! ❤️', 'Seus 5 corações estão completamente cheios.');
+        }
+
+        function adminInjetarCoins(qtd) {
+            eduState.coins = (eduState.coins || 0) + parseInt(qtd);
+            salvarEduState();
+            atualizarStatsBar();
+            atualizarAdminKpis();
+            exibirNotificacao('FinCoins Creditadas! 💎', `+${qtd} FinCoins adicionadas para uso.`);
+        }
+
+        function adminAlternarModoAdmin() {
+            isAdmin = !isAdmin;
+            if (currentUser) {
+                currentUser.tipo = isAdmin ? 'admin' : 'usuario';
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+            const adminBanner = document.getElementById('adminTestBanner');
+            if (adminBanner) adminBanner.style.display = isAdmin ? 'flex' : 'none';
+
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            exibirNotificacao('Papel Atualizado!', `Sua conta agora está configurada como: ${isAdmin ? 'ADMINISTRADOR' : 'CLIENTE'}.`);
+        }
+
+        function adminEditarSaldoUsuario(uid) {
+            const novoValorStr = prompt('Digite o novo saldo em Conta para este usuário (R$):', '5000.00');
+            if (novoValorStr === null) return;
+            const novoValor = parseFloat(novoValorStr.replace(',', '.'));
+            if (isNaN(novoValor) || novoValor < 0) {
+                alert('Por favor, informe um valor monetário válido.');
+                return;
+            }
+
+            let users = getLocalUsers();
+            const idx = users.findIndex(u => u.id == uid);
+            if (idx >= 0) {
+                users[idx].saldo = novoValor;
+                localStorage.setItem('fistu_local_users', JSON.stringify(users));
+            }
+
+            if (currentUser && currentUser.id == uid) {
+                saldoAtual = novoValor;
+                currentUser.saldo = novoValor;
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+                atualizarDisplaysSaldo();
+            }
+
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            exibirNotificacao('Saldo Atualizado!', `Saldo alterado para ${formatMoeda(novoValor)} com sucesso.`);
+        }
+
+        function adminAlternarPapelUsuario(uid) {
+            let users = getLocalUsers();
+            const idx = users.findIndex(u => u.id == uid);
+            if (idx >= 0) {
+                users[idx].tipo = (users[idx].tipo === 'admin') ? 'usuario' : 'admin';
+                localStorage.setItem('fistu_local_users', JSON.stringify(users));
+                if (currentUser && currentUser.id == uid) {
+                    currentUser.tipo = users[idx].tipo;
+                    isAdmin = (currentUser.tipo === 'admin');
+                    localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+                }
+            } else if (currentUser && currentUser.id == uid) {
+                currentUser.tipo = (currentUser.tipo === 'admin') ? 'usuario' : 'admin';
+                isAdmin = (currentUser.tipo === 'admin');
+                saveLocalUser(currentUser);
+                localStorage.setItem('fistu_logged_user', JSON.stringify(currentUser));
+            }
+
+            renderLevelTabs();
+            renderDuoPath();
+            atualizarAdminKpis();
+            renderizarTabelaUsuariosAdmin();
+            exibirNotificacao('Papel Alterado!', 'O nível de acesso do usuário foi alterado.');
+        }
+
+        function adminResetarBancoLocal() {
+            if (!confirm('Deseja realmente limpar todo o histórico e redefinir o banco local para o padrão de fábrica?')) return;
+            localStorage.removeItem('fistu_historico');
+            localStorage.removeItem('fistu_carteira_invest');
+            localStorage.removeItem('fistu_edu_state');
+            exibirNotificacao('Cache Resetado', 'Recarregando aplicação...');
+            setTimeout(() => window.location.reload(), 1000);
+        }
+
+</script>
 </body>
 </html>
