@@ -81,7 +81,7 @@
         <main class="bank-container">
             
             <!-- SAUDAÇÃO COM FOTO E CONTROLE RÁPIDO -->
-            <div class="greeting-bar">
+            <div class="page-standard-header greeting-bar">
                 <div class="greeting-with-avatar">
                     <div class="greeting-avatar-large" onclick="mudarAba('personalizacao')" title="Clique para trocar sua foto ou tema">
                         <img id="greetingAvatarImg" src="{{ usuario.foto_perfil or '' }}" alt="Avatar" class="{{ '' if usuario.foto_perfil else 'hidden' }}">
@@ -259,7 +259,7 @@
     <div class="screen-view" id="screenInvestimentos">
         <div class="invest-screen-container">
             
-            <div class="invest-header-bar">
+            <div class="page-standard-header invest-header-bar">
                 <div>
                     <h2><i class="fa-solid fa-chart-line" style="color: var(--primary-green);"></i> Hub de Investimentos</h2>
                     <p>Selecione qualquer opção no círculo abaixo: ela sai da órbita e projeta seus dados completos no painel acima.</p>
@@ -395,7 +395,7 @@
     <div class="screen-view" id="screenPersonalizacao">
         <div class="personalizacao-container">
             
-            <div class="personalizacao-header-box">
+            <div class="page-standard-header personalizacao-header-box">
                 <div>
                     <h2><i class="fa-solid fa-sliders"></i> Personalização da Conta</h2>
                     <p>Altere sua foto de perfil, personalize seu nome de exibição e alterne entre o tema claro e escuro.</p>
@@ -764,39 +764,39 @@
                 section: "SEÇÃO 1", 
                 icon: "🌱", 
                 description: "Conceitos fundamentais de finanças",
-                primary: "#58CC02",
-                dark: "#46A302",
-                light: "#E8F8DC"
+                primary: "#2F6B4F",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Intermediário", 
                 shortTitle: "Interm.",
                 section: "SEÇÃO 2", 
-                icon: "📘", 
-                description: "Aplicações e cálculos do dia a dia",
-                primary: "#1CB0F6",
-                dark: "#1899D6",
-                light: "#DDF4FF"
+                icon: "📈", 
+                description: "Renda fixa, CDI e Tesouro Direto",
+                primary: "#1E583F",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Analista", 
                 shortTitle: "Analista",
                 section: "SEÇÃO 3", 
                 icon: "📊", 
-                description: "Análise de cenários e diversificação",
-                primary: "#A855F7",
-                dark: "#7E22CE",
-                light: "#F3E8FF"
+                description: "Fundos imobiliários e diversificação",
+                primary: "#2A7B9B",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Sênior", 
                 shortTitle: "Sênior",
                 section: "SEÇÃO 4", 
-                icon: "🏆", 
-                description: "Decisões estratégicas de portfólio",
-                primary: "#FF9600",
-                dark: "#E58500",
-                light: "#FFF0D4"
+                icon: "👑", 
+                description: "Gestão patrimonial e mercado de capitais",
+                primary: "#3A2B22",
+                dark: "#241A14",
+                light: "#F3FAF4"
             }
         ];
 

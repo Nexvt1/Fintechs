@@ -1,59 +1,77 @@
 :root {
-            --bg-tone: #000000; /* Fundo preto no modo escuro */
-            --bg-dark: #000000;
-            --bg-header: #000000;
-            --bg-card: #F3FAF4;
-            --primary-dark: #000000;
+            /* ========================================================
+               PALETA OFICIAL DO PROJETO (Instagram Palette)
+               ======================================================== */
+            --pine-shadow: #12372A; /* Dark forest depth */
+            --evergreen: #2F6B4F;   /* Rich conifer tone */
+            --snow-sage: #BFD8C2;   /* Soft frosted green */
+            --pine-mist: #F3FAF4;   /* Light forest breath */
+            --dark-wood: #3A2B22;   /* Warm bark anchor */
+
+            /* DESIGN SYSTEM: CRAP & GESTALT (ALTO CONTRASTE E HIERARQUIA VISUAL) */
+            --bg-tone: #091510;
+            --bg-dark: #091510;
+            --bg-header: #12372A;   /* Pine Shadow: distintamente diferente do fundo! */
+            --bg-card: #0F221B;
+            --primary-dark: #12372A;
             --primary-green: #2F6B4F;
-            --mint-light: #EFF8F3;
-            --mint-bright: #86EFAC;
-            --emerald: #10B981;
-            --duo-green: #58CC02;
-            --duo-green-dark: #46A302;
-            --duo-gold: #FFC800;
-            --duo-gold-dark: #E5A500;
-            --duo-blue: #1CB0F6;
-            --text-dark: #0b3d2c;
-            --text-muted: #556B5A;
+            --primary-green-hover: #1E4633;
+            --mint-light: #F3FAF4;
+            --mint-bright: #BFD8C2;
+            --emerald: #2F6B4F;
+            --duo-green: #2F6B4F;
+            --duo-green-dark: #12372A;
+            --duo-gold: #E5A500;
+            --duo-gold-dark: #B28000;
+            --duo-blue: #2A7B9B;
+            --text-dark: #12372A;
+            --text-muted: #BFD8C2;
             --text-light: #F3FAF4;
             --text-mint: #BFD8C2;
-            --heading-color: #FFFFFF;
+            --heading-color: #F3FAF4;
             --border-subtle: rgba(191, 216, 194, 0.2);
-            --card-item-bg: rgba(255, 255, 255, 0.06);
+            --card-item-bg: rgba(255, 255, 255, 0.04);
             --card-item-border: rgba(191, 216, 194, 0.18);
-            --radius-xl: 20px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.35);
         }
 
-        /* TEMA CLARO (VERDE MENTA FRESH) */
+        /* TEMA CLARO: Fundo Pine Mist (#F3FAF4) com Header Pine Shadow (#12372A) */
         body.theme-light {
-            --bg-tone: #EBF7EE;
-            --bg-dark: #EBF7EE;
-            --bg-header: #FFFFFF;
-            --bg-card: #FFFFFF;
-            --primary-dark: #0b3d2c;
-            --text-dark: #0b3d2c;
-            --text-light: #0b3d2c;
-            --text-mint: #2D6A4F;
-            --text-muted: #527963;
-            --heading-color: #0b3d2c;
-            --border-subtle: rgba(11, 61, 44, 0.15);
+            --bg-tone: #F3FAF4;             /* Pine Mist (Fundo claro) */
+            --bg-dark: #F3FAF4;
+            --bg-header: #12372A;           /* Pine Shadow (Header escuro em alto contraste!) */
+            --bg-card: #FFFFFF;             /* Cartões brancos nítidos */
+            --primary-dark: #12372A;
+            --primary-green: #2F6B4F;       /* Evergreen */
+            --primary-green-hover: #1E4633;
+            --text-dark: #12372A;
+            --text-light: #12372A;          /* Texto principal em Pine Shadow */
+            --text-mint: #2F6B4F;
+            --text-muted: #2F6B4F;          /* Subtextos em Evergreen com alto contraste */
+            --heading-color: #12372A;
+            --border-subtle: rgba(18, 55, 42, 0.15);
             --card-item-bg: #FFFFFF;
-            --card-item-border: rgba(47, 107, 79, 0.22);
+            --card-item-border: #DDEBE0;
+            --shadow-card: 0 4px 16px rgba(18, 55, 42, 0.08);
         }
 
-        /* TEMA ESCURO (FUNDO PRETO) */
+        /* TEMA ESCURO: Fundo Deep Forest (#091510) com Header Pine Shadow (#12372A) */
         body.theme-dark {
-            --bg-tone: #000000;
-            --bg-dark: #000000;
-            --bg-header: #000000;
-            --bg-card: #141414;
-            --text-light: #F3FAF4;
-            --text-mint: #A3B8A8;
-            --heading-color: #FFFFFF;
-            --card-item-bg: rgba(255, 255, 255, 0.06);
-            --card-item-border: rgba(255, 255, 255, 0.14);
+            --bg-tone: #091510;             /* Fundo escuro profundo de coníferas */
+            --bg-dark: #091510;
+            --bg-header: #12372A;           /* Pine Shadow (Distinto do fundo escuro!) */
+            --bg-card: #0F221B;             /* Cartão conífera rico */
+            --text-light: #F3FAF4;          /* Texto claro em Pine Mist */
+            --text-mint: #BFD8C2;          /* Destaques em Snow Sage */
+            --text-muted: #BFD8C2;
+            --heading-color: #F3FAF4;
+            --border-subtle: rgba(191, 216, 194, 0.18);
+            --card-item-bg: rgba(191, 216, 194, 0.05);
+            --card-item-border: rgba(191, 216, 194, 0.18);
+            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
         }
 
         * {
@@ -89,6 +107,13 @@
             position: sticky;
             top: 0;
             z-index: 500;
+        }
+
+        .fistu-header .brand-logo-img.logo-white {
+            display: block !important;
+        }
+        .fistu-header .brand-logo-img.logo-dark {
+            display: none !important;
         }
 
         .header-brand {
@@ -2508,4 +2533,337 @@ body.theme-light .btn-dock-simular {
 .invest-orbit-node.active-orbit-node .orbit-node-label {
     color: var(--heading-color);
     font-weight: 900;
+}
+
+
+/* ========================================================
+   PADRÃO DE HEADER EM TODAS AS JANELAS (CRAP & GESTALT)
+   ======================================================== */
+.page-standard-header {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 22px auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: var(--shadow-card);
+    box-sizing: border-box;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+body.theme-light .page-standard-header {
+    background: #FFFFFF;
+    border-color: rgba(18, 55, 42, 0.12);
+    box-shadow: 0 4px 16px rgba(18, 55, 42, 0.06);
+}
+
+.page-header-user-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.page-header-text h2 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--heading-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.page-header-text p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.page-header-badges {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.badge-fistu-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: rgba(47, 107, 79, 0.14);
+    border: 1px solid rgba(47, 107, 79, 0.3);
+    color: var(--evergreen);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+body.theme-dark .badge-fistu-status {
+    background: rgba(191, 216, 194, 0.1);
+    border-color: rgba(191, 216, 194, 0.3);
+    color: var(--snow-sage);
+}
+
+.badge-fistu-metric {
+    background: rgba(18, 55, 42, 0.06);
+    border: 1px solid var(--border-subtle);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+body.theme-dark .badge-fistu-metric {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.metric-mini-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-mini-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--evergreen);
+}
+
+body.theme-dark .metric-mini-val {
+    color: var(--snow-sage);
+}
+
+.edu-trail-avatar-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 0 !important;
+    background: var(--evergreen);
+    color: #FFFFFF;
+    display: grid;
+    place-items: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+/* ========================================================
+   TRILHA NA TELA INTEIRA (FULL-WIDTH EXPANSIVE CANVAS)
+   ======================================================== */
+.edu-screen-wrapper {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    background: var(--bg-tone);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px 80px 20px;
+    box-sizing: border-box;
+}
+
+.edu-fullwidth-canvas {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+/* BARRA DE ESTATÍSTICAS EM TELA CHEIA */
+.duo-stats-bar {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0 !important;
+    box-shadow: var(--shadow-card);
+    box-sizing: border-box;
+}
+
+body.theme-light .duo-stats-bar {
+    background: #FFFFFF;
+    border-color: rgba(18, 55, 42, 0.12);
+}
+
+.stat-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-light);
+    background: var(--card-item-bg);
+    border: 1px solid var(--card-item-border);
+    border-radius: 0 !important;
+    padding: 12px 14px;
+}
+
+body.theme-light .stat-badge {
+    color: var(--pine-shadow);
+    background: #F8FCF9;
+}
+
+.stat-num {
+    font-size: 1.15rem;
+    font-weight: 900;
+}
+
+.stat-sub {
+    display: block;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* SELETOR DE NÍVEIS EM TELA CHEIA */
+.level-tabs-bar {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 0;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.level-pill {
+    padding: 14px 10px;
+    text-align: center;
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 0 !important;
+    background: var(--bg-card);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-card);
+}
+
+body.theme-light .level-pill {
+    background: #FFFFFF;
+    color: var(--evergreen);
+    border-color: rgba(18, 55, 42, 0.15);
+}
+
+.level-pill.active {
+    background: var(--evergreen) !important;
+    color: #FFFFFF !important;
+    border-color: var(--evergreen) !important;
+    box-shadow: 0 4px 14px rgba(47, 107, 79, 0.35);
+}
+
+.level-pill.locked {
+    opacity: 0.55;
+    background: rgba(18, 55, 42, 0.04);
+    cursor: not-allowed;
+}
+
+/* BANNERS ROW */
+.edu-banners-row {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.admin-test-banner {
+    width: 100%;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1.5px solid #F59E0B;
+    border-radius: 0 !important;
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: #FDE68A;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.daily-mission-banner {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0 !important;
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-card);
+    box-sizing: border-box;
+}
+
+body.theme-light .daily-mission-banner {
+    background: #FFFFFF;
+    color: var(--pine-shadow);
+    border-color: rgba(18, 55, 42, 0.12);
+}
+
+.duo-section-banner {
+    width: 100%;
+    background: linear-gradient(135deg, var(--pine-shadow) 0%, var(--evergreen) 100%);
+    border-radius: 0 !important;
+    padding: 22px 28px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 0 var(--pine-shadow);
+    border: 1px solid rgba(191, 216, 194, 0.25);
+    box-sizing: border-box;
+}
+
+/* TRILHA EM ZIG-ZAG EXPANSIVA NA TELA */
+.duo-path-container {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0 100px 0;
+    position: relative;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .duo-stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+    .level-tabs-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
 }

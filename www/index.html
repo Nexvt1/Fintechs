@@ -149,7 +149,7 @@
             <main class="bank-container">
                 
                 <!-- SAUDAÇÃO COM FOTO E CONTROLE RÁPIDO -->
-                <div class="greeting-bar">
+                <div class="page-standard-header greeting-bar">
                     <div class="greeting-with-avatar">
                         <div class="greeting-avatar-large" onclick="mudarAba('personalizacao')" title="Clique para trocar sua foto ou tema">
                             <img id="greetingAvatarImg" src="" alt="Avatar" class="hidden">
@@ -326,7 +326,7 @@
             <div class="invest-screen-container">
                 
                 <!-- HEADER DA ABA DE INVESTIMENTOS -->
-                <div class="invest-header-bar">
+                <div class="page-standard-header invest-header-bar">
                     <div>
                         <h2><i class="fa-solid fa-chart-line" style="color: var(--primary-green);"></i> Hub de Investimentos</h2>
                         <p>Selecione qualquer opção no círculo abaixo: ela sai da órbita e projeta seus dados completos no painel acima.</p>
@@ -370,82 +370,101 @@
         <div class="screen-view" id="screenEducacao">
             <div class="edu-screen-wrapper">
 
-                <!-- CARTÃO DE IDENTIFICAÇÃO DA TRILHA DO USUÁRIO -->
-                <div class="user-trail-header-card">
-                    <div class="user-trail-left">
-                        <div class="user-trail-avatar">
+                <!-- HEADER PADRONIZADO DA TRILHA (PADRÃO UNIFICADO DE TODAS AS TELAS) -->
+                <div class="page-standard-header edu-header-bar">
+                    <div class="page-header-user-row">
+                        <div class="edu-trail-avatar-badge">
                             <i class="fa-solid fa-graduation-cap"></i>
                         </div>
-                        <div>
-                            <span class="user-trail-badge">TRILHA DO USUÁRIO</span>
-                            <h3 class="user-trail-name" id="userTrailName">Cliente Fistu</h3>
-                            <p class="user-trail-sub" id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas</p>
+                        <div class="page-header-text">
+                            <h2><span id="userTrailName">Cliente Fistu</span> • Trilha Educativa</h2>
+                            <p id="userTrailSub">Nível: 🌱 Iniciante • 0/15 etapas concluídas (0 XP)</p>
                         </div>
                     </div>
-                    <div class="user-trail-meta">
-                        <span class="user-trail-account-pill" id="userTrailAccountPill">Conta #1</span>
+                    <div class="page-header-badges">
+                        <div class="badge-fistu-metric">
+                            <span class="metric-mini-label">CONTA FISTU</span>
+                            <strong class="metric-mini-val" id="userTrailAccountPill">Conta #1</strong>
+                        </div>
                     </div>
                 </div>
 
-                <!-- BARRA DE STATUS DO TOPO -->
-                <div class="duo-stats-bar">
-                    <div class="stat-badge stat-flag" title="Nível / Pontos">
-                        <span style="font-size: 1.3rem;">🇧🇷</span>
-                        <span id="eduXp">0</span>
-                    </div>
-                    <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
-                        <span>🔥</span>
-                        <span id="eduStreak">1</span>
-                    </div>
-                    <div class="stat-badge stat-gems" title="FinCoins acumuladas">
-                        <span>💎</span>
-                        <span id="eduCoins">0</span>
-                    </div>
-                    <div class="stat-badge stat-hearts" title="Vidas disponíveis">
-                        <span>❤️</span>
-                        <span id="eduHearts">5</span>
-                    </div>
-                </div>
+                <!-- CONTEÚDO DA TRILHA NA TELA INTEIRA (1100px FULL CANVAS) -->
+                <div class="edu-fullwidth-canvas">
 
-                <!-- SELETOR DOS NÍVEIS DO CURSO -->
-                <div class="level-tabs-bar" id="levelTabsContainer">
-                    <div class="level-pill active" onclick="selecionarNivel(0)">🌱 Iniciante</div>
-                    <div class="level-pill locked" onclick="selecionarNivel(1)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Interm.</div>
-                    <div class="level-pill locked" onclick="selecionarNivel(2)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Analista</div>
-                    <div class="level-pill locked" onclick="selecionarNivel(3)"><i class="fa-solid fa-lock" style="font-size:0.75rem; margin-right:4px;"></i>Sênior</div>
-                </div>
-
-                <!-- BANNER DE TESTES LIVRES PARA O ADMINISTRADOR -->
-                <div class="admin-test-banner" id="adminTestBanner" style="display: none;">
-                    <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem; color: #D97706;"></i>
-                    <div>
-                        <strong>Modo Administrador Ativo:</strong> Todas as 4 trilhas e 15 estágios estão 100% liberados para teste livre, sem limite diário!
+                    <!-- BARRA DE STATUS DO TOPO EM TELA CHEIA (XP, OFENSIVA, FINCOINS, VIDAS) -->
+                    <div class="duo-stats-bar">
+                        <div class="stat-badge stat-flag" title="Nível / Pontos">
+                            <span style="font-size: 1.3rem;">🏆</span>
+                            <div>
+                                <span class="stat-num" id="eduXp">0</span>
+                                <small class="stat-sub">XP Total</small>
+                            </div>
+                        </div>
+                        <div class="stat-badge stat-streak" title="Ofensiva de dias consecutivos">
+                            <span style="font-size: 1.3rem;">🔥</span>
+                            <div>
+                                <span class="stat-num" id="eduStreak">1</span>
+                                <small class="stat-sub">Dias Seguidos</small>
+                            </div>
+                        </div>
+                        <div class="stat-badge stat-gems" title="FinCoins acumuladas">
+                            <span style="font-size: 1.3rem;">💎</span>
+                            <div>
+                                <span class="stat-num" id="eduCoins">0</span>
+                                <small class="stat-sub">FinCoins</small>
+                            </div>
+                        </div>
+                        <div class="stat-badge stat-hearts" title="Vidas disponíveis">
+                            <span style="font-size: 1.3rem;">❤️</span>
+                            <div>
+                                <span class="stat-num" id="eduHearts">5</span>
+                                <small class="stat-sub">Vidas</small>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- BANNER DE LIMITE DIÁRIO (1 MISSÃO POR DIA) -->
-                <div class="daily-mission-banner" id="dailyMissionBanner">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-calendar-check" id="dailyMissionIcon" style="color: #64748B; font-size: 1rem;"></i>
-                        <span id="dailyMissionText">Missão diária: <strong>0/1</strong> concluída hoje.</span>
+                    <!-- SELETOR DOS 4 NÍVEIS DO CURSO EM TELA CHEIA -->
+                    <div class="level-tabs-bar" id="levelTabsContainer">
+                        <!-- Renderizado via JS -->
                     </div>
-                    <span class="mission-tag" id="dailyMissionTag">Disponível</span>
-                </div>
 
-                <!-- BANNER DA SEÇÃO E UNIDADE -->
-                <div class="duo-section-banner" id="duoSectionBanner">
-                    <div class="banner-info">
-                        <h5 id="bannerSectionTitle">SEÇÃO 1, UNIDADE 1</h5>
-                        <h3 id="bannerUnitTitle">Fundamentos Financeiros</h3>
-                    </div>
-                    <div class="btn-guidebook" onclick="abrirGuiaUnidade()" title="Guia da Unidade">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-                </div>
+                    <!-- BANNERS DE MISSÃO E SEÇÃO EM TELA CHEIA -->
+                    <div class="edu-banners-row">
+                        <!-- BANNER DO MODO ADMIN -->
+                        <div class="admin-test-banner" id="adminTestBanner" style="display: none;">
+                            <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem; color: #D97706;"></i>
+                            <div>
+                                <strong>Modo Administrador:</strong> Todas as 4 trilhas e 15 estágios estão 100% liberados para teste livre!
+                            </div>
+                        </div>
 
-                <!-- A TRILHA EM ZIG-ZAG COM BOTÕES 3D REDONDOS -->
-                <div class="duo-path-container" id="duoPathWrapper">
-                    <!-- Nós renderizados via JS -->
+                        <!-- BANNER DE MISSÃO DIÁRIA -->
+                        <div class="daily-mission-banner" id="dailyMissionBanner">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fa-solid fa-calendar-check" id="dailyMissionIcon" style="color: var(--evergreen); font-size: 1.15rem;"></i>
+                                <span id="dailyMissionText">Missão diária: <strong>0/1</strong> concluída hoje.</span>
+                            </div>
+                            <span class="mission-tag" id="dailyMissionTag">Disponível</span>
+                        </div>
+
+                        <!-- BANNER DA SEÇÃO E UNIDADE -->
+                        <div class="duo-section-banner" id="duoSectionBanner">
+                            <div class="banner-info">
+                                <h5 id="bannerSectionTitle">SEÇÃO 1, UNIDADE 1</h5>
+                                <h3 id="bannerUnitTitle">Fundamentos Financeiros</h3>
+                            </div>
+                            <div class="btn-guidebook" onclick="abrirGuiaUnidade()" title="Guia da Unidade">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRILHA EM ZIG-ZAG EXPANSIVA EM TELA INTEIRA -->
+                    <div class="duo-path-container" id="duoPathWrapper">
+                        <!-- Nós renderizados via JS -->
+                    </div>
+
                 </div>
 
                 <!-- BOTÃO FLUTUANTE ⬆️ PARA VOLTAR AO NÓ ATIVO -->
@@ -462,7 +481,7 @@
         <div class="screen-view" id="screenPersonalizacao">
             <div class="personalizacao-container">
                 
-                <div class="personalizacao-header-box">
+                <div class="page-standard-header personalizacao-header-box">
                     <div>
                         <h2><i class="fa-solid fa-sliders"></i> Personalização da Conta</h2>
                         <p>Altere sua foto de perfil, personalize seu nome de exibição e alterne entre o tema claro e escuro.</p>
@@ -867,39 +886,39 @@
                 section: "SEÇÃO 1", 
                 icon: "🌱", 
                 description: "Conceitos fundamentais de finanças",
-                primary: "#58CC02",
-                dark: "#46A302",
-                light: "#E8F8DC"
+                primary: "#2F6B4F",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Intermediário", 
                 shortTitle: "Interm.",
                 section: "SEÇÃO 2", 
-                icon: "📘", 
-                description: "Aplicações e cálculos do dia a dia",
-                primary: "#1CB0F6",
-                dark: "#1899D6",
-                light: "#DDF4FF"
+                icon: "📈", 
+                description: "Renda fixa, CDI e Tesouro Direto",
+                primary: "#1E583F",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Analista", 
                 shortTitle: "Analista",
                 section: "SEÇÃO 3", 
                 icon: "📊", 
-                description: "Análise de cenários e diversificação",
-                primary: "#A855F7",
-                dark: "#7E22CE",
-                light: "#F3E8FF"
+                description: "Fundos imobiliários e diversificação",
+                primary: "#2A7B9B",
+                dark: "#12372A",
+                light: "#F3FAF4"
             },
             { 
                 title: "Sênior", 
                 shortTitle: "Sênior",
                 section: "SEÇÃO 4", 
-                icon: "🏆", 
-                description: "Decisões estratégicas de portfólio",
-                primary: "#FF9600",
-                dark: "#E58500",
-                light: "#FFF0D4"
+                icon: "👑", 
+                description: "Gestão patrimonial e mercado de capitais",
+                primary: "#3A2B22",
+                dark: "#241A14",
+                light: "#F3FAF4"
             }
         ];
 
@@ -1448,7 +1467,10 @@
 
             const stages = eduState.progress[selectedLevel];
             let activeFound = false;
-            const xOffsets = [0, 45, 90, 45, 0, -45, -90, -45, 0, 45, 90, 45, 0, -45, 0];
+            const isMobile = window.innerWidth <= 640;
+            const xOffsets = isMobile
+                ? [0, 40, 80, 40, 0, -40, -80, -40, 0, 40, 80, 40, 0, -40, 0]
+                : [0, 100, 200, 100, 0, -100, -200, -100, 0, 100, 200, 100, 0, -100, 0];
 
             for (let i = 0; i < stageCatalog.length; i++) {
                 const stageNum = i + 1;
