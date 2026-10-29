@@ -1,0 +1,29 @@
+{
+  "name": "Fistu - Conta Digital & Educação Financeira",
+  "short_name": "Fistu",
+  "description": "Conta digital moderna e plataforma interativa de educação financeira.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#12372A",
+  "theme_color": "#12372A",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
