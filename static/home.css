@@ -3817,3 +3817,188 @@ body.theme-dark .edu-callout-left p,
 body:not(.theme-light) .edu-callout-left p {
     color: #BFD8C2 !important;
 }
+
+
+/* ========================================================
+   ALINHAMENTO PRECISO DO HEADER COM OS CONTAINERS DA TELA
+   ======================================================== */
+.fistu-header {
+    width: 100% !important;
+    height: 72px !important;
+    padding: 0 24px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #12372A !important;
+    border-bottom: 1px solid rgba(191, 216, 194, 0.25) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+}
+
+.header-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    flex: 1 1 0% !important;
+    justify-content: flex-start !important;
+}
+
+.header-brand .brand-logo-img {
+    height: 38px !important;
+    width: auto !important;
+    display: block !important;
+    object-fit: contain !important;
+}
+
+.nav-tabs-pill {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(191, 216, 194, 0.25) !important;
+    border-radius: 30px !important;
+    padding: 4px !important;
+    gap: 4px !important;
+    height: 44px !important;
+    box-sizing: border-box !important;
+}
+
+.nav-tab-btn {
+    height: 36px !important;
+    padding: 0 16px !important;
+    border-radius: 25px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #BFD8C2 !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 0.84rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+.nav-tab-btn:hover {
+    color: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.nav-tab-btn.active {
+    background: #2F6B4F !important;
+    color: #FFFFFF !important;
+    border: 1px solid #BFD8C2 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex: 1 1 0% !important;
+    gap: 12px !important;
+}
+
+.header-profile-pill {
+    height: 38px !important;
+    padding: 3px 14px 3px 6px !important;
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(191, 216, 194, 0.25) !important;
+    border-radius: 25px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+}
+
+.header-mini-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    background: #2F6B4F !important;
+    color: #FFFFFF !important;
+    border-radius: 50% !important;
+    display: grid !important;
+    place-items: center !important;
+    font-size: 0.82rem !important;
+    font-weight: 800 !important;
+}
+
+.header-user-fname {
+    color: #F3FAF4 !important;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+}
+
+.btn-admin-pill {
+    height: 38px !important;
+    padding: 0 16px !important;
+    background: #D97706 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #F59E0B !important;
+    border-radius: 20px !important;
+    font-weight: 800 !important;
+    font-size: 0.8rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3) !important;
+    transition: transform 0.15s, background 0.2s !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+.btn-admin-pill:hover {
+    background: #B45309 !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-logout {
+    height: 38px !important;
+    padding: 0 16px !important;
+    color: #F3FAF4 !important;
+    background: transparent !important;
+    border: 1px solid rgba(191, 216, 194, 0.35) !important;
+    border-radius: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    cursor: pointer !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    transition: all 0.2s !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+}
+
+.btn-logout:hover {
+    background: #DC2626 !important;
+    border-color: #DC2626 !important;
+    color: #FFFFFF !important;
+}
+
+@media (max-width: 768px) {
+    .fistu-header {
+        height: 60px !important;
+        padding: max(6px, env(safe-area-inset-top)) 16px 6px 16px !important;
+    }
+    .header-actions {
+        gap: 8px !important;
+    }
+    .btn-admin-pill,
+    .btn-logout {
+        height: 34px !important;
+        padding: 0 12px !important;
+        font-size: 0.75rem !important;
+    }
+    .header-profile-pill {
+        height: 34px !important;
+        padding: 2px 10px 2px 4px !important;
+    }
+}

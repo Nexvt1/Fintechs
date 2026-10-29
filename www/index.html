@@ -179,7 +179,7 @@
                                 </button>
                             </div>
                             <div class="card-amount" id="displaySaldo">
-                                R$ 1.500,00
+                                R$ 0,00
                             </div>
                             <p class="card-subtext">Disponível para Pix, compras e pagamentos</p>
                         </div>
@@ -198,7 +198,7 @@
                                 </span>
                             </div>
                             <div class="card-amount" id="displayInvestimentos">
-                                R$ 3.200,00
+                                R$ 0,00
                             </div>
                             <p class="card-subtext">Rendimento estimado: <strong>+100% do CDI com liquidez diária</strong></p>
                         </div>
@@ -255,7 +255,7 @@
                     </div>
                     <div class="invest-balance-badge">
                         <span class="badge-label">TOTAL INVESTIDO</span>
-                        <span class="badge-val" id="investScreenTotal">R$ 3.200,00</span>
+                        <span class="badge-val" id="investScreenTotal">R$ 0,00</span>
                     </div>
                 </div>
 
@@ -995,8 +995,8 @@ div>
 
         // ESTADO GLOBAL DO APLICATIVO
         let currentUser = null;
-        let saldoAtual = 1500.0;
-        let investAtual = 3200.0;
+        let saldoAtual = 0.0;
+        let investAtual = 0.0;
         let saldoVisivel = true;
         let isAdmin = false;
         let selectedLevel = 0;
@@ -1120,8 +1120,8 @@ div>
                     nome: emailOrUser.split('@')[0],
                     email: emailOrUser.includes('@') ? emailOrUser : emailOrUser + '@fistu.com',
                     tipo: isUserAdmin ? 'admin' : 'usuario',
-                    saldo: isUserAdmin ? 50000.0 : 1500.0,
-                    investimentos: isUserAdmin ? 120000.0 : 3200.0,
+                    saldo: 0.0,
+                    investimentos: 0.0,
                     trilha_progresso: JSON.stringify(levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))),
                     trilha_xp: 0,
                     trilha_streak: 1,
@@ -1162,8 +1162,8 @@ div>
                     nome: nome,
                     email: email,
                     tipo: email.toLowerCase().includes('admin') ? 'admin' : 'usuario',
-                    saldo: 1500.0,
-                    investimentos: 3200.0,
+                    saldo: 0.0,
+                    investimentos: 0.0,
                     trilha_progresso: JSON.stringify(levelCatalog.map(() => stageCatalog.map(() => ({ completed: false })))),
                     trilha_xp: 0,
                     trilha_streak: 1,
@@ -1216,8 +1216,8 @@ div>
             localStorage.setItem('fistu_logged_user', JSON.stringify(user));
 
             isAdmin = (user.tipo === 'admin');
-            saldoAtual = parseFloat(user.saldo || 1500.0);
-            investAtual = parseFloat(user.investimentos || 3200.0);
+            saldoAtual = parseFloat(user.saldo !== undefined && user.saldo !== null ? user.saldo : 0.0);
+            investAtual = parseFloat(user.investimentos !== undefined && user.investimentos !== null ? user.investimentos : 0.0);
 
             // Carrega estado da Trilha
             let dbProgress = null;

@@ -127,15 +127,15 @@ def init_db():
                 modo_anonimo_padrao BOOLEAN DEFAULT FALSE,
                 notificar_status BOOLEAN DEFAULT TRUE,
                 tema TEXT DEFAULT 'claro',
-                saldo NUMERIC DEFAULT 1500.00,
-                investimentos NUMERIC DEFAULT 3200.00
+                saldo NUMERIC DEFAULT 0.00,
+                investimentos NUMERIC DEFAULT 0.00
             )
         '''))
 
         # Garante que as colunas saldo, investimentos e personalização existem
         try:
-            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS saldo NUMERIC DEFAULT 1500.00'))
-            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS investimentos NUMERIC DEFAULT 3200.00'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS saldo NUMERIC DEFAULT 0.00'))
+            db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS investimentos NUMERIC DEFAULT 0.00'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_progresso TEXT'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_xp INTEGER DEFAULT 0'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS trilha_streak INTEGER DEFAULT 1'))
@@ -148,8 +148,8 @@ def init_db():
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS tema TEXT DEFAULT \'escuro\''))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS foto_perfil TEXT'))
             db.session.execute(text('ALTER TABLE "Usuarios" ADD COLUMN IF NOT EXISTS tom_verde TEXT DEFAULT \'#0b3d2c\''))
-            db.session.execute(text('UPDATE "Usuarios" SET saldo = 1500.00 WHERE saldo IS NULL'))
-            db.session.execute(text('UPDATE "Usuarios" SET investimentos = 3200.00 WHERE investimentos IS NULL'))
+            db.session.execute(text('UPDATE "Usuarios" SET saldo = 0.00 WHERE saldo IS NULL'))
+            db.session.execute(text('UPDATE "Usuarios" SET investimentos = 0.00 WHERE investimentos IS NULL'))
             db.session.commit()
         except Exception:
             db.session.rollback()

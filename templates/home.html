@@ -113,7 +113,7 @@
                             </button>
                         </div>
                         <div class="card-amount" id="displaySaldo">
-                            R$ {{ "%.2f"|format(usuario.saldo or 1500.0) }}
+                            R$ {{ "%.2f"|format(usuario.saldo or 0.0) }}
                         </div>
                         <p class="card-subtext">Disponível para Pix, compras e pagamentos</p>
                     </div>
@@ -132,7 +132,7 @@
                             </span>
                         </div>
                         <div class="card-amount" id="displayInvestimentos">
-                            R$ {{ "%.2f"|format(usuario.investimentos or 3200.0) }}
+                            R$ {{ "%.2f"|format(usuario.investimentos or 0.0) }}
                         </div>
                         <p class="card-subtext">Rendimento estimado: <strong>+100% do CDI com liquidez diária</strong></p>
                     </div>
@@ -743,8 +743,8 @@
         const isAdmin = {{ 'true' if (usuario.tipo == 'admin' or session.get('usuario_tipo') == 'admin') else 'false' }};
 
         // ESTADO GLOBAL DO SISTEMA
-        let saldoAtual = {{ usuario.saldo or 1500.0 }};
-        let investAtual = {{ usuario.investimentos or 3200.0 }};
+        let saldoAtual = {{ usuario.saldo or 0.0 }};
+        let investAtual = {{ usuario.investimentos or 0.0 }};
         let saldoVisivel = true;
 
         // CARREGAMENTO DO PROGRESSO ATRIBUÍDO AO USUÁRIO
